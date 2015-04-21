@@ -4,7 +4,7 @@
 
 ## A quick check to see if Homebrew is installed.
 
-if [[ ! -d /usr/local/Library/Homebrew ]]
+if [[ ! (-d /usr/local/Library/Homebrew) || ( -d /usr/local/Cellar) ]]
 then
 	echo "Homebrew not installed!"
 	echo "Would you like to install it? [y/n]"
