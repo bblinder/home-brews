@@ -85,7 +85,7 @@ brew cask install teamviewer
 ## Use "cat caskfile.sh | sed -e 's/cask install/cask zap/g' -e 's/install/uninstall/g' > caskfile_removeall.sh && chmod a+x caskfile_removeall.sh"
 ## to generate a removal script for all of the above.
 
-## Remove Homebrew entirely
+## Remove Homebrew entirely. May need to tweak if the above sed command rewrites it.
 
 if [[ -d /usr/local/Library/Homebrew ]]
 then
