@@ -2,18 +2,7 @@
 
 ## BlindySupport Cask/Brewfile
 
-## A quick check to see if Homebrew is installed.
-
-if [[ ! ( -d /usr/local/Library/Homebrew || -d /usr/local/Cellar ) ]]
-then
-	echo "Homebrew not installed!"
-	echo "Would you like to install it? [y/n]"
-	read input
-	if [[ $input == "y" ]]
-	then
-		ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-	fi
-fi
+Be sure to install HomeBrew first via 'brew.sh'
 
 ## Install unix utilities
 
@@ -67,6 +56,7 @@ brew cask install skype
 brew cask install sublime-text
 brew cask install atom
 
+brew cask install xquartz
 brew cask install spotify
 brew cask install livestream-producer
 brew cask install gpgtools
@@ -77,20 +67,10 @@ brew cask install github
 brew cask install gfxcardstatus
 brew cask install superduper
 brew cask install chrome-remote-desktop-host
-brew cask install xquartz
 brew cask install handbrake
 brew cask install teamviewer
 
 
 ## Use "cat caskfile.sh | sed -e 's/cask install/cask zap/g' -e 's/install/uninstall/g' > caskfile_removeall.sh && chmod a+x caskfile_removeall.sh"
 ## to generate a removal script for all of the above.
-
-## Remove Homebrew entirely. May need to tweak if the above sed command rewrites it.
-
-if [[ -d /usr/local/Library/Homebrew ]]
-then
-	sudo ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"
-else
-	exit
-fi
 
