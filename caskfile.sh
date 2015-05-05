@@ -2,7 +2,8 @@
 
 ## BlindySupport Cask/Brewfile
 
-Be sure to install HomeBrew first via 'brew.sh'
+## Be sure to install HomeBrew first via 'brew.sh'
+## Or via ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 ## Install unix utilities
 
