@@ -3,7 +3,7 @@
 # A small script to grab the internal and external IP address and rsync it to my personal machine. This is for DHCP environments that don't allow for static IPs or DHCP reservations. System must support `ip addr'. Can otherwise use `ifconfig` with some tweaking.
 
 ExIP=$(curl -s icanhazip.com -4)
-IntIP=$(ip address | grep '192.168.*' | awk {'print $2'} | sed -e 's/\/22/#/g')
+IntIP=$(ip address | grep '192.168.*' | awk {'print $2'} | sed -e 's/\/22//g')
 
 echo ".........................................." >> ~/Documents/RemoteMachine_CurrentIP.txt
 date >> ~/Documents/RemoteMachine_CurrentIP.txt
