@@ -25,4 +25,5 @@ package { "vlc": }
 package { "gedit": }
 package { "gdebi": }
 package { "gparted": }
+package { "clementine": }
 
