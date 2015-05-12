@@ -23,3 +23,6 @@ package { "tasksel": }
 package { "vim": }
 package { "vlc": }
 package { "gedit": }
+package { "gdebi": }
+package { "gparted": }
+
