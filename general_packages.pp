@@ -1,4 +1,4 @@
-Package { ensure => "installed" }
+Package { ensure => "latest" }
 
 package { "glances": }
 package { "htop": }
