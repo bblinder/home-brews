@@ -5,7 +5,6 @@ package { "htop": }
 package { "archey": }
 package { "bleachbit": }
 package { "exiftool": }
-package { "firefox": }
 package { "iceweasel": }
 package { "git": }
 package { "gpg": }
@@ -26,4 +25,6 @@ package { "gedit": }
 package { "gdebi": }
 package { "gparted": }
 package { "clementine": }
+package { "archey": }
+package { "tmux": }
 
