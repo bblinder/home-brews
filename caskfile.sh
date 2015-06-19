@@ -49,6 +49,7 @@ brew cask install ccleaner
 brew cask install virtualbox
 brew cask install google-chrome
 brew cask install firefox
+brew cask install vivaldi
 
 brew cask install iterm2
 brew cask install adium
