@@ -4,11 +4,12 @@
 
 ExIP=$(curl -s icanhazip.com -4)
 IntIP=$(ip address | grep '192.168.*' | awk {'print $2'} | sed -e 's/\/22//g')
+DESTINATION='~/Documents/RemoteMachine_CurrentIP.txt'
 
-echo ".........................................." >> ~/Documents/RemoteMachine_CurrentIP.txt
-date >> ~/Documents/RemoteMachine_CurrentIP.txt
-echo "External IP: $ExIP" >> ~/Documents/RemoteMachine_CurrentIP.txt 
-echo "Internal IP: $IntIP" >> ~/Documents/RemoteMachine_CurrentIP.txt
+echo ".........................................." >> $DESTINATION 
+date >> $DESTINATION 
+echo "External IP: $ExIP" >> $DESTINATION 
+echo "Internal IP: $IntIP" >> $DESTINATION 
 
 rsync -e ssh -ah --compress-level=0 ~/Documents/RemoteMachine_CurrentIP.txt user@[IP address]:/path/to/directory
 
