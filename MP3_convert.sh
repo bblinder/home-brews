@@ -25,7 +25,7 @@ if [[ -e "$fname" ]] ; then
 	read response
 	
 	if [[ $response == "y" ]] ; then
-		rm *.m4a
+		rm ./*.m4a
 		echo "Deleting..."
 		sleep 1
 		exit 0
