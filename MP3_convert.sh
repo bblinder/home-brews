@@ -16,6 +16,9 @@ if [[ -e "${fname%.*}.mp3" ]] ; then
 	else
 		exit 0
 	fi
+else
+	echo "No m4a's found."
+	exit 1
 fi
 
 if [[ -e "$fname" ]] ; then
