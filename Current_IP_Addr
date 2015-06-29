@@ -11,5 +11,5 @@ date >> $DESTINATION
 echo "External IP: $ExIP" >> $DESTINATION 
 echo "Internal IP: $IntIP" >> $DESTINATION 
 
-rsync -e ssh -ah --compress-level=0 ~/Documents/RemoteMachine_CurrentIP.txt user@[IP address]:/path/to/directory
+rsync -e ssh -ah --compress-level=0 $DESTINATION user@[IP address]:/path/to/directory
 
