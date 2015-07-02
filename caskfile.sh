@@ -36,6 +36,7 @@ brew install gnu-units
 brew install lnav
 brew install ranger
 brew install watch
+brew install iftop
 
 ## Install Cask
 brew install caskroom/cask/brew-cask
