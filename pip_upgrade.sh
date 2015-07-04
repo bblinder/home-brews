@@ -1,6 +1,8 @@
 #!/bin/bash
 
-pip list | awk '{ print $1 }' | egrep -i "(pip)|(livestreamer)|(youtube-dl)|(thefuck)|(tldr)|(zenmap)|(paramiko)|(clf)|(Fabric)|(speedtest-cli)" > /tmp/pip_list.txt
+pip list | awk '{ print $1 }' | egrep -i "(pip)|(livestreamer)|(youtube-dl)|\
+    (thefuck)|(tldr)|(zenmap)|(paramiko)|(clf)|(Fabric)|\
+    (speedtest-cli)" > /tmp/pip_list.txt
 
 pip_upgrade(){
     while read package; do
