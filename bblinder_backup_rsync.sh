@@ -7,9 +7,9 @@ SYNC(){
 }
 
 SYNC
-if [[ $SYNC -eq 0 ]]
-then
-    echo "All done."
+
+if [[ $SYNC -eq 0 ]]; then
+	echo "All done."
 else
     echo "Sync failed."
 fi

@@ -11,11 +11,10 @@ COMPRESS(){
 
 COMPRESS
 
-if [[ $COMPRESS -eq 0 ]]
-then
-    mv /tmp/bblinder_backup-$(date +%F).tar.gz ~/BackUps
-    echo "All done. File size is $(du -sh ~/BackUps/bblinder_backup-$(date +%F).tar.gz | awk '{ print $1 }')"
+if [[ $COMPRESS -eq 0 ]] ; then
+	mv /tmp/bblinder_backup-$(date +%F).tar.gz ~/BackUps
+	echo "All done. File size is $(du -sh ~/BackUps/bblinder_backup-$(date +%F).tar.gz | awk '{ print $1 }')"
 else
-    echo "Compression Failed."
+	echo "Compression Failed."
 fi
 
