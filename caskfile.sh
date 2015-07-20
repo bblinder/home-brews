@@ -62,6 +62,7 @@ brew cask install atom
 
 brew cask install xquartz
 brew cask install spotify
+brew cask install beardedspice
 brew cask install livestream-producer
 brew cask install gpgtools
 brew cask install vlc
