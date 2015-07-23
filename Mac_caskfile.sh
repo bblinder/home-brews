@@ -1,7 +1,7 @@
 #!/bin/sh
 
-## Be sure to install HomeBrew first via 'brew.sh'
-## Or via ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+# Be sure to install HomeBrew first via 'brew.sh'
+# Or via ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 array=(flux ccleaner google-chrome firefox flash-player adobe-reader microsoft-office slack skype livestream-producer vlc)
 
