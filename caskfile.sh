@@ -5,77 +5,73 @@
 ## Be sure to install HomeBrew first via 'brew.sh'
 ## Or via ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
-## Install unix utilities
+# Unix utilities
+brew_array={archey axel curl exiftool csshx cowsay htop icdiff\
+	irssi lynx mplayer mtr netcat osxfuse p7zip pstree sshfs\
+	speedtest_cli pv rtmpdump tldr wget youtube-dl zsh git\
+       	gnu-units lnav ranger watch iftop}
 
-brew install archey
-brew install axel
-brew install curl
-brew install exiftool
-brew install csshx
-brew install cowsay
-brew install htop
-brew install icdiff
-brew install irssi
-brew install lynx
-brew install mplayer
-brew install mtr
-brew install netcat
-brew install osxfuse
-brew install p7zip
-brew install pstree
-brew install sshfs
-brew install speedtest_cli
-brew install pv
-brew install rtmpdump
-brew install tldr
-brew install wget
-brew install youtube-dl
-brew install zsh
-brew install git
-brew install gnu-units
-brew install lnav
-brew install ranger
-brew install watch
-brew install iftop
+# Casks
+cask_array={alfred flux ccleaner virtualbox google-chrome firefox\
+	vivaldi iterm2 adium slack skype sublime-text atom xquartz\
+	spotify beardedspice livestream-producer gpgtools vlc wireshark\
+	spectacle github gfxcardstatus superduper chrome-remote-desktop-host\
+	handbrake teamviewer carbon-copy-cloner}
 
-## Install Cask
-brew install caskroom/cask/brew-cask
+INSTALL_STUFF(){
+	# Install utilities
+	brew_install='brew install'
 
-## Install Casks
+	for item in ${brew_array[*]} ; do
+		$brew_install $item
+	done
+	
+	# Install Caskroom
+	$brew_install caskroom/cask/brew-cask
 
-brew cask install alfred
-brew cask install flux
-brew cask install ccleaner
+	cask_install='brew cask install'
 
-brew cask install virtualbox
-brew cask install google-chrome
-brew cask install firefox
-brew cask install vivaldi
+	for item in ${cask_array[*]} ; do
+		$cask_install $item
+	done
 
-brew cask install iterm2
-brew cask install adium
-brew cask install slack
-brew cask install skype
+	# Cleaning up after ourselves
+	brew cleanup ; brew cask cleanup ; brew prune
+}
 
-brew cask install sublime-text
-brew cask install atom
+UNINSTALL_STUFF(){
+	UNINSTALL='brew uninstall'
+	ZAP='brew cask zap'
 
-brew cask install xquartz
-brew cask install spotify
-brew cask install beardedspice
-brew cask install livestream-producer
-brew cask install gpgtools
-brew cask install vlc
-brew cask install wireshark
-brew cask install spectacle
-brew cask install github
-brew cask install gfxcardstatus
-brew cask install superduper
-brew cask install chrome-remote-desktop-host
-brew cask install handbrake
-brew cask install teamviewer
+	# killing brew utils
+	for item in ${brew_array[*]} ; do
+		$UNINSTALL $item
+	done
 
+	# zapping casks
+	for item in ${cask_array[*]} ; do
+		$ZAP $item
+	done
 
-## Use "cat caskfile.sh | sed -e 's/cask install/cask zap/g' -e 's/install/uninstall/g' > caskfile_removeall.sh && chmod a+x caskfile_removeall.sh"
-## to generate a removal script for all of the above.
+	brew cleanup ; brew cask cleanup ; brew prune
+
+	brew uninstall caskroom/cask/brew-cask
+}
+
+# Now onto the actual work...
+
+echo "Install (1) or Uninstall (2) ?"
+read response
+
+case $response in
+	1)
+		INSTALL_STUFF
+		;;
+	2)
+		UNINSTALL_STUFF
+		;;
+	*)
+		echo "Please enter (1) or (2)"
+		;;
+esac
 
