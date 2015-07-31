@@ -5,9 +5,12 @@
 
 array=(flux ccleaner google-chrome firefox flash-player adobe-reader microsoft-office slack skype livestream-producer vlc)
 
+UPDATE_ALL='brew update && brew upgrade brew-cask'
+
 install_crap(){
 	## Install Caskroom
 	brew install caskroom/cask/brew-cask
+	$UPDATE_ALL
 	
 	INSTALL='brew cask install'
 	
