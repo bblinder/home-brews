@@ -8,6 +8,9 @@ array=(flux ccleaner google-chrome firefox flash-player adobe-reader microsoft-o
 UPDATE_ALL='brew update && brew upgrade brew-cask'
 
 install_crap(){
+	## Install homebrew
+	ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
 	## Install Caskroom
 	brew install caskroom/cask/brew-cask
 	$UPDATE_ALL
