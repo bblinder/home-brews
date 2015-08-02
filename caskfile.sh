@@ -1,6 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 
 ## BlindySupport Cask/Brewfile
+
+if [[ $(uname -s) != "Darwin" ]] ; then
+    echo "ERROR: This script will only run on Mac OS X"
+    exit 1
+fi
 
 ## Be sure to install HomeBrew first via 'brew.sh'
 ## Or via ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
