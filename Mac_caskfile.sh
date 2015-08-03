@@ -1,7 +1,12 @@
-#!/bin/sh
+#!/bin/bash
 
 # Be sure to install HomeBrew first via 'brew.sh'
 # Or via ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+if [[ $(uname -s) != "Darwin" ]] ; then
+	echo "ERROR: This script will only run on Mac OS X"
+	exit 1
+fi
 
 array=(flux ccleaner google-chrome firefox flash-player adobe-reader microsoft-office slack skype livestream-producer vlc)
 
