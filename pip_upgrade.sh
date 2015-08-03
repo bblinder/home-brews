@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Tested only on Debian 8 "Jessie"
+
 pip list | awk '{ print $1 }' | egrep -i "(pip)|(livestreamer)|(youtube-dl)|\
     (thefuck)|(tldr)|(zenmap)|(paramiko)|(clf)|(Fabric)|\
     (speedtest-cli)" > /tmp/pip_list.txt
