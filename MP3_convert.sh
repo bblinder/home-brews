@@ -34,4 +34,3 @@ if [[ -e "$fname" ]] ; then
 	fi
 fi
 
-##written by Brandon Blinderman 2015
