@@ -44,14 +44,20 @@ uninstall_crap(){
 
 
 echo "Install (1) or Uninstall (2) ?"
-read response
+read -r response
 
 case $response in
 	1)
 		install_crap
 		;;
 	2)
-		uninstall_crap
+		echo "Are you sure? [y/n]"
+		read -r response
+		if [[ $response == "y" ]] ; then
+			uninstall_crap
+		else
+			exit 0
+		fi
 		;;
 	*)
 		echo "Please enter (1) or (2)"
