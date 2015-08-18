@@ -73,7 +73,13 @@ case $response in
 		INSTALL_STUFF
 		;;
 	2)
-		UNINSTALL_STUFF
+		echo "Are you sure? [y/n]"
+		read response
+		if [[ $response == "y" ]] ; then
+			UNINSTALL_STUFF
+		else
+			exit
+		fi
 		;;
 	*)
 		echo "Please enter (1) or (2)"
