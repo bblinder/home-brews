@@ -41,7 +41,7 @@ if [[ -e "${fname%.*}.mp3" ]] ; then
 		exit 0
 	fi
 else
-	mp3_convert || webm_convert
+	m4a_convert || webm_convert
 fi
 
 if [[ -e "$fname" ]] ; then
