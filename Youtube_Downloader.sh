@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# This script assumes you have a working version of youtube-dl and ffmpeg. If not, install youtube-dl at
+# https://rg3.github.io/youtube-dl/download.html
+# If on Mac OS X, you can install via homebrew with `brew install youtube-dl'
+
 ffmpeg_check(){
 	if [[ ! ( -f /usr/bin/ffmpeg || -f /usr/local/bin/ffmpeg ) ]] ; then
 		echo "FFmpeg not installed!"
