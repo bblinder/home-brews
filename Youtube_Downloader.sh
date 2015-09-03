@@ -16,8 +16,14 @@ youtube(){
 	youtube-dl -x "$1"
 }	
  
-mp3_convert(){
-	for fname in *.m4a ; do # Youtube-dl downloads audio files as m4a's
+m4a_convert(){
+	for fname in *.m4a ; do # Youtube-dl usually downloads audio files as m4a's
+		ffmpeg -i "$fname" -c:a libmp3lame -b:a 320k "${fname%.*}.mp3"
+	done
+}
+
+webm_convert(){
+	for fname in *.webm ; do
 		ffmpeg -i "$fname" -c:a libmp3lame -b:a 320k "${fname%.*}.mp3"
 	done
 }
@@ -30,12 +36,12 @@ if [[ -e "${fname%.*}.mp3" ]] ; then
 
 	read -r response
 	if [[ $response == "y" ]] ; then
-		mp3_convert
+		m4a_convert || webm_convert
 	else
 		exit 0
 	fi
 else
-	mp3_convert
+	mp3_convert || webm_convert
 fi
 
 if [[ -e "$fname" ]] ; then
@@ -43,7 +49,7 @@ if [[ -e "$fname" ]] ; then
 	
 	read -r response
 	if [[ $response == "y" ]] ; then
-		rm ./*.m4a
+		rm ./*.m4a || rm ./*.webm
 		echo "Deleting..."
 		sleep 1
 		exit 0
