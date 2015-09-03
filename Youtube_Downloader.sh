@@ -13,7 +13,7 @@ youtube(){
 }	
  
 mp3_convert(){
-	for fname in *.m4a ; do
+	for fname in *.m4a ; do # Youtube-dl downloads audio files as m4a's
 		ffmpeg -i "$fname" -c:a libmp3lame -b:a 320k "${fname%.*}.mp3"
 	done
 }
