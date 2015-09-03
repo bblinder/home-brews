@@ -1,8 +1,7 @@
 #!/bin/bash
 
-# Files downloaded via Youtube-dl are usually saved as m4a's.
 mp3_convert(){
-	for fname in *.m4a ; do
+	for fname in *.m4a ; do # files downloaded via Youtube-dl are usually saved as m4a's.
 		ffmpeg -i "$fname" -c:a libmp3lame -b:a 320k "${fname%.*}.mp3"
 	done
 }
