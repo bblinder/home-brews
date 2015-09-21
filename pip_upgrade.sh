@@ -7,7 +7,7 @@ pip list | awk '{ print $1 }' | egrep -i "(pip)|(livestreamer)|(youtube-dl)|\
     (speedtest-cli)" > /tmp/pip_list.txt
 
 pip_upgrade(){
-    while read package; do
+    while read -r package; do
         sudo pip install "$package" --upgrade
     done < /tmp/pip_list.txt &> /dev/null ; return 0 || return 1
 }
