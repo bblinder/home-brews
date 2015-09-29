@@ -11,17 +11,17 @@ fi
 # Or via ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 # Unix utilities
-brew_array={archey axel curl exiftool csshx cowsay htop icdiff\
+brew_array=(archey axel curl exiftool csshx cowsay htop icdiff\
 	irssi lynx mplayer mtr netcat osxfuse p7zip pstree sshfs\
 	speedtest_cli pv rtmpdump tldr wget youtube-dl zsh git\
-	gnu-units lnav ranger watch iftop}
+	gnu-units lnav ranger watch iftop)
 
 # Casks
-cask_array={alfred flux ccleaner virtualbox google-chrome firefox\
+cask_array=(alfred flux ccleaner virtualbox google-chrome firefox\
 	vivaldi iterm2 adium slack skype sublime-text atom xquartz\
 	spotify beardedspice livestream-producer gpgtools vlc wireshark\
 	spectacle github gfxcardstatus superduper chrome-remote-desktop-host\
-	handbrake teamviewer carbon-copy-cloner}
+	handbrake teamviewer carbon-copy-cloner)
 
 INSTALL_STUFF(){
 	# Install utilities
