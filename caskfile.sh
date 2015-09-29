@@ -28,7 +28,7 @@ INSTALL_STUFF(){
 	brew_install='brew install'
 
 	for item in ${brew_array[*]} ; do
-		$brew_install $item
+		$brew_install "$item"
 	done
 	
 	# Install Caskroom
@@ -37,7 +37,7 @@ INSTALL_STUFF(){
 	cask_install='brew cask install'
 
 	for item in ${cask_array[*]} ; do
-		$cask_install $item
+		$cask_install "$item"
 	done
 
 	# Cleaning up after ourselves
@@ -50,12 +50,12 @@ UNINSTALL_STUFF(){
 
 	# killing brew utils
 	for item in ${brew_array[*]} ; do
-		$UNINSTALL $item
+		$UNINSTALL "$item"
 	done
 
 	# zapping casks
 	for item in ${cask_array[*]} ; do
-		$ZAP $item
+		$ZAP "$item"
 	done
 
 	brew cleanup ; brew cask cleanup ; brew prune
@@ -66,7 +66,7 @@ UNINSTALL_STUFF(){
 # Now onto the actual work...
 
 echo "Install (1) or Uninstall (2) ?"
-read response
+read -r response
 
 case $response in
 	1)
@@ -74,7 +74,7 @@ case $response in
 		;;
 	2)
 		echo "Are you sure? [y/n]"
-		read response
+		read -r response
 		if [[ $response == "y" ]] ; then
 			UNINSTALL_STUFF
 		else
