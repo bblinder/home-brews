@@ -7,14 +7,14 @@ if [[ $(uname -s) != "Darwin" ]] ; then
     exit 1
 fi
 
-## Be sure to install HomeBrew first via 'brew.sh'
-## Or via ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+# Be sure to install HomeBrew first via 'brew.sh'
+# Or via ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 # Unix utilities
 brew_array={archey axel curl exiftool csshx cowsay htop icdiff\
 	irssi lynx mplayer mtr netcat osxfuse p7zip pstree sshfs\
 	speedtest_cli pv rtmpdump tldr wget youtube-dl zsh git\
-       	gnu-units lnav ranger watch iftop}
+	gnu-units lnav ranger watch iftop}
 
 # Casks
 cask_array={alfred flux ccleaner virtualbox google-chrome firefox\
