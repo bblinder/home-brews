@@ -23,7 +23,7 @@ install_crap(){
 	INSTALL='brew cask install'
 	
 	for item in ${array[*]}; do
-		$INSTALL $item
+		$INSTALL "$item"
 	done
 
 	# Cleaning up after ourselves
@@ -34,7 +34,7 @@ uninstall_crap(){
 	UNINSTALL='brew cask zap'
 
 	for item in ${array[*]}; do
-		$UNINSTALL $item
+		$UNINSTALL "$item"
 	done
 
 	brew cleanup ; brew cask cleanup ; brew prune
