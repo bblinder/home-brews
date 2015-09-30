@@ -61,6 +61,9 @@ UNINSTALL_STUFF(){
 	brew cleanup ; brew cask cleanup ; brew prune
 
 	brew uninstall caskroom/cask/brew-cask
+	
+	#Can later uninstall homebrew entirely with this:
+	#ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 }
 
 # Now onto the actual work...
