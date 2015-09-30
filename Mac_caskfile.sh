@@ -47,7 +47,8 @@ purge_homebrew(){
 	read -r response
 
 	if [[ $response == "y" ]] ; then
-		ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"
+		## a rare instance where homebrew requires sudo privileges. 
+		sudo ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"
 	else
 		exit 0
 	fi
