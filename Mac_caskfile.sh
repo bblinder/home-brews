@@ -42,6 +42,16 @@ uninstall_crap(){
 	brew uninstall caskroom/cask/brew-cask
 }
 
+purge_homebrew(){
+	echo "Do you want to remove HomeBrew as well? [y/n]"
+	read -r response
+
+	if [[ $response == "y" ]] ; then
+		ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"
+	else
+		exit 0
+	fi
+}
 
 echo "Install (1) or Uninstall (2) ?"
 read -r response
@@ -55,6 +65,7 @@ case $response in
 		read -r response
 		if [[ $response == "y" ]] ; then
 			uninstall_crap
+			purge_homebrew
 		else
 			exit 0
 		fi
