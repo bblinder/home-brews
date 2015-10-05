@@ -62,8 +62,6 @@ UNINSTALL_STUFF(){
 
 	brew uninstall caskroom/cask/brew-cask
 	
-	#Can later uninstall homebrew entirely with this:
-	#ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"
 }
 
 PURGE_HOMEBREW(){
