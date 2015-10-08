@@ -27,7 +27,13 @@ webm_convert(){
 		ffmpeg -i "$fname" -c:a libmp3lame -b:a 320k "${fname%.*}.mp3"
 	done
 }
- 
+
+opus_convert(){
+	for fname in *.opus ; do
+		ffmpeg -i "$fname" -c:a libmp3lame -b:a 320k "${fname%.*}.mp3"
+	done
+}
+
 ffmpeg_check && youtube "$@"
 
 if [[ -e "${fname%.*}.mp3" ]] ; then
@@ -36,12 +42,12 @@ if [[ -e "${fname%.*}.mp3" ]] ; then
 
 	read -r response
 	if [[ $response == "y" ]] ; then
-		m4a_convert || webm_convert
+		m4a_convert || webm_convert || opus_convert
 	else
 		exit 0
 	fi
 else
-	m4a_convert || webm_convert
+	m4a_convert || webm_convert || opus_convert
 fi
 
 if [[ -e "$fname" ]] ; then
@@ -49,7 +55,7 @@ if [[ -e "$fname" ]] ; then
 	
 	read -r response
 	if [[ $response == "y" ]] ; then
-		rm ./*.m4a || rm ./*.webm
+		rm ./*.m4a || rm ./*.webm || rm ./*.opus
 		echo "Deleting..."
 		sleep 1
 		exit 0
