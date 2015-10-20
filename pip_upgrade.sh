@@ -4,7 +4,7 @@
 
 pip list | awk '{ print $1 }' | egrep -i "(pip)|(livestreamer)|(youtube-dl)|\
     (thefuck)|(tldr)|(zenmap)|(paramiko)|(clf)|(Fabric)|\
-    (speedtest-cli)|(setuptools)|(ohmu)" > /tmp/pip_list.txt
+    (speedtest-cli)|(setuptools)|(ohmu)|(TermFeed)" > /tmp/pip_list.txt
 
 pip_upgrade(){
     while read -r package; do
