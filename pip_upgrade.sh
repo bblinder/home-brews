@@ -15,11 +15,10 @@ choice_packages(){
 pip_upgrade(){
     while read -r package; do
         sudo pip install "$package" --upgrade
-    done < /tmp/pip_list.txt &> /dev/null ; return 0 || return 1
+    done < /tmp/pip_list.txt ; return 0 || return 1
 }
 
-
-read -rp "General update (1) or just the favorites? (2)" CHOICE
+read -rp "General update (1) or just the favorites? (2)  " CHOICE
 
 case "$CHOICE" in
 	1)
