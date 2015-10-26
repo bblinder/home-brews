@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Needs lynx and html2text to work
+# Not my work, just keeping it here as a handy reference. Needs lynx and html2text to work.
 
 BROWSER="/usr/local/bin/lynx -source"
 WEBSITE="http://thesaurus.reference.com/search?q=$1"
