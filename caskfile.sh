@@ -65,8 +65,7 @@ UNINSTALL_STUFF(){
 }
 
 PURGE_HOMEBREW(){
-	echo "Do you want to remove HomeBrew as well? [y/n]"
-	read -r response
+	read -rp "Do you want to remove HomeBrew as well? [y/n]   " response
 	if [[ $response == "y" ]] ; then
 		## a rare instance where homebrew requires sudo privileges.
 		sudo ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"
@@ -77,9 +76,7 @@ PURGE_HOMEBREW(){
 
 # Now onto the actual work...
 
-echo "Install (1) or Uninstall (2) ?"
-read -r response
-
+read -rp "Install (1) or Uninstall (2) ?   " response
 case $response in
 	1)
 		INSTALL_STUFF
