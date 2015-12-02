@@ -14,7 +14,7 @@ fi
 brew_array=(archey axel curl exiftool csshx cowsay htop icdiff\
 	irssi lynx mplayer mtr osxfuse p7zip pstree sshfs\
 	speedtest_cli pv rtmpdump tldr wget youtube-dl zsh git\
-	gnu-units lnav ranger watch iftop ffmpeg)
+	gnu-units lnav ranger watch iftop ffmpeg ssh-copy-id)
 
 # Casks
 cask_array=(alfred flux ccleaner virtualbox google-chrome firefox\
