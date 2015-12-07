@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Tested only on Debian 8 "Jessie"
+# Tested only on Debian 8 "Jessie" and Mac OS X 10.10
 
 general_packages(){
 	pip list | awk '{ print $1 }' > /tmp/pip_list.txt
