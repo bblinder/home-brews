@@ -1,6 +1,6 @@
 #!/bin/bash
 
-## BlindySupport Cask/Brewfile
+## Blindy Cask/Brewfile
 
 if [[ $(uname -s) != "Darwin" ]] ; then
     echo "ERROR: This script will only run on Mac OS X"
