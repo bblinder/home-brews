@@ -16,7 +16,7 @@ brew_array=(archey axel curl exiftool csshx cowsay htop icdiff\
 	speedtest_cli pv rtmpdump tldr wget youtube-dl zsh git\
 	gnu-units lnav ranger watch iftop ffmpeg ssh-copy-id spoof-mac)
 
-# Casks
+# Casks/GUI stuff
 cask_array=(alfred flux ccleaner virtualbox google-chrome firefox\
 	vivaldi iterm2 adium slack skype sublime-text atom xquartz\
 	spotify beardedspice the-unarchiver gpgtools vlc wireshark\
@@ -24,6 +24,9 @@ cask_array=(alfred flux ccleaner virtualbox google-chrome firefox\
 	handbrake teamviewer carbon-copy-cloner clipmenu)
 
 INSTALL_STUFF(){
+	# Install HomeBrew
+	ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
 	# Install utilities
 	brew_install='brew install'
 

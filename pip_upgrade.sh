@@ -2,20 +2,22 @@
 
 # Tested only on Debian 8 "Jessie" and Mac OS X 10.10
 
+LIST='/tmp/pip_list.txt' # Where we're temporarily keeping our stuff.
+
 general_packages(){
-	pip list | awk '{ print $1 }' > /tmp/pip_list.txt
+	pip list | awk '{ print $1 }' > $LIST
 }
 
 choice_packages(){
 	pip list | awk '{ print $1 }' | egrep -i "(pip)|(livestreamer)|(youtube-dl)|\
     (thefuck)|(tldr)|(zenmap)|(paramiko)|(clf)|(Fabric)|\
-    (speedtest-cli)|(setuptools)|(ohmu)|(httpie)|(stormssh)" > /tmp/pip_list.txt
+    (speedtest-cli)|(setuptools)|(ohmu)|(httpie)|(stormssh)" > $LIST 
 }
 
 pip_upgrade(){
     while read -r package; do
         sudo -H pip install "$package" --upgrade
-    done < /tmp/pip_list.txt ; return 0 || return 1
+    done < $LIST ; return 0 || return 1
 }
 
 read -rp "General update (1) or just the favorites? (2)  " CHOICE
@@ -36,7 +38,7 @@ esac
 
 if [[ pip_upgrade -eq 0 ]] ; then
     echo "Done."
-    rm /tmp/pip_list.txt
+    rm $LIST
 else
     echo "There was an error. Please try again."
 fi
