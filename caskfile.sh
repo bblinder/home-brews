@@ -22,7 +22,7 @@ cask_array=(alfred flux ccleaner virtualbox google-chrome firefox\
 	vivaldi iterm2 adium slack skype sublime-text atom xquartz\
 	spotify beardedspice the-unarchiver gpgtools vlc wireshark\
 	spectacle github gfxcardstatus superduper chrome-remote-desktop-host\
-	handbrake teamviewer carbon-copy-cloner clipmenu)
+	handbrake teamviewer carbon-copy-cloner clipmenu etrecheck)
 
 INSTALL_STUFF(){
 	# Install HomeBrew
