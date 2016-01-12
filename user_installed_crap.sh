@@ -33,52 +33,60 @@ ruby_upgrade(){
 	sudo gem update ; sudo gem update --system
 }
 
-while true ; do
-	read -rp "Update Homebrew? [y/n] -->  " BREW_CHOICE
-	case "$BREW_CHOICE" in
-		[y/Y])
-		homebrew_upgrade ;;
-		[n/N]) ;;
-		*)
-		echo "Please enter (y) or (n)" ;;
-	esac
+read -rp "Update Homebrew? [y/n] -->  " BREW_CHOICE
 
-	read -rp "Update Python packages? [y/n]? -->  " PYTHON_CHOICE
-	case "$PYTHON_CHOICE" in
-		[y/Y])
+case "$BREW_CHOICE" in
+	[y/Y]) 
+		homebrew_upgrade 
+		;;
+	[n/N])
+		;;
+	*)
+		echo "Please enter (y) or (n)" 
+		;;
+esac
+
+read -rp "Update Python packages? [y/n]? -->  " PYTHON_CHOICE
+
+case "$PYTHON_CHOICE" in
+	[y/Y])
 		read -rp "General update (1) or just the favorites (2) ? -->  " PYTHON_TYPE_CHOICE
 		case "$PYTHON_TYPE_CHOICE" in
 			1)
-			general_packages
-			pip_upgrade ;;
+				general_packages
+				pip_upgrade
+				;;
 			2)
-			choice_packages
-			pip_upgrade ;;
+				choice_packages
+				pip_upgrade
+				;;
+			
 			*)
-			echo "Please enter (1) or (2)"
-			exit 1 ;;
+				echo "Please enter (1) or (2)"
+				exit 1
+				;;
 		esac
 		;;
-		[n/N])
+	[n/N])
 		;;
-		*)
+	*)
 		echo "Please enter (y) or (n)"
 		;;
-	esac
+esac
 
-	if [[ pip_upgrade -eq 0 ]] ; then
-		if [[ -z "$LIST" ]] ; then
-			rm "$LIST"
-		fi
-	else
-		echo "There was an error. Please try again."
+if [[ pip_upgrade -eq 0 ]] ; then
+	if [[ -z "$LIST" ]] ; then
+		rm "$LIST"
 	fi
+else
+	echo "There was an error. Please try again."
+fi
 
-	read -rp "Move on to ruby update? [y/n] -->  "  RUBY_CHOICE
-	if [[ $RUBY_CHOICE == "y" ]] ; then
-		ruby_upgrade
-	else
-		echo "Aborting..."
-		exit 0
-	fi
-done
+read -rp "Move on to ruby update? [y/n] -->  "  RUBY_CHOICE
+if [[ $RUBY_CHOICE == "y" ]] ; then
+	ruby_upgrade
+else
+	echo "Aborting..."
+	exit 0
+fi
+
