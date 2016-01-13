@@ -6,14 +6,18 @@
 
 # Tested only on Debian 8 "Jessie" and Mac OS X 10.10
 
-LIST='/tmp/pip_list.txt' # Where we're temporarily keeping our stuff.
+LIST="/tmp/pip_list.txt" # Where we're temporarily keeping our stuff.
+
+MAKE_LIST(){
+	pip list | awk '{ print $1 }'
+}
 
 general_packages(){
-	pip list | awk '{ print $1 }' > "$LIST"
+	MAKE_LIST > "$LIST"
 }
 
 choice_packages(){
-	pip list | awk '{ print $1 }' | egrep -i "(pip)|(livestreamer)|(youtube-dl)|\
+	MAKE_LIST | egrep -i "(pip)|(livestreamer)|(youtube-dl)|\
     (thefuck)|(tldr)|(zenmap)|(paramiko)|(clf)|(Fabric)|\
     (speedtest-cli)|(setuptools)|(ohmu)|(httpie)|(stormssh)" > "$LIST"
 }
@@ -36,13 +40,13 @@ ruby_upgrade(){
 read -rp "Update Homebrew? [y/n] -->  " BREW_CHOICE
 
 case "$BREW_CHOICE" in
-	[y/Y]) 
-		homebrew_upgrade 
+	[y/Y])
+		homebrew_upgrade
 		;;
 	[n/N])
 		;;
 	*)
-		echo "Please enter (y) or (n)" 
+		echo "Please enter (y) or (n)"
 		;;
 esac
 
@@ -60,7 +64,7 @@ case "$PYTHON_CHOICE" in
 				choice_packages
 				pip_upgrade
 				;;
-			
+
 			*)
 				echo "Please enter (1) or (2)"
 				exit 1
@@ -89,4 +93,3 @@ else
 	echo "Aborting..."
 	exit 0
 fi
-
