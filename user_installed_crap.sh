@@ -12,6 +12,12 @@ MAKE_LIST(){
 	pip list | awk '{ print $1 }'
 }
 
+REMOVE_LIST(){
+	if [[ -e "$LIST" ]] ; then
+		rm "$LIST"
+	fi
+}
+
 general_packages(){
 	MAKE_LIST > "$LIST"
 }
@@ -59,10 +65,12 @@ case "$PYTHON_CHOICE" in
 			1)
 				general_packages
 				pip_upgrade
+				REMOVE_LIST
 				;;
 			2)
 				choice_packages
 				pip_upgrade
+				REMOVE_LIST
 				;;
 
 			*)
@@ -77,14 +85,6 @@ case "$PYTHON_CHOICE" in
 		echo "Please enter (y) or (n)"
 		;;
 esac
-
-if [[ pip_upgrade -eq 0 ]] ; then
-	if [[ -z "$LIST" ]] ; then
-		rm "$LIST"
-	fi
-else
-	echo "There was an error. Please try again."
-fi
 
 read -rp "Move on to ruby update? [y/n] -->  "  RUBY_CHOICE
 if [[ $RUBY_CHOICE == "y" ]] ; then
