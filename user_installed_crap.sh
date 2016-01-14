@@ -13,8 +13,12 @@ MAKE_LIST(){
 }
 
 REMOVE_LIST(){
-	if [[ -e "$LIST" ]] ; then
-		rm "$LIST"
+	if [[ pip_upgrade -eq 0 ]] ; then
+		if [[ -e "$LIST" ]] ; then
+			rm "$LIST"
+		fi
+	else
+		echo "There was an error. Please try again."
 	fi
 }
 
