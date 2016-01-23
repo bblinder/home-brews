@@ -49,18 +49,18 @@ ruby_upgrade(){
 
 # Ruling out non Mac OS X systems...
 if [[ "$(uname -s)" == "Darwin" ]] ; then
-    read -rp "Update Homebrew? [y/n] -->  " BREW_CHOICE
-    
-    case "$BREW_CHOICE" in
-        [y/Y])
-            homebrew_upgrade
-            ;;
-        [n/N])
-            ;;
-        *)
-            echo "Please enter (y) or (n)"
-            ;;
-    esac
+	read -rp "Update Homebrew? [y/n] -->  " BREW_CHOICE
+	
+	case "$BREW_CHOICE" in
+		[y/Y])
+			homebrew_upgrade
+			;;
+		[n/N])
+			;;
+		*)
+			echo "Please enter (y) or (n)"
+			;;
+	esac
 fi
 
 read -rp "Update Python packages? [y/n]? -->  " PYTHON_CHOICE
