@@ -13,7 +13,7 @@ MAKE_LIST(){
 }
 
 REMOVE_LIST(){
-	if [[ pip_upgrade -eq 0 ]] ; then
+	if pip_upgrade ; then
 		if [[ -e "$LIST" ]] ; then
 			rm "$LIST"
 		fi
@@ -27,9 +27,9 @@ general_packages(){
 }
 
 choice_packages(){
-	MAKE_LIST | egrep -i "(pip)|(livestreamer)|(youtube-dl)|\
-    (thefuck)|(tldr)|(zenmap)|(paramiko)|(clf)|(Fabric)|\
-    (speedtest-cli)|(setuptools)|(ohmu)|(httpie)|(stormssh)" > "$LIST"
+	MAKE_LIST | egrep -i "pip|livestreamer|youtube-dl|\
+	thefuck|tldr|zenmap|paramiko|clf|Fabric|\
+	speedtest-cli|setuptools|ohmu|httpie|stormssh" > "$LIST"
 }
 
 homebrew_upgrade(){
@@ -39,8 +39,8 @@ homebrew_upgrade(){
 
 pip_upgrade(){
     while read -r package; do
-        sudo -H pip install "$package" --upgrade
-    done < "$LIST" ; return 0 || return 1
+        sudo -H pip install "$package" --upgrade || return 1
+    done < "$LIST" ; return 0
 }
 
 ruby_upgrade(){
@@ -50,12 +50,12 @@ ruby_upgrade(){
 # Ruling out non Mac OS X systems...
 if [[ "$(uname -s)" == "Darwin" ]] ; then
 	read -rp "Update Homebrew? [y/n] -->  " BREW_CHOICE
-	
+
 	case "$BREW_CHOICE" in
-		[y/Y])
+		[yY])
 			homebrew_upgrade
 			;;
-		[n/N])
+		[nN])
 			;;
 		*)
 			echo "Please enter (y) or (n)"
@@ -66,7 +66,7 @@ fi
 read -rp "Update Python packages? [y/n]? -->  " PYTHON_CHOICE
 
 case "$PYTHON_CHOICE" in
-	[y/Y])
+	[yY])
 		read -rp "General update (1) or just the favorites (2) ? -->  " PYTHON_TYPE_CHOICE
 		case "$PYTHON_TYPE_CHOICE" in
 			1)
@@ -86,7 +86,7 @@ case "$PYTHON_CHOICE" in
 				;;
 		esac
 		;;
-	[n/N])
+	[nN])
 		;;
 	*)
 		echo "Please enter (y) or (n)"
