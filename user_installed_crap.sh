@@ -19,6 +19,7 @@ REMOVE_LIST(){
 		fi
 	else
 		echo "There was an error. Please try again."
+		rm "$LIST"
 	fi
 }
 
