@@ -18,7 +18,10 @@ REMOVE_LIST(){
 			rm "$LIST"
 		fi
 	else
-		echo "There was an error. Please try again."
+		echo "There was an error. Please try again." && \
+			if [[ -e /usr/local/bin/noti ]] ; then
+				noti -t PIP_Update -m "There was an error upgrading python packages..."
+			fi
 		rm "$LIST"
 	fi
 }
