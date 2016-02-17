@@ -12,10 +12,10 @@ fi
 
 # Unix utilities
 brew_array=(archey ack axel curl exiftool csshx cowsay htop icdiff\
-	irssi lynx mplayer mtr osxfuse p7zip pstree sshfs\
+	irssi httpie lynx mplayer mtr osxfuse p7zip pstree sshfs\
 	speedtest_cli pv rtmpdump tldr wget youtube-dl zsh git\
 	gnu-units lnav ranger watch iftop ffmpeg ssh-copy-id spoof-mac\
-	newsbeuter)
+	newsbeuter parallel)
 
 # Casks/GUI stuff
 cask_array=(alfred flux ccleaner virtualbox google-chrome firefox\
