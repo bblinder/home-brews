@@ -53,7 +53,7 @@ if [[ -e "${fname%.*}.mp3" ]] ; then
 		exit 0
 	fi
 else
-	m4a_convert || webm_convert || opus_convert
+	m4a_convert || webm_convert || opus_convert || ogg_convert
 fi
 
 if [[ -e "$fname" ]] ; then
@@ -61,7 +61,7 @@ if [[ -e "$fname" ]] ; then
 	
 	read -r response
 	if [[ $response == "y" ]] ; then
-		rm ./*.m4a || rm ./*.webm || rm ./*.opus
+		rm ./*.m4a || rm ./*.webm || rm ./*.opus || rm ./*.ogg
 		echo "Deleting..."
 		sleep 1
 		exit 0
