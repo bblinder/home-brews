@@ -34,6 +34,12 @@ opus_convert(){
 	done
 }
 
+ogg_convert(){
+	for fname in *.ogg ; do
+		ffmpeg -i "$fname" -c:a libmp3lame -b:a 320k "${fname%.*}.mp3"
+	done
+
+
 ffmpeg_check && youtube "$@"
 
 if [[ -e "${fname%.*}.mp3" ]] ; then
