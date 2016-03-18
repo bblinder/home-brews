@@ -38,7 +38,7 @@ ogg_convert(){
 	for fname in *.ogg ; do
 		ffmpeg -i "$fname" -c:a libmp3lame -b:a 320k "${fname%.*}.mp3"
 	done
-
+}
 
 ffmpeg_check && youtube "$@"
 
@@ -48,7 +48,7 @@ if [[ -e "${fname%.*}.mp3" ]] ; then
 
 	read -r response
 	if [[ $response == "y" ]] ; then
-		m4a_convert || webm_convert || opus_convert
+		m4a_convert || webm_convert || opus_convert || ogg_convert
 	else
 		exit 0
 	fi
