@@ -6,6 +6,10 @@
 
 # Tested only on Debian 8 "Jessie" and Mac OS X 10.10
 
+set -euo pipefail
+IFS=$'\n\t'
+
+
 LIST="/tmp/pip_list.txt" # Where we're temporarily keeping our stuff.
 
 MAKE_LIST(){
