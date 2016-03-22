@@ -3,8 +3,9 @@
 ## Blindy Cask/Brewfile
 
 if [[ $(uname -s) != "Darwin" ]] ; then
-    echo "ERROR: This script will only run on Mac OS X"
-    exit 1
+	# Ruling out non-Mac OS X systems
+	echo "ERROR: This script will only run on Mac OS X"
+	exit 1
 fi
 
 # Be sure to install HomeBrew first via 'brew.sh'
@@ -22,7 +23,8 @@ cask_array=(alfred flux ccleaner virtualbox google-chrome firefox\
 	vivaldi iterm2 adium slack skype sublime-text atom xquartz\
 	spotify beardedspice the-unarchiver gpgtools vlc wireshark\
 	spectacle github-desktop gfxcardstatus superduper chrome-remote-desktop-host\
-	handbrake teamviewer carbon-copy-cloner clipmenu etrecheck malwarebytes-anti-malware)
+	handbrake teamviewer carbon-copy-cloner clipmenu etrecheck\
+       	malwarebytes-anti-malware jadengeller-helium)
 
 INSTALL_STUFF(){
 	# Install HomeBrew
