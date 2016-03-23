@@ -22,7 +22,7 @@ choice_packages(){
 pip_upgrade(){
     while read -r package; do
         sudo -H pip install "$package" --upgrade
-    done < "$LIST" ; return 0 || return 1
+    done < "$LIST" || return 1
 }
 
 read -rp "General update (1) or just the favorites? (2)  " CHOICE
@@ -41,7 +41,7 @@ case "$CHOICE" in
 		;;
 esac
 
-if [[ pip_upgrade -eq 0 ]] ; then
+if [[ pip_upgrade ]] ; then
     echo "Done."
     rm "$LIST"
 else
