@@ -1,21 +1,25 @@
 #!/bin/bash
 
-cd /tmp/
+set -euo pipefail # unofficial bash 'strict mode'
+IFS=$'\n\t'
 
-echo "Compressing..."
+BACKUP_FILE="bblinder_backup-$(date +%F).tar.gz"
+BACKUP_DIR="$HOME/BackUps"
+
+cd /tmp/ && echo "Compressing..."
 
 COMPRESS(){
-    tar -cpzf bblinder_backup-$(date +%F).tar.gz ~/Documents ~/Downloads ~/.gnupg\
+    tar -cpzf "$BACKUP_FILE" ~/Documents ~/Downloads ~/.gnupg\
 	    ~/.irssi ~/Music/MP3_convert.sh ~/Pictures ~/.ssh ~/.bashrc\
-	    ~/.zshrc ~/Videos /etc/vim/vimrc ~/.config/terminator/config ; return 0 || return 1
+	    ~/.zshrc ~/Videos /etc/vim/vimrc ~/.config/terminator/config || return 1
 }
 
-COMPRESS
+COMPRESS # just adding a comment, since this looks lonely sitting here by itself.
 
-if [[ $COMPRESS -eq 0 ]] ; then
-	mv /tmp/bblinder_backup-$(date +%F).tar.gz ~/BackUps
-	echo "All done. File size is $(du -sh ~/BackUps/bblinder_backup-$(date +%F).tar.gz\
-	       	| awk '{ print $1 }')"
+if [[ COMPRESS ]] ; then
+	mv /tmp/"$BACKUP_FILE" "$BACKUP_DIR"
+	echo "All done. File size is $(du -sh "$BACKUP_DIR"/"$BACKUP_FILE" \
+		| awk '{ print $1 }')"
 else
 	echo "Compression Failed."
 fi
