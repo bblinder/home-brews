@@ -3,7 +3,6 @@
 # Simple script to upload mp3's to my Google Music account. Uses the unofficial gmusic API.
 
 from sys import argv
-
 try:
 	from gmusicapi import Musicmanager
 except ImportError:
