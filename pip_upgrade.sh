@@ -14,10 +14,10 @@ general_packages(){
 }
 
 choice_packages(){
-	pip list | awk '{ print $1 }' | egrep -i "(pip)|(livestreamer)|(youtube-dl)|\
-    (thefuck)|(tldr)|(zenmap)|(paramiko)|(clf)|(Fabric)|\
-    (speedtest-cli)|(setuptools)|(ohmu)|(haxor-news)|(httpie)|(stormssh)|(waybackpack)|\
-    (http-prompt)" > "$LIST" 
+	pip list | awk '{ print $1 }' | egrep -i "pip|livestreamer|youtube-dl|\
+    thefuck|tldr|zenmap|paramiko|clf|Fabric|\
+    speedtest-cli|setuptools|ohmu|haxor-news|httpie|stormssh|waybackpack|\
+    http-prompt" > "$LIST" 
 }
 
 pip_upgrade(){
