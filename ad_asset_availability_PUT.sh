@@ -13,11 +13,19 @@ prod_environment='[production]'
 BUILD_URL_STAGING(){
 
 	LEGACY(){
-		curl -H "Accept: application/xml" -H "Content-Type: application/xml" -H "X-[Token_type]: $api_token" -X PUT "$staging_environment/services/ad_asset_store/$network_id" -d "<asset><tag>$asset_store_legacy</tag><url>$URI</url><available_percentage>100</available_percentage></asset>"
+		curl -H "Accept: application/xml" \
+			-H "Content-Type: application/xml" \
+			-H "X-[Token_type]: $api_token" \
+			-X PUT "$staging_environment/services/ad_asset_store/$network_id" \
+			-d "<asset><tag>$asset_store_legacy</tag><url>$URI</url><available_percentage>100</available_percentage></asset>"
 	}
 
 	WATERMARK(){
-		curl -H "Accept: application/xml" -H "Content-Type: application/xml" -H "X-[Token-type]: $api_token" -X PUT "$staging_environment/services/ad_asset_store/$network_id" -d "<asset><tag>$asset_store_watermark</tag><url>$URI</url><available_percentage>100</available_percentage></asset>"
+		curl -H "Accept: application/xml" \
+			-H "Content-Type: application/xml" \
+			-H "X-[Token-type]: $api_token" \
+			-X PUT "$staging_environment/services/ad_asset_store/$network_id" \
+			-d "<asset><tag>$asset_store_watermark</tag><url>$URI</url><available_percentage>100</available_percentage></asset>"
 	}
 
 	if [[ "$URI" == vod* ]] ; then
@@ -50,11 +58,19 @@ BUILD_URL_STAGING(){
 BUILD_URL_PROD(){
 
 	LEGACY(){
-		curl -H "Accept: application/xml" -H "Content-Type: application/xml" -H "X-[Token-type]: $api_token" -X PUT "$prod_environment/services/ad_asset_store/$network_id" -d "<asset><tag>$asset_store_legacy</tag><url>$URI</url><available_percentage>100</available_percentage></asset>"
+		curl -H "Accept: application/xml" \
+			-H "Content-Type: application/xml" \
+			-H "X-[Token-type]: $api_token" \
+			-X PUT "$prod_environment/services/ad_asset_store/$network_id" \
+			-d "<asset><tag>$asset_store_legacy</tag><url>$URI</url><available_percentage>100</available_percentage></asset>"
 	}
 
 	WATERMARK(){
-		curl -H "Accept: application/xml" -H "Content-Type: application/xml" -H "X-[Token-type]: $api_token" -X PUT "$prod_environment/services/ad_asset_store/$network_id" -d "<asset><tag>$asset_store_watermark</tag><url>$URI</url><available_percentage>100</available_percentage></asset>"
+		curl -H "Accept: application/xml" \
+			-H "Content-Type: application/xml" \
+			-H "X-[Token-type]: $api_token" \
+			-X PUT "$prod_environment/services/ad_asset_store/$network_id" \
+			-d "<asset><tag>$asset_store_watermark</tag><url>$URI</url><available_percentage>100</available_percentage></asset>"
 	}
 
 	if [[ "$URI" == vod* ]] ; then
