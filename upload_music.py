@@ -15,7 +15,7 @@ mm = Musicmanager()
 mm.login()
 
 track = argv
-#print track
+print track
 
 def upload_music(track):
 	mm.upload(track, enable_matching=True)
