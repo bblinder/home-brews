@@ -11,7 +11,7 @@ except ImportError:
 	sys.exit()
 
 mm = Musicmanager()
-#mm.perform_oauth() # Should be run for the first implementation only. Not needed afterwards.
+#mm.perform_oauth() # For the first run/implementation only. Not needed afterwards.
 mm.login()
 
 track = argv
