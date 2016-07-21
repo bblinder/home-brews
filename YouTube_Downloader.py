@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# Downloads YouTube Videos and converts them via FFmpeg into mp3s.
+
 from __future__ import unicode_literals
 try:
 	import youtube_dl
