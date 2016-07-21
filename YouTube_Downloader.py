@@ -10,7 +10,6 @@ except ImportError:
 	print("Please ensure it's installed.")
 
 YT_URL = raw_input("Youtube URL > ")
-
 class MyLogger(object):
 	def debug(self, msg):
 		pass
@@ -35,7 +34,6 @@ ydl_opts = {
 		'logger': MyLogger(),
 		'progress_hooks': [my_hook],
 		}
-
 
 with youtube_dl.YoutubeDL(ydl_opts) as ydl:
 	ydl.download([YT_URL])
