@@ -10,7 +10,7 @@ cd /tmp/ && echo "Compressing..."
 
 COMPRESS(){
     tar -cpzf "$BACKUP_FILE" ~/Documents ~/Downloads ~/.gnupg\
-	    ~/.irssi ~/Music/MP3_convert.sh ~/Pictures ~/.ssh ~/.bashrc\
+	    ~/.irssi ~/Pictures ~/.ssh ~/.bashrc\
 	    ~/.zshrc ~/Videos /etc/vim/vimrc ~/.config/terminator/config || return 1
 }
 
