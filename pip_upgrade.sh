@@ -17,7 +17,7 @@ choice_packages(){
 	pip list | awk '{ print $1 }' | egrep -i "pip|livestreamer|youtube-dl|\
     thefuck|tldr|zenmap|paramiko|clf|Fabric|\
     speedtest-cli|setuptools|ohmu|haxor-news|httpie|stormssh|waybackpack|\
-    http-prompt|glances" > "$LIST" 
+    http-prompt|glances|musicrepair" > "$LIST" 
 }
 
 pip_upgrade(){

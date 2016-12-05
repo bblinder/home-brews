@@ -38,7 +38,7 @@ choice_packages(){
 	MAKE_LIST | egrep -i "pip|livestreamer|youtube-dl|\
 	thefuck|tldr|zenmap|paramiko|clf|Fabric|\
 	speedtest-cli|setuptools|haxor-news|ohmu|httpie|stormssh|\
-	waybackpack|http-prompt|rtv|glances" > "$LIST"
+	waybackpack|http-prompt|rtv|glances|musicrepair" > "$LIST"
 }
 
 homebrew_upgrade(){
