@@ -26,6 +26,10 @@ pip_upgrade(){
     done < "$LIST" || return 1
 }
 
+if [[ -z "$LIST" ]] ; then
+	rm "$LIST"
+fi
+
 read -rp "General update (1) or just the favorites? (2)  " CHOICE
 
 case "$CHOICE" in
