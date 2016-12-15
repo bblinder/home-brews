@@ -12,6 +12,10 @@ IFS=$'\n\t'
 
 LIST="/tmp/pip_list.txt" # Where we're temporarily keeping our stuff.
 
+if [[ -z "$LIST" ]] ; then
+	rm "$LIST"
+fi
+
 MAKE_LIST(){
 	pip list | awk '{ print $1 }'
 }
