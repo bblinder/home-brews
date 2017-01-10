@@ -60,6 +60,10 @@ ruby_upgrade(){
 	sudo gem update ; sudo gem update --system
 }
 
+bulk_git_update(){
+	for dir in "$Github"/* ; do (cd "$dir" && git remote update && git pull && git gc --auto); done
+}
+
 # Ruling out non Mac OS X systems...
 if [[ "$(uname -s)" == "Darwin" ]] ; then
 	read -rp "Update Homebrew? [y/n] -->  " BREW_CHOICE
@@ -95,7 +99,6 @@ case "$PYTHON_CHOICE" in
 
 			*)
 				echo "Please enter (1) or (2)"
-				exit 1
 				;;
 		esac
 		;;
@@ -109,7 +112,21 @@ esac
 read -rp "Move on to ruby update? [y/n] -->  "  RUBY_CHOICE
 if [[ $RUBY_CHOICE == "y" ]] ; then
 	ruby_upgrade
-else
-	echo "Aborting..."
-	exit 0
 fi
+
+Github='/Users/bblinderman/Github'
+
+read -rp "Bulk update Git repos? [y/n]? -->  " GIT_CHOICE
+case "$GIT_CHOICE" in
+	[yY])
+		bulk_git_update
+		;;
+	[nN])
+		exit 0
+		;;
+	*)
+		echo "Please enter Y or N"
+		;;
+esac
+
+
