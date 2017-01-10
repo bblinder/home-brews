@@ -61,6 +61,7 @@ ruby_upgrade(){
 }
 
 bulk_git_update(){
+	Github='/Users/bblinderman/Github'
 	for dir in "$Github"/* ; do (cd "$dir" && git remote update && git pull && git gc --auto); done
 }
 
@@ -114,7 +115,6 @@ if [[ $RUBY_CHOICE == "y" ]] ; then
 	ruby_upgrade
 fi
 
-Github='/Users/bblinderman/Github'
 
 read -rp "Bulk update Git repos? [y/n]? -->  " GIT_CHOICE
 case "$GIT_CHOICE" in
