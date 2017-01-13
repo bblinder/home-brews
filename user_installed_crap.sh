@@ -12,7 +12,7 @@ IFS=$'\n\t'
 
 LIST="/tmp/pip_list.txt" # Where we're temporarily keeping our stuff.
 
-if [[ -z "$LIST" ]] ; then
+if [[ -z "$LIST" ]] ; then # cleaning up beforehand
 	rm "$LIST"
 fi
 
@@ -128,5 +128,3 @@ case "$GIT_CHOICE" in
 		echo "Please enter Y or N"
 		;;
 esac
-
-
