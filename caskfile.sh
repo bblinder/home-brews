@@ -11,7 +11,7 @@ fi
 # Be sure to install HomeBrew first via 'brew.sh'
 # Or via ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
-# Unix utilities
+# *nix utilities
 brew_array=(archey ack axel curl cmus exiftool csshx cowsay htop icdiff\
 	irssi httpie lynx mplayer mtr osxfuse p7zip pstree sshfs\
 	speedtest_cli pv rtmpdump tldr wget youtube-dl zsh git\
@@ -24,7 +24,7 @@ cask_array=(alfred flux ccleaner virtualbox google-chrome firefox\
 	spotify beardedspice the-unarchiver gpgtools vlc wireshark\
 	spectacle github-desktop gfxcardstatus superduper chrome-remote-desktop-host\
 	handbrake carbon-copy-cloner clipmenu etrecheck charles\
-       	malwarebytes-anti-malware jadengeller-helium oversight)
+	malwarebytes-anti-malware jadengeller-helium oversight)
 
 INSTALL_STUFF(){
 	# Install HomeBrew
@@ -36,7 +36,7 @@ INSTALL_STUFF(){
 	for item in ${brew_array[*]} ; do
 		$brew_install "$item"
 	done
-	
+
 	# Install Caskroom
 	$brew_install caskroom/cask/brew-cask
 
@@ -67,7 +67,7 @@ UNINSTALL_STUFF(){
 	brew cleanup ; brew cask cleanup ; brew prune
 
 	brew uninstall caskroom/cask/brew-cask
-	
+
 }
 
 PURGE_HOMEBREW(){
@@ -101,4 +101,3 @@ case $response in
 		echo "Please enter (1) or (2)"
 		;;
 esac
-
