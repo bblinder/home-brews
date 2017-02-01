@@ -20,6 +20,7 @@ def get_files(dirname, reverse=True):
     filepaths.sort(key=lambda filename: filename[1], reverse=reverse)
 
     return filepaths
+
 print "Total Size: ", get_summary, "bytes"
 print get_files(cur_dir)
 
