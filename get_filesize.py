@@ -26,8 +26,8 @@ print get_files(cur_dir)
 
 #########################################################
 
-# A slightly quicker, but messier, method
 """
+# A slightly quicker, but messier, method
 import os
 
 cur_dir = os.getcwd()
