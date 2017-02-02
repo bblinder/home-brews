@@ -21,7 +21,7 @@ def get_files(dirname, reverse=True):
 
     return filepaths
 
-print "Total Size: ", get_summary, "bytes"
+print "Total Size: ", get_summary, "bytes"'\n'
 print get_files(cur_dir)
 
 #########################################################
