@@ -128,3 +128,18 @@ case "$GIT_CHOICE" in
 		echo "Please enter Y or N"
 		;;
 esac
+
+if [[ "$(uname -s)" == "Darwin" ]] ; then
+	read -rp "Check for Apple Updates? [y/n] -->  " APPLE_CHOICE
+
+	case "$APPLE_CHOICE" in
+		[yY])
+			sudo softwareupdate -l
+			;;
+		[nN])
+			;;
+		*)
+			echo "Please enter (y) or (n)"
+			;;
+	esac
+fi
