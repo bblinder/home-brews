@@ -122,7 +122,6 @@ case "$GIT_CHOICE" in
 		bulk_git_update
 		;;
 	[nN])
-		exit 0
 		;;
 	*)
 		echo "Please enter Y or N"
