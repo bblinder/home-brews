@@ -76,7 +76,6 @@ if [[ "$(uname -s)" == "Darwin" ]] ; then
 		[nN])
 			;;
 		*)
-			echo "Please enter (y) or (n)"
 			;;
 	esac
 fi
@@ -99,14 +98,12 @@ case "$PYTHON_CHOICE" in
 				;;
 
 			*)
-				echo "Please enter (1) or (2)"
 				;;
 		esac
 		;;
 	[nN])
 		;;
 	*)
-		echo "Please enter (y) or (n)"
 		;;
 esac
 
@@ -124,7 +121,6 @@ case "$GIT_CHOICE" in
 	[nN])
 		;;
 	*)
-		echo "Please enter Y or N"
 		;;
 esac
 
@@ -138,7 +134,6 @@ if [[ "$(uname -s)" == "Darwin" ]] ; then
 		[nN])
 			;;
 		*)
-			echo "Please enter (y) or (n)"
 			;;
 	esac
 fi
