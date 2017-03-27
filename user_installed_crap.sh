@@ -61,7 +61,7 @@ ruby_upgrade(){
 }
 
 bulk_git_update(){
-	Github='/Users/bblinderman/Github'
+	Github='/Users/bblinder/Github'
 	for dir in "$Github"/* ; do (cd "$dir" && git remote update && git pull && git gc --auto); done
 }
 
