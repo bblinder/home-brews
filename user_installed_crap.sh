@@ -129,7 +129,7 @@ if [[ "$(uname -s)" == "Darwin" ]] ; then
 
 	case "$APPLE_CHOICE" in
 		[yY])
-			sudo softwareupdate -l
+			sudo softwareupdate -lv
 			;;
 		[nN])
 			;;
