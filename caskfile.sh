@@ -21,7 +21,7 @@ brew_array=(archey ack axel curl cmus exiftool csshx cowsay htop icdiff\
 
 # Casks/GUI stuff
 cask_array=(alfred flux ccleaner virtualbox google-chrome firefox\
-	vivaldi iterm2 adium slack skype sublime-text atom xquartz\
+	opera iterm2 adium slack skype sublime-text atom xquartz\
 	spotify beardedspice the-unarchiver gpgtools vlc wireshark\
 	spectacle github-desktop gfxcardstatus superduper chrome-remote-desktop-host\
 	handbrake carbon-copy-cloner clipmenu etrecheck charles\
