@@ -29,7 +29,7 @@ fi
 ENCRYPT(){
 	if [[ "$FILE_TO_ENCRYPT" ]] ; then
 		echo "Encrypting... standby..."
-		sudo gpg --symmetric "$FILE_TO_ENCRYPT" || return 1
+		sudo gpg "$FILE_TO_ENCRYPT" || return 1 # Can also use 'gpg --symmetric' to utilize password instead of keys.
 	fi
 }
 
