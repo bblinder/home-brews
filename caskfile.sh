@@ -89,9 +89,8 @@ case $response in
 		INSTALL_STUFF
 		;;
 	2)
-		echo "Are you sure? [y/n]"
-		read -r response
-		if [[ $response == "y" ]] ; then
+		read -rp "Are you sure? [y/n]  " uninstall_response
+		if [[ $uninstall_response == "y" ]] ; then
 			UNINSTALL_STUFF
 			PURGE_HOMEBREW
 		else
