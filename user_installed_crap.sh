@@ -65,6 +65,18 @@ bulk_git_update(){
 	for dir in "$Github"/* ; do (cd "$dir" && git remote update && git pull && git gc --auto); done
 }
 
+pihole_update(){
+	if [[ -e /usr/local/bin/pihole ]] ; then
+		pihole -up ; pihole -g ; pihole restartdns
+	fi
+}
+
+apt_update(){
+	sudo apt-get update ; sudo apt-get upgrade --yes
+	sudo apt-get dist-upgrade
+	sudo apt-get autoclean ; sudo apt-get clean ; sudo apt-get autoremove
+}
+
 # Ruling out non Mac OS X systems...
 if [[ "$(uname -s)" == "Darwin" ]] ; then
 	read -rp "Update Homebrew? [y/n] -->  " BREW_CHOICE
@@ -80,8 +92,28 @@ if [[ "$(uname -s)" == "Darwin" ]] ; then
 	esac
 fi
 
-read -rp "Update Python packages? [y/n]? -->  " PYTHON_CHOICE
+if [[ "$(uname -s)" == "Linux" ]] ; then
+	read -rp "Update APT repo? [y/n]? -->  " APT_CHOICE
+	case "$APT_CHOICE" in
+		[yY])
+			apt_update
+			;;
+		*)
+			;;
+	esac
 
+	read -rp "Update Pihole? [y/n]? -->  " PIHOLE_CHOICE
+	case "$PIHOLE_CHOICE" in
+		[yY])
+			pihole_update
+			;;
+		*)
+			;;
+	esac
+
+fi
+
+read -rp "Update Python packages? [y/n]? -->  " PYTHON_CHOICE
 case "$PYTHON_CHOICE" in
 	[yY])
 		read -rp "General update (1) or just the favorites (2) ? -->  " PYTHON_TYPE_CHOICE
