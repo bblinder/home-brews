@@ -66,9 +66,7 @@ bulk_git_update(){
 }
 
 pihole_update(){
-	if [[ -e /usr/local/bin/pihole ]] ; then
-		pihole -up ; pihole -g ; pihole restartdns
-	fi
+	pihole -up ; pihole -g ; pihole restartdns
 }
 
 apt_update(){
@@ -102,15 +100,16 @@ if [[ "$(uname -s)" == "Linux" ]] ; then
 			;;
 	esac
 
-	read -rp "Update Pihole? [y/n]? -->  " PIHOLE_CHOICE
-	case "$PIHOLE_CHOICE" in
-		[yY])
-			pihole_update
-			;;
-		*)
-			;;
-	esac
-
+	if [[ -e /usr/local/bin/pihole ]] ; then
+		read -rp "Update Pihole? [y/n]? -->  " PIHOLE_CHOICE
+		case "$PIHOLE_CHOICE" in
+			[yY])
+				pihole_update
+				;;
+			*)
+				;;
+		esac
+	fi
 fi
 
 read -rp "Update Python packages? [y/n]? -->  " PYTHON_CHOICE
