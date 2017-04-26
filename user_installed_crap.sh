@@ -4,15 +4,14 @@
 # Second, I'm sincerely sorry to any developer
 # who has the misfortune of reading this...
 
-# Tested only on Debian 8 "Jessie" and Mac OS X 10.10
+# Tested only on Debian 8 "Jessie" and Mac OS X 10.10 and 10.11
 
 set -euo pipefail
 IFS=$'\n\t'
 
-
 LIST="/tmp/pip_list.txt" # Where we're temporarily keeping our stuff.
 
-if [[ -z "$LIST" ]] ; then # cleaning up beforehand
+if [[ -e "$LIST" ]] ; then # cleaning up beforehand
 	rm "$LIST"
 fi
 
