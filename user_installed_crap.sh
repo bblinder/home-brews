@@ -62,7 +62,11 @@ ruby_upgrade(){
 
 bulk_git_update(){
 	Github="$HOME/Github"
-	for dir in "$Github"/* ; do (cd "$dir" && git remote update && git pull && git gc --auto && git up); done
+	if [[ -e /usr/local/bin/git-up ]] ; then
+		for dir in "$Github"/* ; do (cd "$dir" && && git remote update && git up) ; done
+	else
+		for dir in "$Github"/* ; do (cd "$dir" && git remote update && git pull --rebase && git gc --auto); done
+	fi
 }
 
 pihole_update(){
