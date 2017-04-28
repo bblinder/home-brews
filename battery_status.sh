@@ -15,12 +15,6 @@ battery_level="$(pmset -g batt | egrep "([0-9]+\%).*" -o --colour=auto | cut -f1
 
 music_file=/path/to/file
 
-
-if [[ "$(uname -s)" != "Darwin" ]] ; then
-	echo "This will only run on Mac OS X."
-	exit 1
-fi
-
 if [[ "$battery_level" -lt 20 ]] ; then
 	if [[ -e /usr/local/bin/noti ]] ; then
 		noti -t "WARNING" -m "Battery level at $battery_level%"
