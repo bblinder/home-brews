@@ -4,7 +4,7 @@
 
 if [[ $(uname -s) != "Darwin" ]] ; then
 	# Ruling out non-Mac OS X systems
-	echo "ERROR: This script will only run on Mac OS X"
+	echo "::: ERROR: This script will only run on Mac OS X"
 	exit 1
 fi
 
@@ -98,6 +98,6 @@ case $response in
 		fi
 		;;
 	*)
-		echo "Please enter (1) or (2)"
+		echo "::: Please enter (1) or (2)"
 		;;
 esac
