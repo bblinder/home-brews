@@ -3,6 +3,8 @@
 # Fixes the intermittent touchscreen issue on my XPS 13 running Debian Jessie.
 # Script stored in /opt/touchscreen-fix
 
+set -euo pipefail
+
 if [[ $(uname -s) != "Linux" ]] ; then
 	echo "ERROR: This script will only run on Linux systems."
 	exit 1
