@@ -8,4 +8,3 @@ if [[ -e /usr/bin/openssl || -e /usr/local/bin/openssl ]] ; then
 		exit 1
 	fi
 fi
-
