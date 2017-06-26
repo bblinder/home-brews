@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import random
+import sys
 try:
     from twilio.rest import Client
 except ImportError:
@@ -15,7 +16,7 @@ result = (random.choice(list(open('quotes'))))
 account_sid = ""
 auth_token = ""
 
-client = Client(account_sid, auth_token))
+client = Client(account_sid, auth_token)
 
 client.messages.create(to="",
         from_="",
