@@ -1,5 +1,7 @@
 #!/bin/bash
-#
+
+# adapted from another script. Used to install the latest firefox on my Debian Stretch install.
+
 # run with sudo.
 # 1. run without any parameters to download and install.
 # 2. pass one parameter: -s in order to restore symlinks only.
