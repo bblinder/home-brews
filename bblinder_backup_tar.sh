@@ -10,6 +10,16 @@ FILE_TO_ENCRYPT="$BACKUP_DIR/$BACKUP_FILE"
 
 cd /tmp/ && echo "Compressing..."
 
+DEAL_WITH_IT(){
+	echo -n "( •_•)"
+	sleep .75
+	echo -n -e "\r( •_•)>⌐■-■"
+	sleep .75
+	echo -n -e "\r               "
+	echo  -e "\r(⌐■_■)"
+	sleep .5
+}
+
 COMPRESS(){
     tar -cpzf "$BACKUP_FILE" ~/Documents ~/Downloads ~/.gnupg\
 	    ~/.irssi ~/Pictures ~/.ssh ~/.bashrc\
@@ -36,6 +46,7 @@ ENCRYPT(){
 ENCRYPT
 
 if [[ ENCRYPT ]] ; then
+	DEAL_WITH_IT
 	echo "Encryption done... ready for transfer."
 	rm "$FILE_TO_ENCRYPT"
 else
