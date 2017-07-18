@@ -16,7 +16,7 @@ if [[ -e "$LIST" ]] ; then # cleaning up beforehand
 fi
 
 MAKE_LIST(){
-	pip list | awk '{ print $1 }'
+	pip2 list | awk '{ print $1 }'
 }
 
 REMOVE_LIST(){
@@ -51,7 +51,7 @@ homebrew_upgrade(){
 
 pip_upgrade(){
     while read -r package; do
-        sudo -H pip install "$package" --upgrade || return 1
+        sudo -H pip2 install "$package" --upgrade || return 1
     done < "$LIST" ; return 0
 }
 
