@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 # Downloads YouTube Videos and converts them via FFmpeg into mp3s.
 

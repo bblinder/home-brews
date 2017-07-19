@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 # Simple script to upload mp3's to my Google Music account. Uses the unofficial gmusic API.
 

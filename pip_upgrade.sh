@@ -10,11 +10,11 @@ IFS=$'\n\t'
 LIST='/tmp/pip_list.txt' # Where we're temporarily keeping our stuff.
 
 general_packages(){
-	pip list | awk '{ print $1 }' > "$LIST"
+	pip2 list | awk '{ print $1 }' > "$LIST"
 }
 
 choice_packages(){
-	pip list | awk '{ print $1 }' | grep -Ei "pip|livestreamer|youtube-dl|\
+	pip2 list | awk '{ print $1 }' | grep -Ei "pip|livestreamer|youtube-dl|\
     thefuck|tldr|zenmap|paramiko|clf|Fabric|\
     speedtest-cli|setuptools|ohmu|haxor-news|httpie|stormssh|waybackpack|\
     http-prompt|glances|musicrepair" > "$LIST" 
@@ -22,7 +22,7 @@ choice_packages(){
 
 pip_upgrade(){
     while read -r package; do
-        sudo -H pip install "$package" --upgrade
+        sudo -H pip2 install "$package" --upgrade
     done < "$LIST" || return 1
 }
 
