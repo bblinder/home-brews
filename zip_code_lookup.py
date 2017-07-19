@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 # Queries a list of zip codes (CSV) against the SmartyStreets API
 
