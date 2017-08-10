@@ -22,7 +22,7 @@ fi
 
 general_packages && pip3_upgrade
 
-if [[ pip_upgrade ]] ; then
+if [[ pip3_upgrade ]] ; then
 	echo "Done."
 	rm "$LIST"
 else
