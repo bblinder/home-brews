@@ -9,7 +9,7 @@ except ImportError:
 	print("Youtube_dl not found.")
 	print("Please ensure it's installed.")
 
-YT_URL = raw_input("Youtube URL > ")
+YT_URL = raw_input("URL > ")
 class MyLogger(object):
 	def debug(self, msg):
 		pass
