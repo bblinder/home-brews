@@ -25,7 +25,7 @@ cask_array=(alfred flux ccleaner virtualbox google-chrome firefox\
 	spotify beardedspice the-unarchiver gpgtools vlc wireshark\
 	spectacle github-desktop gfxcardstatus superduper chrome-remote-desktop-host\
 	handbrake carbon-copy-cloner clipmenu etrecheck charles\
-	malwarebytes-anti-malware postman jadengeller-helium oversight)
+	malwarebytes-anti-malware postman jadengeller-helium oversight grandperspective)
 
 INSTALL_STUFF(){
 	# Install HomeBrew
