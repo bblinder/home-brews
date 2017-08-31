@@ -13,7 +13,7 @@ fi
 
 # *nix utilities
 brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff\
-	irssi httpie lynx mplayer mtr osxfuse p7zip pstree sshfs\
+	irssi httpie lynx mplayer mtr osxfuse p7zip pstree sshfs tcpdump\
 	speedtest_cli pv rtmpdump tldr wget youtube-dl zsh git m-cli\
 	gnu-units lnav ranger watch iftop ffmpeg ssh-copy-id spoof-mac\
 	newsbeuter parallel pdfgrep dtrx lepton sslh jq woof coreutils\
@@ -21,10 +21,10 @@ brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff\
 
 # Casks/GUI stuff
 cask_array=(alfred flux ccleaner virtualbox google-chrome firefox\
-	opera iterm2 adium slack skype sublime-text atom xquartz\
-	spotify beardedspice the-unarchiver gpgtools vlc wireshark\
+	opera iterm2 adium slack skype sublime-text atom xquartz caprine\
+	spotify beardedspice the-unarchiver gpgtools vlc grandperspective\
 	spectacle github-desktop gfxcardstatus superduper chrome-remote-desktop-host\
-	handbrake carbon-copy-cloner clipmenu etrecheck charles\
+	handbrake carbon-copy-cloner clipmenu etrecheck charles visual-studio-code\
 	malwarebytes-anti-malware postman jadengeller-helium oversight grandperspective)
 
 INSTALL_STUFF(){
