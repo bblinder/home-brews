@@ -1,9 +1,13 @@
 #!/bin/bash
 
+## A quick and dirty script to losslessly compress my jpegs using Dropbox's lepton tool.
+## https://github.com/dropbox/lepton
+
 set -euo pipefail
 IFS=$'\n\t'
 #shopt -s nullglob
 
+# Checks if Lepton's installed. 
 type lepton >/dev/null 2>&1 || { echo >&2 "::: Lepton not installed.  Aborting."; exit 1; }
 
 JPEG_TO_LEP(){
