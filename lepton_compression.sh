@@ -10,6 +10,12 @@ IFS=$'\n\t'
 # Checks if Lepton's installed. 
 type lepton >/dev/null 2>&1 || { echo >&2 "::: Lepton not installed.  Aborting."; exit 1; }
 
+PNG_TO_JPEG(){
+	for i in *.png ; do 
+		convert "$i" "${i%.*}.jpg"
+	done
+}
+
 JPEG_TO_LEP(){
 	for j in *.jpg ; do
 		lepton "$j" "${j%.*}.lep"
@@ -22,16 +28,49 @@ LEP_TO_JPEG(){
 	done
 }
 
+count="ls *.png 2>/dev/null | wc -l"
+if [[ "$count" != 0 ]] ; then
+	# Checks if convert/imagemagick is installed
+	type convert >/dev/null 2>&1 || { echo >&2 "::: Convert/ImageMagick not installed." ; exit 1; }
+	read -rp "::: PNG's found. Convert them to JPEGs first? (Y/N)  " PNG_CHOICE
+	case "$PNG_CHOICE" in
+		[yY])
+			PNG_TO_JPEG
+			rm *.png
+			;;
+		*)
+			;;
+	esac
+fi
+
 THE_NEEDFUL(){
 	case "$COMPRESS_CHOICE" in
 		1)
 			JPEG_TO_LEP
+			read -rp "Delete .jpg files? (y/n)  " JPEG_DELETE
+			case "$JPEG_DELETE" in
+				yY)
+					rm *.jpg
+					;;
+				*)
+					;;
+			esac
 			;;
 		2)
 			LEP_TO_JPEG
+			read -rp "Delete .lep files? (y/n)  " LEP_DELETE
+			case "$LEP_DELETE" in
+				yY)
+					rm *.lep
+					;;
+				*)
+					;;
+			esac
 			;;
 		*)
+			
 			echo "Please enter (1) or (2)"
+			exit 1
 			;;
 	esac
 	return 0
