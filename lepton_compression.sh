@@ -28,7 +28,7 @@ LEP_TO_JPEG(){
 	done
 }
 
-png_array=(`find ./ -maxdepth 1 -name "*.png"`)
+png_array=(`find ./ -maxdepth 1 -name "*.png"`) # bit of a legacy array method, but it works.
 if [[ ${#png_array[@]} -gt 0 ]] ; then
 	# Checks if convert/imagemagick is installed
 	type convert >/dev/null 2>&1 || { echo >&2 "::: Convert/ImageMagick not installed." ; exit 1; }
