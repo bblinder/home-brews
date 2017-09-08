@@ -81,17 +81,11 @@ THE_NEEDFUL(){
 	return 0
 }
 
-
-#if [[ ! -e  *.jpg *.JPEG *.jpg ]] ; then
-#	echo "No JPEGs found. Exiting..."
-#	exit 1
-#else
-
 read -rp "::: Compress (1) or Uncompress (2)? --> " COMPRESS_CHOICE
 
 THE_NEEDFUL
 if [[ THE_NEEDFUL ]] ; then
-	echo "Success."
+	echo "::: Success."
 else
-	echo "Failed. Try again, maybe?"
+	echo "::: Failed. Try again, maybe?"
 fi
