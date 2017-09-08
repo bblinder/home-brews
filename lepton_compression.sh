@@ -63,15 +63,20 @@ THE_NEEDFUL(){
 			;;
 		2)
 			LEP_TO_JPEG
-			read -rp "::: Delete .lep files? (y/n)  " LEP_DELETE
-			case "$LEP_DELETE" in
-				[yY])
-					rm -- *.lep
-					;;
-				*)
-					;;
-			esac
-			;;
+			lep_array=(`find ./ -maxdepth 1 -name "*.lep"`)
+			if [[ ${#lep_array[@]} -gt 0 ]]; then
+				read -rp "::: Delete .lep files? (y/n)  " LEP_DELETE
+				case "$LEP_DELETE" in
+					[yY])
+						rm -- *.lep
+						;;
+					*)
+						;;
+				esac
+			else
+				echo "::: No .lep files found. Exiting..." ; exit 0
+			fi
+				;;
 		*)
 			
 			echo "::: Please enter (1) or (2)"
