@@ -1,11 +1,11 @@
 #!/bin/bash
 
-##########
+###########
 ## WARNING:
 ## Depending on the size of the log file, this script is extremely
 ## process-intensive and time-consuming.
 ## Proceed with caution.
-##########
+###########
 
 set -euo pipefail
 shopt -s nullglob
