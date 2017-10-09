@@ -6,22 +6,24 @@ IFS=$'\n\t'
 
 # Assumes you've encrypted with GPG.
 FILE_TO_TRANSFER="$HOME/path/to/backup-$(date +%F).tar.gz.gpg"
+SSH_KEY="$HOME/path/to/ssh/key"
 
 SYNC(){
-    rsync -e ssh -avh --progress --compress-level=0 "$FILE_TO_TRANSFER" \
-	    pi@[ip_address]:/path/to/backup/folder || return 1
+    rsync -e "ssh -p [port] -i $SSH_KEY" -avh --progress --compress-level=0 "$FILE_TO_TRANSFER" \
+	    [pi]@[ip_address]:/path/to/backup/folder || return 1
 }
 
 if [[ -e "$FILE_TO_TRANSFER" ]] ; then
 	SYNC
 else
-	echo "File to transfer not found."
+	echo "::: File to transfer not found."
+	echo ""
+	echo "::: Perhaps run the back up script first?"
 	exit 1
 fi
 
 if [[ SYNC ]] ; then
-	echo "All done."
+	echo "::: All done."
 else
-    echo "Sync failed."
+        echo "::: Sync failed."
 fi
-
