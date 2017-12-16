@@ -11,10 +11,6 @@ IFS=$'\n\t'
 
 LIST="/tmp/pip_list.txt" # Where we're temporarily keeping our stuff.
 
-if [[ -e "$LIST" ]] ; then # cleaning up beforehand
-	rm "$LIST"
-fi
-
 MAKE_LIST(){
 	pip2 list | awk '{ print $1 }'
 }
@@ -118,6 +114,9 @@ fi
 read -rp "Update Python packages? [y/n]? -->  " PYTHON_CHOICE
 case "$PYTHON_CHOICE" in
 	[yY])
+		if [[ -e "$LIST" ]] ; then # cleaning up beforehand
+		rm "$LIST"
+		fi
 		read -rp "General update (1) or just the favorites (2) ? -->  " PYTHON_TYPE_CHOICE
 		case "$PYTHON_TYPE_CHOICE" in
 			1)
