@@ -11,7 +11,7 @@ ffmpeg_check(){
 }
 ffmpeg_single(){
 	while read x ; do
-		ffmpeg -i "${x}" -strict experimental -pix_fmt yuv420p \
+		ffmpeg -i "${x}" -strict experimental -pix_fmt yuv420p \ # using yuv420p colorspace for imovie.
 		-c:v libx264 -c:a aac \
 		-ab 160000 -preset slow \
 		-crf 15 "${x/%.*/_imovie.mp4}"
