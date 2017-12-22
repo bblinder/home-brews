@@ -1,6 +1,6 @@
 #!/bin/bash
 
-current_directory=$(pwd)
+# using this to prep MPEG 1/2 multiplexed files for editing and viewability in QT and iMovie.
 
 ffmpeg_check(){
 	if [[ ! ( -f /usr/bin/ffmpeg || -f /usr/local/bin/ffmpeg ) ]] ; then
@@ -12,7 +12,7 @@ ffmpeg_check(){
 
 ffmpeg_single(){
 	while read x ; do
-		ffmpeg -i "${x}" -strict experimental -pix_fmt yuv420p \
+		ffmpeg -i "${x}" -strict experimental -pix_fmt yuv420p \ # using yuv420p colorspace for imovie.
 		-c:v libx264 -c:a aac \
 		-ab 160000 -preset slow \
 		-crf 15 "${x/%.*/_imovie.mp4}"
@@ -33,6 +33,7 @@ ffmpeg_check
 echo "Drag and Drop your file HERE -->  "
 ffmpeg_single && DEAL_WITH_IT
 
+# Saving this for when I'm ready to do batch files.
 <<EOL
 ffmpeg_batch(){
 	for x in *.mp4; do
