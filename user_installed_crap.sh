@@ -74,6 +74,11 @@ apt_update(){
 	sudo apt-get autoclean ; sudo apt-get clean ; sudo apt-get autoremove
 }
 
+flatpak_update(){
+	# sudo needed here? 
+	flatpak update
+}
+
 # Ruling out non Mac OS X systems...
 if [[ "$(uname -s)" == "Darwin" ]] ; then
 	read -rp "Update Homebrew? [y/n] -->  " BREW_CHOICE
@@ -109,6 +114,16 @@ if [[ "$(uname -s)" == "Linux" ]] ; then
 				;;
 		esac
 	fi
+
+	type flatpak >/dev/null 2>&1 || { echo >$2 "::: Flatpak not installed." ; }
+		read -rp "Update Flatpak? [y/n]? -->  " FLATPAK_CHOICE
+		case "$FLATPAK_CHOICE" in
+			[yY])
+				flatpak update
+				;;
+			*)
+				;;
+		esac
 fi
 
 read -rp "Update Python packages? [y/n]? -->  " PYTHON_CHOICE
