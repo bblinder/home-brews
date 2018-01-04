@@ -115,7 +115,8 @@ if [[ "$(uname -s)" == "Linux" ]] ; then
 		esac
 	fi
 
-	type flatpak >/dev/null 2>&1 || { echo >"$2" "::: Flatpak not installed." ; exit 1; }
+	if "$(command -v flatpak)" ; then
+	#type flatpak >/dev/null 2>&1 || { echo >$2 "::: Flatpak not installed." ; exit 1; }
 		read -rp "Update Flatpak? [y/n]? -->  " FLATPAK_CHOICE
 		case "$FLATPAK_CHOICE" in
 			[yY])
