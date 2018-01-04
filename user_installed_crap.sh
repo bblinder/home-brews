@@ -125,6 +125,7 @@ if [[ "$(uname -s)" == "Linux" ]] ; then
 			*)
 				;;
 		esac
+	fi
 fi
 
 read -rp "Update Python packages? [y/n]? -->  " PYTHON_CHOICE
