@@ -104,7 +104,7 @@ if [[ "$(uname -s)" == "Linux" ]] ; then
 			;;
 	esac
 
-	if [[ "$command -v pihole)" ]] ; then
+	if [[ "($command -v pihole)" ]] ; then
 		read -rp "Update Pihole? [y/n]? -->  " PIHOLE_CHOICE
 		case "$PIHOLE_CHOICE" in
 			[yY])
