@@ -104,7 +104,7 @@ if [[ "$(uname -s)" == "Linux" ]] ; then
 			;;
 	esac
 
-	if [[ -e /usr/local/bin/pihole ]] ; then
+	if [[ "$command -v pihole)" ]] ; then
 		read -rp "Update Pihole? [y/n]? -->  " PIHOLE_CHOICE
 		case "$PIHOLE_CHOICE" in
 			[yY])
@@ -116,7 +116,6 @@ if [[ "$(uname -s)" == "Linux" ]] ; then
 	fi
 
 	if [[ "$(command -v flatpak)" ]] ; then
-	#type flatpak >/dev/null 2>&1 || { echo >$2 "::: Flatpak not installed." ; exit 1; }
 		read -rp "Update Flatpak? [y/n]? -->  " FLATPAK_CHOICE
 		case "$FLATPAK_CHOICE" in
 			[yY])
