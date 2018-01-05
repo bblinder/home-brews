@@ -39,17 +39,28 @@ UNINSTALL_STUFF(){
 read -rp "Install (1) or Uninstall (2) base packages? -->  " base_response
 case "$base_response" in
 	1)
-		INSTALL_STUFF
-		echo -n "( •_•)"
-		sleep .75
-		echo -n -e "\r( •_•)>⌐■-■"
-		sleep .75
-		echo -n -e "\r               "
-		echo  -e "\r(⌐■_■)"
-		sleep .5
-		;;
+		echo "::: The following will be installed: "
+		printf '%s\n' "${apt_array[@]}"
+		echo ""
+		read -rp "::: Continue? [Y/n] -->  " install_response
+		case "$install_response" in
+			[yY])
+				INSTALL_STUFF
+				echo -n "( •_•)"
+				sleep .75
+				echo -n -e "\r( •_•)>⌐■-■"
+				sleep .75
+				echo -n -e "\r               "
+				echo  -e "\r(⌐■_■)"
+				sleep .5
+				;;
+			*)
+				;;
+		esac
 	2)
-		read -rp "Are you sure? [y/N]  " uninstall_response
+		echo "::: The following will be removed:  "
+		printf '%s\n' "${apt_array[@]}"
+		read -rp "::: Are you sure? [y/N]  " uninstall_response
 		case "$uninstall_response" in
 			[yY])
 				UNINSTALL_STUFF
