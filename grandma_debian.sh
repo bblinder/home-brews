@@ -60,8 +60,8 @@ case "$base_response" in
 				INSTALL_NIX_UTILS
         INSTALL_PYTHON3_UTILS
         MKDIR_GITHUB
-				echo -n "( •_•)"
-				sleep .75
+        echo -n "( •_•)"
+				"sleep .75
 				echo -n -e "\r( •_•)>⌐■-■"
 				sleep .75
 				echo -n -e "\r               "
