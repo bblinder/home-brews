@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -euo pipefail
 IFS=$'\n\t'
@@ -16,20 +16,31 @@ apt_array=(axel vim python-pip python3-pip python-dev flatpak zsh git p7zip-full
 # python3 utils
 python_array=(httpie youtube-dl requests streamlink tldr paramiko cheat)
 
-INSTALL_STUFF(){
+INSTALL_NIX_UTILS(){
 	# install nix utilities
-	sudo apt-get install -y "${apt_array[@]}"
-	echo "::: APT packages installed. Moving on to Python 3 packages..."
-	sleep 1.5
+	sudo apt-get install -y "${apt_array[@]}" || return 1
+}
 
-	# install python (3) utilities
-	sudo -H pip3 install "${python_array[@]}"
+INSTALL_PYTHON3_UTILS(){
+  if [[ INSTALL_NIX_UTILS ]] ; then
+    echo "::: APT Packages done. Moving on to Python packages... "
+    sleep 1.5
+    sudo -H pip3 install "${python_array[@]}" || return 1
+  fi
+}
+
+MKDIR_GITHUB(){
+	Github_Dir='$HOME/Github/'
+	if [[ ! -d "$Github_Dir" ]] ; then
+		mkdir -p "$Github_Dir"
+		git clone https://github.com/bblinder/home-brews.git "$Github_Dir"
+	fi
 }
 
 UNINSTALL_STUFF(){
 	# python crap
 	sudo -H pip3 uninstall --yes "${python_array[@]}"
-  
+
 	# apt crap
 	sudo apt-get purge "${apt_array[@]}"
 	sudo apt-get autoclean ; sudo apt-get autoremove ; sudo apt-get clean
@@ -46,7 +57,9 @@ case "$base_response" in
 		read -rp "::: Continue? [Y/n] -->  " install_response
 		case "$install_response" in
 			[yY])
-				INSTALL_STUFF
+				INSTALL_NIX_UTILS
+        INSTALL_PYTHON3_UTILS
+        MKDIR_GITHUB
 				echo -n "( •_•)"
 				sleep .75
 				echo -n -e "\r( •_•)>⌐■-■"
