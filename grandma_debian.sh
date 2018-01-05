@@ -10,10 +10,11 @@ if [[ "$(uname -s)" != "Linux" ]] ; then
 fi
 
 # *nix utilities
-apt_array=(axel vim python-pip python3-pip flatpak zsh git p7zip-full mtr)
+apt_array=(axel vim python-pip python3-pip python-dev flatpak zsh git p7zip-full mtr \
+	bleachbit nmap zenmap netcat pv gdebi lynx iftop filelight ufw glances)
 
 # python3 utils
-python_array=(httpie youtube-dl requests streamlink)
+python_array=(httpie youtube-dl requests streamlink tldr paramiko cheat)
 
 INSTALL_STUFF(){
 	# install nix utilities
