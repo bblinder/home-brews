@@ -12,38 +12,28 @@ fi
 # *nix utilities
 apt_array=(axel vim python-pip python3-pip flatpak zsh git p7zip-full mtr)
 
-# python3
+# python3 utils
 python_array=(httpie youtube-dl requests streamlink)
 
 INSTALL_STUFF(){
-  # install *nix utilities
-  apt_install='apt install'
-  for item in ${apt_array[*]} ; do
-    $apt_install "$item"
-  done
-
-  # install python utilities
-  pip_install='sudo -H pip3 install'
-  for item in ${python_array[*]} ; do
-    $pip_install "$item"
-  done
+	# install nix utilities
+	sudo apt-get install "${apt_array[@]}"
+	
+	# install python (3) utilities
+	sudo -H pip3 install "${python_array[@]}"
 }
 
 UNINSTALL_STUFF(){
-  # apt crap
-  APT_ZAP='sudo apt-get purge'
-  CLEANUP='sudo apt-get autoclean ; sudo apt-get autoremove ; sudo apt-get clean'
+	# apt crap
+	APT_ZAP='sudo apt-get purge'
+	CLEANUP='sudo apt-get autoclean ; sudo apt-get autoremove ; sudo apt-get clean'
 
-  for item in ${apt_array[*]} ; do
-    $APT_ZAP "$item"
-  done
-  $CLEANUP
-
-  # python crap
-  PYTHON_ZAP='sudo -H pip3 uninstall'
-  for item in ${python_array[*]} ; do
-    $PYTHON_ZAP "$item"
-  done
+	$APT_ZAP "${apt_array[@]}"
+	$CLEANUP
+	
+	# python crap
+	PYTHON_ZAP='sudo -H pip3 uninstall'
+	$PYTHON_ZAP "${python_array[@]}"
 }
 
 ## Now onto the actual work
