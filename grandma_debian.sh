@@ -26,12 +26,12 @@ INSTALL_STUFF(){
 }
 
 UNINSTALL_STUFF(){
+  # python crap
+  sudo -H pip3 uninstall "${python_array[@]}"
+  
 	# apt crap
 	sudo apt-get purge "${apt_array[@]}"
 	sudo apt-get autoclean ; sudo apt-get autoremove ; sudo apt-get clean
-	
-	# python crap
-	sudo -H pip3 uninstall "${python_array[@]}"
 }
 
 ## Now onto the actual work
@@ -60,4 +60,4 @@ case "$base_response" in
       *)
         ;;
     esac
-esac    
+esac
