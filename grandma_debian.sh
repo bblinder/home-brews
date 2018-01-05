@@ -54,7 +54,4 @@ case "$base_response" in
       *)
         ;;
     esac
-  *)
-    echo "::: Please enter (1) or (2)"
-    ;;
 esac    
