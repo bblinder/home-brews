@@ -57,6 +57,7 @@ case "$base_response" in
 			*)
 				;;
 		esac
+		;;
 	2)
 		echo "::: The following will be removed:  "
 		printf '%s\n' "${apt_array[@]}"
