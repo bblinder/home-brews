@@ -17,17 +17,17 @@ python_array=(httpie youtube-dl requests streamlink)
 
 INSTALL_STUFF(){
 	# install nix utilities
-	sudo apt-get install "${apt_array[@]}"
+	sudo apt-get install -y "${apt_array[@]}"
 	echo "::: APT packages installed. Moving on to Python 3 packages..."
-	sleep 2
+	sleep 1.5
 
 	# install python (3) utilities
 	sudo -H pip3 install "${python_array[@]}"
 }
 
 UNINSTALL_STUFF(){
-  # python crap
-  sudo -H pip3 uninstall "${python_array[@]}"
+	# python crap
+	sudo -H pip3 uninstall "${python_array[@]}"
   
 	# apt crap
 	sudo apt-get purge "${apt_array[@]}"
@@ -38,26 +38,24 @@ UNINSTALL_STUFF(){
 
 read -rp "Install (1) or Uninstall (2) base packages? -->  " base_response
 case "$base_response" in
-  1)
-    INSTALL_STUFF
-    echo -n "( •_•)"
-    sleep .75
-    echo -n -e "\r( •_•)>⌐■-■"
-    sleep .75
-    echo -n -e "\r               "
-    echo  -e "\r(⌐■_■)"
-    sleep .5
-    ;;
-
-  2)
-    read -rp "Are you sure? [y/n]  " uninstall_response
-    case "$uninstall_response" in
-      [yY])
-        UNINSTALL_STUFF
-	echo "::: Done."
-        ;;
-
-      *)
-        ;;
-    esac
+	1)
+		INSTALL_STUFF
+		echo -n "( •_•)"
+		sleep .75
+		echo -n -e "\r( •_•)>⌐■-■"
+		sleep .75
+		echo -n -e "\r               "
+		echo  -e "\r(⌐■_■)"
+		sleep .5
+		;;
+	2)
+		read -rp "Are you sure? [y/N]  " uninstall_response
+		case "$uninstall_response" in
+			[yY])
+				UNINSTALL_STUFF
+				echo "::: Done."
+				;;
+			*)
+				;;
+		esac
 esac
