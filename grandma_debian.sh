@@ -27,7 +27,7 @@ INSTALL_STUFF(){
 
 UNINSTALL_STUFF(){
 	# python crap
-	sudo -H pip3 uninstall "${python_array[@]}"
+	sudo -H pip3 uninstall --yes "${python_array[@]}"
   
 	# apt crap
 	sudo apt-get purge "${apt_array[@]}"
