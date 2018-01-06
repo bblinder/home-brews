@@ -23,10 +23,7 @@ python_array=(httpie youtube-dl requests streamlink tldr paramiko cheat)
 
 INSTALL_NIX_UTILS(){
 	# adding stretch-backports
-	backports_check="$(grep -i 'stretch-backports' /etc/apt/sources.list)"
-	if [[ ! -e "$backports_check" ; then
-		echo "deb http://ftp.us.debian.org/debian stretch-backports main contrib non-free" >> /etc/apt/sources.list
-	fi
+	echo "deb http://ftp.us.debian.org/debian stretch-backports main contrib non-free" >> /etc/apt/sources.list
 	apt-get update ;  apt-get upgrade ;  apt-get dist-upgrade
 	# install nix utilities
 	apt-get install -y "${apt_array[@]}" || return 1
@@ -41,9 +38,10 @@ INSTALL_PYTHON3_UTILS(){
 }
 
 MKDIR_GITHUB(){
-	Github_Dir='/home/vagrant/Github/'
+	Github_Dir='/home/vagrant/Github'
 	if [[ ! -d "$Github_Dir" ]] ; then
 		mkdir -p "$Github_Dir"
+		chmod -R 755 "$Github_Dir"
 		git clone https://github.com/bblinder/home-brews.git "$Github_Dir"/home-brews/
 	fi
 }
