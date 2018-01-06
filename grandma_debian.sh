@@ -15,7 +15,7 @@ if [[ "$EUID" -ne 0 ]] ; then
 fi
 
 # *nix utilities
-apt_array=(axel vim python-pip python3-pip python-dev flatpak zsh git p7zip-full mtr \
+apt_array=(axel vim python-pip python3-pip python-dev python3-dev flatpak zsh git p7zip-full mtr \
 	bleachbit nmap zenmap netcat pv gdebi lynx iftop filelight ufw glances)
 
 # python3 utils
