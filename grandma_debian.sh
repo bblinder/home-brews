@@ -24,9 +24,15 @@ python_array=(httpie youtube-dl requests streamlink tldr paramiko cheat)
 INSTALL_NIX_UTILS(){
 	# adding stretch-backports
 	echo -e "\ndeb http://ftp.us.debian.org/debian stretch-backports main contrib non-free" >> /etc/apt/sources.list
+	echo -e "\ndeb http://ftp.us.debian.org/debian sid main" >> /etc/apt/sources.list
+	# Apt-pinning Firefox Quantum and its dependencies
+	echo -e "Package: *\nPin: release a=stable\nPin-Priority: 1000\n\nPackage *\nPin: release a=unstable\nPin-Priority: 2\n\nPackage: firefox\nPin: release a=unstable\nPin-Priority: 1001\n\nPackage: libfontconfig1\nPin: release a=unstable\nPin-Priority: 1001\n\nfontconfig-config\nPin: release a=unstable\nPin-Priority: 1001\n\nPackage: libss3\nPin: release a=unstable\nPin-Priority: 1001" > /etc/apt/preferences
+
 	apt-get update ;  apt-get -y upgrade ;  apt-get -y dist-upgrade
 	# install nix utilities
-	apt-get install -y "${apt_array[@]}" || return 1
+	apt-get install -y "${apt_array[@]}"
+	# Installing Firefox Quantum
+	apt install -t sid firefox -y || return 1
 }
 
 INSTALL_PYTHON3_UTILS(){
@@ -44,6 +50,20 @@ MKDIR_GITHUB(){
 		chmod -R 777 "$Github_Dir"
 		git clone https://github.com/bblinder/home-brews.git "$Github_Dir"/home-brews/
 	fi
+}
+
+INSTALL_GRANDMA_PERSONALS(){
+	Downloads='/home/vagrant/Downloads'
+	Skype='https://go.skype.com/skypeforlinux-64.deb'
+	Chrome='https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
+
+	echo "::: Installing personals (Skype, etc)"
+	wget -O "$Downloads"/skypeforlinux-64.deb "$Skype"
+	wget -O "$Downloads"/google-chrome-stable_current_amd64.deb "$Chrome"
+	# Installing...
+	for d in *.deb ; do
+		dpkg -i "$Downloads"/"$d"
+	done
 }
 
 UNINSTALL_STUFF(){
@@ -69,6 +89,7 @@ case "$base_response" in
 				INSTALL_NIX_UTILS
 				INSTALL_PYTHON3_UTILS
 				MKDIR_GITHUB
+				INSTALL_GRANDMA_PERSONALS
 				echo -n "( •_•)"
 				sleep .75
 				echo -n -e "\r( •_•)>⌐■-■"
