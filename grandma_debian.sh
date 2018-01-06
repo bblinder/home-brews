@@ -9,6 +9,11 @@ if [[ "$(uname -s)" != "Linux" ]] ; then
   exit 1
 fi
 
+if [[ "$EUID" -ne 0 ]] ; then
+	echo "Please run as root"
+	exit
+fi
+
 # *nix utilities
 apt_array=(axel vim python-pip python3-pip python-dev flatpak zsh git p7zip-full mtr \
 	bleachbit nmap zenmap netcat pv gdebi lynx iftop filelight ufw glances)
@@ -17,16 +22,18 @@ apt_array=(axel vim python-pip python3-pip python-dev flatpak zsh git p7zip-full
 python_array=(httpie youtube-dl requests streamlink tldr paramiko cheat)
 
 INSTALL_NIX_UTILS(){
+	# adding stretch-backports
+	echo "deb http://ftp.us.debian.org/debian stretch-backports main contrib non-free" >> /etc/apt/sources.list
+	apt-get update ;  apt-get upgrade ;  apt-get dist-upgrade
 	# install nix utilities
-	sudo apt-get update ; sudo apt-get upgrade ; sudo apt-get dist-upgrade
-	sudo apt-get install -y "${apt_array[@]}" || return 1
+	apt-get install -y "${apt_array[@]}" || return 1
 }
 
 INSTALL_PYTHON3_UTILS(){
   if [[ INSTALL_NIX_UTILS ]] ; then
     echo "::: APT Packages done. Moving on to Python packages... "
     sleep 1.5
-    sudo -H pip3 install "${python_array[@]}" || return 1
+	sudo -H pip3 install "${python_array[@]}" || return 1
   fi
 }
 
@@ -43,8 +50,8 @@ UNINSTALL_STUFF(){
 	sudo -H pip3 uninstall --yes "${python_array[@]}"
 
 	# apt crap
-	sudo apt-get purge "${apt_array[@]}"
-	sudo apt-get autoclean ; sudo apt-get autoremove ; sudo apt-get clean
+	apt-get purge "${apt_array[@]}"
+	apt-get autoclean ;  apt-get autoremove ;  apt-get clean
 }
 
 ## Now onto the actual work
