@@ -23,8 +23,9 @@ python_array=(httpie youtube-dl requests streamlink tldr paramiko cheat)
 
 INSTALL_NIX_UTILS(){
 	# adding stretch-backports
-	if ! grep -Fqi "backports" /etc/apt/sources.list; then
-	echo "deb http://ftp.us.debian.org/debian stretch-backports main contrib non-free" >> /etc/apt/sources.list
+	backports_check="$(grep -i 'stretch-backports' /etc/apt/sources.list)"
+	if [[ ! -e "$backports_check" ; then
+		echo "deb http://ftp.us.debian.org/debian stretch-backports main contrib non-free" >> /etc/apt/sources.list
 	fi
 	apt-get update ;  apt-get upgrade ;  apt-get dist-upgrade
 	# install nix utilities
