@@ -38,7 +38,7 @@ INSTALL_PYTHON3_UTILS(){
 }
 
 MKDIR_GITHUB(){
-	Github_Dir='/home/vagrant/Github/
+	Github_Dir='/home/vagrant/Github/'
 	if [[ ! -d "$Github_Dir" ]] ; then
 		mkdir -p "$Github_Dir"
 		git clone https://github.com/bblinder/home-brews.git "$Github_Dir"/home-brews/
