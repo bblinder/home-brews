@@ -41,7 +41,7 @@ MKDIR_GITHUB(){
 	Github_Dir='/home/vagrant/Github'
 	if [[ ! -d "$Github_Dir" ]] ; then
 		mkdir -p "$Github_Dir"
-		chmod -R 755 "$Github_Dir"
+		chmod -R 777 "$Github_Dir"
 		git clone https://github.com/bblinder/home-brews.git "$Github_Dir"/home-brews/
 	fi
 }
