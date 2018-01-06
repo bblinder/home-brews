@@ -58,8 +58,8 @@ case "$base_response" in
 		case "$install_response" in
 			[yY])
 				INSTALL_NIX_UTILS
-        INSTALL_PYTHON3_UTILS
-        MKDIR_GITHUB
+				INSTALL_PYTHON3_UTILS
+				MKDIR_GITHUB
 				echo -n "( •_•)"
 				sleep .75
 				echo -n -e "\r( •_•)>⌐■-■"
