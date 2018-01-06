@@ -18,6 +18,7 @@ python_array=(httpie youtube-dl requests streamlink tldr paramiko cheat)
 
 INSTALL_NIX_UTILS(){
 	# install nix utilities
+  sudo apt-get update ; sudo apt-get upgrade ; sudo apt-get dist-upgrade
 	sudo apt-get install -y "${apt_array[@]}" || return 1
 }
 
@@ -30,7 +31,7 @@ INSTALL_PYTHON3_UTILS(){
 }
 
 MKDIR_GITHUB(){
-	Github_Dir="'$HOME'/Github/'"
+	Github_Dir="~/Github/"
 	if [[ ! -d "$Github_Dir" ]] ; then
 		mkdir -p "$Github_Dir"
 		git clone https://github.com/bblinder/home-brews.git "$Github_Dir"
