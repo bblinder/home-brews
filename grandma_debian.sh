@@ -26,7 +26,7 @@ INSTALL_NIX_UTILS(){
 	echo -e "\ndeb http://ftp.us.debian.org/debian stretch-backports main contrib non-free" >> /etc/apt/sources.list
 	echo -e "\ndeb http://ftp.us.debian.org/debian sid main" >> /etc/apt/sources.list
 	# Apt-pinning Firefox Quantum and its dependencies
-	echo -e "Package: *\nPin: release a=stable\nPin-Priority: 1000\n\nPackage *\nPin: release a=unstable\nPin-Priority: 2\n\nPackage: firefox\nPin: release a=unstable\nPin-Priority: 1001\n\nPackage: libfontconfig1\nPin: release a=unstable\nPin-Priority: 1001\n\nfontconfig-config\nPin: release a=unstable\nPin-Priority: 1001\n\nPackage: libss3\nPin: release a=unstable\nPin-Priority: 1001" > /etc/apt/preferences.d/pinning
+	echo -e "Package: *\nPin: release a=stable\nPin-Priority: 500\n\nPackage *\nPin: release a=unstable\nPin-Priority: 2\n\nPackage: firefox\nPin: release a=unstable\nPin-Priority: 1001\n\nPackage: libfontconfig1\nPin: release a=unstable\nPin-Priority: 1001\n\nfontconfig-config\nPin: release a=unstable\nPin-Priority: 1001\n\nPackage: libss3\nPin: release a=unstable\nPin-Priority: 1001" > /etc/apt/preferences.d/pinning
 
 	apt-get update ;  apt-get -y upgrade ;  apt-get -y dist-upgrade
 	# install nix utilities
@@ -90,6 +90,8 @@ case "$base_response" in
 				INSTALL_PYTHON3_UTILS
 				MKDIR_GITHUB
 				INSTALL_GRANDMA_PERSONALS
+				dpkg-reconfigure tzdata #double check our timezone
+
 				echo -n "( •_•)"
 				sleep .75
 				echo -n -e "\r( •_•)>⌐■-■"
