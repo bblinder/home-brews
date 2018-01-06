@@ -4,9 +4,9 @@ set -euo pipefail
 IFS=$'\n\t'
 
 if [[ "$(uname -s)" != "Linux" ]] ; then
-  echo "::: ERROR: this script will only run on Linux systems"
-  echo "::: Exiting..."
-  exit 1
+	echo "::: ERROR: this script will only run on Linux systems"
+	echo "::: Exiting..."
+	exit 1
 fi
 
 if [[ "$EUID" -ne 0 ]] ; then
@@ -30,11 +30,11 @@ INSTALL_NIX_UTILS(){
 }
 
 INSTALL_PYTHON3_UTILS(){
-  if [[ INSTALL_NIX_UTILS ]] ; then
-    echo "::: APT Packages done. Moving on to Python packages... "
-    sleep 1.5
-	sudo -H pip3 install "${python_array[@]}" || return 1
-  fi
+	if [[ INSTALL_NIX_UTILS ]] ; then
+		echo "::: APT Packages done. Moving on to Python packages... "
+		sleep 1.5
+		sudo -H pip3 install "${python_array[@]}" || return 1
+	fi
 }
 
 MKDIR_GITHUB(){

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # using this to prep MPEG 1/2 multiplexed files for editing and viewability in QT and iMovie.
 
