@@ -23,7 +23,7 @@ python_array=(httpie youtube-dl requests streamlink tldr paramiko cheat)
 
 INSTALL_NIX_UTILS(){
 	# adding stretch-backports
-	echo "deb http://ftp.us.debian.org/debian stretch-backports main contrib non-free" >> /etc/apt/sources.list
+	echo -e "\ndeb http://ftp.us.debian.org/debian stretch-backports main contrib non-free" >> /etc/apt/sources.list
 	apt-get update ;  apt-get -y upgrade ;  apt-get -y dist-upgrade
 	# install nix utilities
 	apt-get install -y "${apt_array[@]}" || return 1
