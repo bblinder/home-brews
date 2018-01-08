@@ -46,10 +46,8 @@ INSTALL_PYTHON3_UTILS(){
 MKDIR_GITHUB(){
 	Github_Dir="/home/$username/Github"
 	if [[ ! -d "$Github_Dir" ]] ; then
-		su -u "$username" -c \
-		"mkdir -p $Github_Dir
-		chmod -R 777 $Github_Dir
-		git clone https://github.com/bblinder/home-brews.git $Github_Dir/home-brews/"
+		mkdir -p $Github_Dir ; chmod -R 777 $Github_Dir
+		git clone https://github.com/bblinder/home-brews.git $Github_Dir/home-brews/
 	fi
 }
 
@@ -60,11 +58,14 @@ INSTALL_GRANDMA_PERSONALS(){
 
 	echo -e "\\n\\n::: Installing personals:\\n"
 	echo -e "::: Skype, Chrome...\\n\\n"
-	if [[ "$(command -v axel)" ]] ; then
-		axel -an 5 "$Skype"
-		axel -an 5 "$Chrome"
-	else
-		wget "$Skype" ; wget "$Chrome"
+
+	if [[ ! "$(command -v skypeforlinux)" || "$(command -v google-chrome)" ]] ; then
+		if [[ "$(command -v axel)" ]] ; then
+			axel -an 5 "$Skype"
+			axel -an 5 "$Chrome"
+		else
+			wget "$Skype" ; wget "$Chrome"
+		fi
 	fi
 
 	# Installing...
