@@ -77,9 +77,14 @@ INSTALL_GRANDMA_PERSONALS(){
 
 	# Installing...
 	deb_search=(`find ./ -maxdepth 1 -name "*.deb"`)
-	for d in *.deb ; do
-		dpkg -i "$d"
-	done  ; if [[ "${#deb_search[@]}" -gt 0 ]] ; then rm *.deb ; fi || apt --fix-broken install -y # in case of missing dependencies
+
+	if [[ "${#deb_search[@]}" -gt 0 ]] ; then
+		for d in *.deb ; do
+			dpkg -i "$d"
+		done || apt --fix-broken install -y # in case of missing dependencies
+	fi
+
+	rm *.deb
 }
 
 LAZYADMIN(){
@@ -111,7 +116,7 @@ UNINSTALL_STUFF(){
 
 username='vagrant' # change to whatever the regular username on the target machine is.
 
-echo "::: Username: "$username"\n"
+echo "::: Username: $username\n\n"
 read -rp "Install (1) or Uninstall (2) base packages? -->  " base_response
 case "$base_response" in
 	1)
