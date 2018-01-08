@@ -54,7 +54,7 @@ MKDIR_GITHUB(){
 
 INSTALL_GRANDMA_PERSONALS(){
 	#Skype='https://go.skype.com/skypeforlinux-64.deb' # mainstream release
-    Skype='https://go.skype.com/skypeforlinux-64-preview.deb' # Preview release
+	Skype='https://go.skype.com/skypeforlinux-64-preview.deb' # Preview release
 	Chrome='https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
 
 	echo -e "\n\n::: Installing personals:\n"
@@ -69,7 +69,7 @@ INSTALL_GRANDMA_PERSONALS(){
 	# Installing...
 	for d in *.deb ; do
 		dpkg -i "$d"
-	done || apt --fix-broken install # in case of missing dependencies
+	done || apt --fix-broken install -y # in case of missing dependencies
 }
 
 UNINSTALL_STUFF(){
