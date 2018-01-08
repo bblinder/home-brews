@@ -59,12 +59,19 @@ INSTALL_GRANDMA_PERSONALS(){
 	echo -e "\\n\\n::: Installing personals:\\n"
 	echo -e "::: Skype, Chrome...\\n\\n"
 
-	if [[ ! "$(command -v skypeforlinux)" || "$(command -v google-chrome)" ]] ; then
+	if [[ ! "$(command -v skypeforlinux)" ; then
 		if [[ "$(command -v axel)" ]] ; then
 			axel -an 5 "$Skype"
+		else
+			wget "$Skype"
+		fi
+	fi
+
+	if [[ ! "$(command -v google-chrome)" ]] ; then
+		if [[ "$(command -v axel)" ]] ; then
 			axel -an 5 "$Chrome"
 		else
-			wget "$Skype" ; wget "$Chrome"
+			wget "$Chrome"
 		fi
 	fi
 
@@ -96,7 +103,7 @@ UNINSTALL_STUFF(){
 
 username='vagrant' # change to whatever the regular username on the target machine is.
 
-echo "::: Username: '$username'\\n"
+echo "::: Username: "$username"\n"
 read -rp "Install (1) or Uninstall (2) base packages? -->  " base_response
 case "$base_response" in
 	1)
