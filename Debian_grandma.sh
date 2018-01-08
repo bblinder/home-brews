@@ -59,7 +59,7 @@ INSTALL_GRANDMA_PERSONALS(){
 	echo -e "\\n\\n::: Installing personals:\\n"
 	echo -e "::: Skype, Chrome...\\n\\n"
 
-	if [[ ! "$(command -v skypeforlinux)" ; then
+	if [[ ! "$(command -v skypeforlinux)" ]] ; then
 		if [[ "$(command -v axel)" ]] ; then
 			axel -an 5 "$Skype"
 		else
