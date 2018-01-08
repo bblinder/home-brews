@@ -56,7 +56,8 @@ INSTALL_GRANDMA_PERSONALS(){
 	Skype='https://go.skype.com/skypeforlinux-64.deb'
 	Chrome='https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
 
-	echo -e "\n\n::: Installing personals (Skype, etc)"
+	echo -e "\n\n::: Installing personals:\n"
+    echo -e "::: Skype, Chrome...\n\n"
 	if [[ "$(command -v axel)" ]] ; then
 		axel -an 5 "$Skype"
 		axel -an 5 "$Chrome"
@@ -68,9 +69,6 @@ INSTALL_GRANDMA_PERSONALS(){
 	for d in *.deb ; do
 		dpkg -i "$d"
 	done
-
-	# Cleaning up
-	rm "$Skype" && rm "$Chrome"
 }
 
 UNINSTALL_STUFF(){
