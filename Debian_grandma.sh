@@ -16,7 +16,7 @@ fi
 
 # *nix utilities
 apt_array=(axel vim python-pip python3-pip python-dev python3-dev flatpak zsh git p7zip-full mtr \
-	bleachbit nmap zenmap netcat pv gdebi lynx iftop filelight ufw glances)
+	bleachbit nmap zenmap netcat pv gdebi lynx iftop filelight ufw glances fail2ban)
 
 # python3 utils
 python_array=(httpie youtube-dl requests streamlink tldr paramiko cheat)
@@ -72,6 +72,15 @@ INSTALL_GRANDMA_PERSONALS(){
 	done || apt --fix-broken install -y # in case of missing dependencies
 }
 
+FIREWALL_RULES(){
+	ufw enable
+	ufw default deny incoming ; ufw default allow outgoing
+	ufw allow ssh
+
+	service fail2ban start
+}
+
+
 UNINSTALL_STUFF(){
 	# python crap
 	sudo -H pip3 uninstall --yes "${python_array[@]}"
@@ -96,7 +105,8 @@ case "$base_response" in
 				INSTALL_PYTHON3_UTILS
 				MKDIR_GITHUB
 				INSTALL_GRANDMA_PERSONALS
-				dpkg-reconfigure tzdata #d ouble check our timezone
+				dpkg-reconfigure tzdata #double check our timezone
+				FIREWALL_RULES
 
 				echo -n "( •_•)"
 				sleep .75
