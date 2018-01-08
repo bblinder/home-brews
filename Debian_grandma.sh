@@ -96,6 +96,7 @@ UNINSTALL_STUFF(){
 
 username='vagrant' # change to whatever the regular username on the target machine is.
 
+echo "::: Username: '$username'\\n"
 read -rp "Install (1) or Uninstall (2) base packages? -->  " base_response
 case "$base_response" in
 	1)
