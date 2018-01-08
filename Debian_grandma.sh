@@ -76,9 +76,10 @@ INSTALL_GRANDMA_PERSONALS(){
 	fi
 
 	# Installing...
+	deb_search=(`find ./ -maxdepth 1 -name "*.deb"`)
 	for d in *.deb ; do
 		dpkg -i "$d"
-	done  ; rm *.deb || apt --fix-broken install -y # in case of missing dependencies
+	done  ; if [[ "${#deb_search[@]}" -gt 0 ]] ; then rm *.deb ; fi || apt --fix-broken install -y # in case of missing dependencies
 }
 
 LAZYADMIN(){
