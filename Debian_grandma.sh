@@ -57,7 +57,7 @@ INSTALL_GRANDMA_PERSONALS(){
 	Chrome='https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
 
 	echo -e "\\n\\n::: Installing personals:\\n"
-	echo -e "::: Skype, Chrome...\\n\\n"
+	echo -e "::: Skype (preview version), Chrome (stable)...\\n\\n"
 
 	if [[ ! "$(command -v skypeforlinux)" ]] ; then
 		if [[ "$(command -v axel)" ]] ; then
