@@ -78,16 +78,14 @@ INSTALL_GRANDMA_PERSONALS(){
 	# Installing...
 	for d in *.deb ; do
 		dpkg -i "$d"
-	done || apt --fix-broken install -y # in case of missing dependencies
-
-	# Cleaning up
-	rm *.deb
+	done  ; rm *.deb || apt --fix-broken install -y # in case of missing dependencies
 }
 
 LAZYADMIN(){
 	echo "::: Installing the Lazy Admin...\n"
 	wget http://www.debian.wayoflinux.com/a.downloads/pwladmin_1.0.tar.gz
-	echo "\n::: Don't forget to run Lazy Admin after install. You'll need it for Firefox Quantum ;)" 
+	echo "\n::: Don't forget to run Lazy Admin after install. You'll need it for Firefox Quantum ;)\n\n"
+	sleep 1.5
 }
 
 FIREWALL_RULES(){
