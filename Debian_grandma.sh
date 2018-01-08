@@ -53,7 +53,8 @@ MKDIR_GITHUB(){
 }
 
 INSTALL_GRANDMA_PERSONALS(){
-	Skype='https://go.skype.com/skypeforlinux-64.deb'
+	#Skype='https://go.skype.com/skypeforlinux-64.deb' # mainstream release
+    Skype='https://go.skype.com/skypeforlinux-64-preview.deb' # Preview release
 	Chrome='https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
 
 	echo -e "\n\n::: Installing personals:\n"
