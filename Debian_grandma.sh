@@ -69,7 +69,7 @@ INSTALL_GRANDMA_PERSONALS(){
 	# Installing...
 	for d in *.deb ; do
 		dpkg -i "$d"
-	done
+	done || apt --fix-broken install # in case of missing dependencies
 }
 
 UNINSTALL_STUFF(){
