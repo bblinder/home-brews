@@ -24,15 +24,15 @@ python_array=(httpie youtube-dl requests streamlink tldr paramiko cheat)
 INSTALL_NIX_UTILS(){
 	# adding stretch-backports
 	echo -e "\ndeb http://ftp.us.debian.org/debian stretch-backports main contrib non-free" >> /etc/apt/sources.list
-	echo -e "\ndeb http://ftp.us.debian.org/debian sid main" >> /etc/apt/sources.list
+	#echo -e "\ndeb http://ftp.us.debian.org/debian sid main" >> /etc/apt/sources.list
 	# Apt-pinning Firefox Quantum and its dependencies
-	echo -e "Package: *\nPin: release a=stable\nPin-Priority: 500\n\nPackage *\nPin: release a=unstable\nPin-Priority: 2\n\nPackage: firefox\nPin: release a=unstable\nPin-Priority: 1001\n\nPackage: libfontconfig1\nPin: release a=unstable\nPin-Priority: 1001\n\nPackage: fontconfig-config\nPin: release a=unstable\nPin-Priority: 1001\n\nPackage: libss3\nPin: release a=unstable\nPin-Priority: 1001" > /etc/apt/preferences.d/pinning
+	#echo -e "Package: *\nPin: release a=stable\nPin-Priority: 500\n\nPackage *\nPin: release a=unstable\nPin-Priority: 2\n\nPackage: firefox\nPin: release a=unstable\nPin-Priority: 1001\n\nPackage: libfontconfig1\nPin: release a=unstable\nPin-Priority: 1001\n\nPackage: fontconfig-config\nPin: release a=unstable\nPin-Priority: 1001\n\nPackage: libss3\nPin: release a=unstable\nPin-Priority: 1001" > /etc/apt/preferences.d/pinning
 
 	apt-get update ;  apt-get -y upgrade ;  apt-get -y dist-upgrade
 	# install nix utilities
-	apt-get install -y "${apt_array[@]}"
+	apt-get install -y "${apt_array[@]}" || return 1
 	# Installing Firefox Quantum
-	apt install -t sid firefox -y || return 1
+	#apt install -t sid firefox -y || return 1
 }
 
 INSTALL_PYTHON3_UTILS(){
@@ -53,17 +53,24 @@ MKDIR_GITHUB(){
 }
 
 INSTALL_GRANDMA_PERSONALS(){
-	Downloads='/home/vagrant/Downloads'
 	Skype='https://go.skype.com/skypeforlinux-64.deb'
 	Chrome='https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
 
-	echo "::: Installing personals (Skype, etc)"
-	wget -O "$Downloads"/skypeforlinux-64.deb "$Skype"
-	wget -O "$Downloads"/google-chrome-stable_current_amd64.deb "$Chrome"
+	echo -e "\n\n::: Installing personals (Skype, etc)"
+	if [[ "$(command -v axel)" ]] ; then
+		axel -an 5 "$Skype"
+		axel -an 5 "$Chrome"
+	else
+		wget "$Skype" ; wget "$Chrome"
+	fi
+
 	# Installing...
 	for d in *.deb ; do
-		dpkg -i "$Downloads"/"$d"
+		dpkg -i "$d"
 	done
+
+	# Cleaning up
+	rm "$Skype" && rm "$Chrome"
 }
 
 UNINSTALL_STUFF(){
@@ -90,7 +97,7 @@ case "$base_response" in
 				INSTALL_PYTHON3_UTILS
 				MKDIR_GITHUB
 				INSTALL_GRANDMA_PERSONALS
-				dpkg-reconfigure tzdata #double check our timezone
+				dpkg-reconfigure tzdata #d ouble check our timezone
 
 				echo -n "( •_•)"
 				sleep .75
@@ -105,8 +112,6 @@ case "$base_response" in
 		esac
 		;;
 	2)
-		echo "::: The following will be removed:  "
-		printf '%s\n' "${apt_array[@]}"
 		read -rp "::: Are you sure? [y/N]  " uninstall_response
 		case "$uninstall_response" in
 			[yY])
