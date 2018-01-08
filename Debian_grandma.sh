@@ -23,7 +23,7 @@ python_array=(httpie youtube-dl requests streamlink tldr paramiko cheat)
 
 INSTALL_NIX_UTILS(){
 	# adding stretch-backports
-	echo -e "\ndeb http://ftp.us.debian.org/debian stretch-backports main contrib non-free" >> /etc/apt/sources.list
+	echo -e "\\ndeb http://ftp.us.debian.org/debian stretch-backports main contrib non-free" >> /etc/apt/sources.list
 	#echo -e "\ndeb http://ftp.us.debian.org/debian sid main" >> /etc/apt/sources.list
 	# Apt-pinning Firefox Quantum and its dependencies
 	#echo -e "Package: *\nPin: release a=stable\nPin-Priority: 500\n\nPackage *\nPin: release a=unstable\nPin-Priority: 2\n\nPackage: firefox\nPin: release a=unstable\nPin-Priority: 1001\n\nPackage: libfontconfig1\nPin: release a=unstable\nPin-Priority: 1001\n\nPackage: fontconfig-config\nPin: release a=unstable\nPin-Priority: 1001\n\nPackage: libss3\nPin: release a=unstable\nPin-Priority: 1001" > /etc/apt/preferences.d/pinning
@@ -44,11 +44,12 @@ INSTALL_PYTHON3_UTILS(){
 }
 
 MKDIR_GITHUB(){
-	Github_Dir='/home/vagrant/Github'
+	Github_Dir="/home/$username/Github"
 	if [[ ! -d "$Github_Dir" ]] ; then
-		mkdir -p "$Github_Dir"
-		chmod -R 777 "$Github_Dir"
-		git clone https://github.com/bblinder/home-brews.git "$Github_Dir"/home-brews/
+		su -u "$username" -c \
+		"mkdir -p $Github_Dir
+		chmod -R 777 $Github_Dir
+		git clone https://github.com/bblinder/home-brews.git $Github_Dir/home-brews/"
 	fi
 }
 
@@ -57,8 +58,8 @@ INSTALL_GRANDMA_PERSONALS(){
 	Skype='https://go.skype.com/skypeforlinux-64-preview.deb' # Preview release
 	Chrome='https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
 
-	echo -e "\n\n::: Installing personals:\n"
-	echo -e "::: Skype, Chrome...\n\n"
+	echo -e "\\n\\n::: Installing personals:\\n"
+	echo -e "::: Skype, Chrome...\\n\\n"
 	if [[ "$(command -v axel)" ]] ; then
 		axel -an 5 "$Skype"
 		axel -an 5 "$Chrome"
@@ -91,6 +92,8 @@ UNINSTALL_STUFF(){
 }
 
 ## Now onto the actual work
+
+username='vagrant' # change to whatever the regular username on the target machine is.
 
 read -rp "Install (1) or Uninstall (2) base packages? -->  " base_response
 case "$base_response" in
