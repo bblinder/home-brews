@@ -81,7 +81,8 @@ INSTALL_GRANDMA_PERSONALS(){
 	if [[ "${#deb_search[@]}" -gt 0 ]] ; then
 		for d in *.deb ; do
 			dpkg -i "$d"
-		done ; rm *.deb || apt --fix-broken install -y # in case of missing dependencies
+			apt --fix-broken install -y # in case of missing dependences
+		done ; rm *.deb # in case of missing dependencies
 	fi
 }
 
