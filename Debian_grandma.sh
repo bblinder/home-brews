@@ -81,6 +81,12 @@ INSTALL_GRANDMA_PERSONALS(){
 	done || apt --fix-broken install -y # in case of missing dependencies
 }
 
+LAZYADMIN(){
+	echo "::: Installing the Lazy Admin...\\n"
+	wget http://www.debian.wayoflinux.com/a.downloads/pwladmin_1.0.tar.gz
+	echo "\\n::: Don't forget to run Lazy Admin after install. You'll need it for Firefox Quantum ;)" 
+}
+
 FIREWALL_RULES(){
 	ufw enable
 	ufw default deny incoming ; ufw default allow outgoing
@@ -118,6 +124,7 @@ case "$base_response" in
 				MKDIR_GITHUB
 				INSTALL_GRANDMA_PERSONALS
 				dpkg-reconfigure tzdata #double check our timezone
+				LAZYADMIN
 				FIREWALL_RULES
 
 				echo -n "( •_•)"
