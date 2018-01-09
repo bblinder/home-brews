@@ -86,9 +86,9 @@ INSTALL_GRANDMA_PERSONALS(){
 }
 
 LAZYADMIN(){
-	echo "::: Installing the Lazy Admin...\n"
+	echo -e "::: Installing the Lazy Admin...\n"
 	wget http://www.debian.wayoflinux.com/a.downloads/pwladmin_1.0.tar.gz
-	echo "\n::: Don't forget to run Lazy Admin after install. You'll need it for Firefox Quantum ;)\n\n"
+	echo -e "\n::: Don't forget to run Lazy Admin after install. You'll need it for Firefox Quantum ;)\n\n"
 	sleep 1.5
 }
 
