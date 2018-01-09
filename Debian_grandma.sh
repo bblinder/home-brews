@@ -57,7 +57,7 @@ INSTALL_GRANDMA_PERSONALS(){
 	Chrome='https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
 
 	echo -e "\\n\\n::: Installing personals:\\n"
-	echo -e "::: Skype (preview version), Chrome (stable)...\\n\\n"
+	echo -e "::: Skype (preview version), Chrome (stable)...\n\n"
 
 	if [[ ! "$(command -v skypeforlinux)" ]] ; then
 		if [[ "$(command -v axel)" ]] ; then
@@ -76,7 +76,7 @@ INSTALL_GRANDMA_PERSONALS(){
 	fi
 
 	# Installing...
-	deb_search=(`find ./ -maxdepth 1 -name "*.deb"`)
+	deb_search=(`find ./ -maxdepth 1 -name "*.deb"`) # kinda a legacy array method, but it works.
 
 	if [[ "${#deb_search[@]}" -gt 0 ]] ; then
 		for d in *.deb ; do
@@ -86,7 +86,7 @@ INSTALL_GRANDMA_PERSONALS(){
 }
 
 LAZYADMIN(){
-	echo -e "::: Installing the Lazy Admin...\n"
+	echo -e "::: Installing the Lazy Admin...\\n"
 	wget http://www.debian.wayoflinux.com/a.downloads/pwladmin_1.0.tar.gz
 	echo -e "\n::: Don't forget to run Lazy Admin after install. You'll need it for Firefox Quantum ;)\n\n"
 	sleep 1.5
