@@ -55,6 +55,8 @@ ffmpeg_batch(){
 EOL
 
 ffmpeg_check
+ffmpeg_single
+<<EOL
 read -rp "Enter (1) to transcode a single file, or (2) to transcode a folder -->   " TRANSCODE_CHOICE
 case "$TRANSCODE_CHOICE" in
 	1)
@@ -71,3 +73,4 @@ case "$TRANSCODE_CHOICE" in
 			;;
 	esac
 EOL
+
