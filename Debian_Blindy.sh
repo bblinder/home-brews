@@ -101,12 +101,11 @@ INSTALL_DEB_PERSONALS(){
 	#Synergy='https://symless.com/synergy/download/beta/direct?platform=debian&architecture=x64'
 	#Caprine='https://github.com/sindresorhus/caprine/releases/download/v2.9.0/caprine_2.9.0_amd64.deb'
 
-	deb_array=(https://go.skype.com/skypeforlinux-64-preview.deb \
-		https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb\ 
-		https://launchpadlibrarian.net/337311622/paper-icon-theme_1.4+r692~daily~ubuntu16.04.1_all.deb \
-		https://symless.com/synergy/download/beta/direct?platform=debian&architecture=x64\ 
-		https://github.com/sindresorhus/caprine/releases/download/v2.9.0/caprine_2.9.0_amd64.deb
-	)
+	deb_array=('https://go.skype.com/skypeforlinux-64-preview.deb' \
+		'https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb' \
+		'https://launchpadlibrarian.net/337311622/paper-icon-theme_1.4+r692~daily~ubuntu16.04.1_all.deb' \
+		'https://symless.com/synergy/download/beta/direct?platform=debian&architecture=x64' \
+		'https://github.com/sindresorhus/caprine/releases/download/v2.9.0/caprine_2.9.0_amd64.deb')
 
 	echo -e "\\n\\n::: Installing personals:\\n"
 
