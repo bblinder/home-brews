@@ -66,7 +66,7 @@ MKDIR_GITHUB(){
 
 TUNNELBEAR(){
 	apt-get install network-manager-openvpn-gnome
-	wget https://s3.amazonaws.com/tunnelbear/linux/openvpn.zip -P $USER_HOME/Downloads/
+	wget https://s3.amazonaws.com/tunnelbear/linux/openvpn.zip -P /home/$username/Downloads/
 }
 
 ADAPTA_ICONS(){
@@ -75,13 +75,7 @@ ADAPTA_ICONS(){
 	rm -rf ~/.themes/{Adapta,Adapta-Eta,Adapta-Nokto,Adapta-Nokto-Eta}
 
 	if [[ "$(command -v git)" ]] ; then
-		ICON_LOCATION="'$USER_HOME'/Downloads/adapta-gtk-theme'"
-		git clone https://github.com/adapta-project/adapta-gtk-theme.git "$ICON_LOCATION"
-		cd "$ICON_LOCATION"
-		./autogen.sh
-		make
-		make install
-		cd
+		git clone https://github.com/adapta-project/adapta-gtk-theme.git /home/$username/Downloads/adapta-gtk-theme
 	fi
 }
 
