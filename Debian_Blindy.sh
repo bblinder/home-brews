@@ -23,7 +23,9 @@ apt install dirmngr
 # *nix utilities
 apt_array=(axel vim curl python-pip python3-pip python-dev python3-dev flatpak zsh git p7zip-full mtr \
 	bleachbit nmap zenmap netcat pv gdebi lynx iftop tlp redshift filelight ufw glances \
-	fail2ban clementine terminator spotify-client unzip)
+	fail2ban clementine terminator spotify-client unzip exiftool mediainfo)
+
+backports_array=(ffmpeg mkchromecast) # will include the kernel here when I'm a little braver
 
 # python3 utils
 python_array=(httpie youtube-dl requests streamlink tldr paramiko cheat)
@@ -46,6 +48,7 @@ INSTALL_NIX_UTILS(){
 	apt-get update ;  apt-get -y upgrade ;  apt-get -y dist-upgrade
 	# install nix utilities
 	apt-get install -y "${apt_array[@]}" || return 1
+        apt-get -t stretch-backports install -y "${backports_array[@]}" || return 1
 }
 
 INSTALL_PYTHON3_UTILS(){
