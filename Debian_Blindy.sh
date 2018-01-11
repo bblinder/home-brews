@@ -115,7 +115,11 @@ INSTALL_DEB_PERSONALS(){
 	# Caprine
 	#wget "$Caprine"
 
-	wget "${deb_array[@]}"
+	if [[ "$(command -v axel)" ]] ; then
+		axel -an 5 "${deb_array[@]}" || wget "${deb_array[@]}"
+	else
+		wget "${deb_array[@]}"
+	fi
 
 	# Installing...
 	deb_search=(`find ./ -maxdepth 1 -name "*.deb"`) # kinda a legacy array method, but it works.
