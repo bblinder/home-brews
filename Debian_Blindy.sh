@@ -75,7 +75,7 @@ ADAPTA_ICONS(){
 	rm -rf ~/.themes/{Adapta,Adapta-Eta,Adapta-Nokto,Adapta-Nokto-Eta}
 
 	if [[ "$(command -v git)" ]] ; then
-		ICON_LOCATION='$USER_HOME/Downloads/adapta-gtk-theme'
+		ICON_LOCATION="'$USER_HOME'/Downloads/adapta-gtk-theme'"
 		git clone https://github.com/adapta-project/adapta-gtk-theme.git "$ICON_LOCATION"
 		cd "$ICON_LOCATION"
 		./autogen.sh
@@ -87,8 +87,7 @@ ADAPTA_ICONS(){
 
 OH_MY_ZSH(){
 	if [[ "$(command -v curl)" ]] ; then
-		sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-	elif [[ "$(command -v wget)" ]] ; then
+		sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" || \
 		sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
 	fi
 
@@ -119,11 +118,7 @@ INSTALL_DEB_PERSONALS(){
 	# Caprine
 	#wget "$Caprine"
 
-	if [[ "$(command -v axel)" ]] ; then
-		axel -an 5 "${deb_array[@]}"
-	else
-		wget "${deb_array[@]}"
-	fi
+	wget "${deb_array[@]}"
 
 	# Installing...
 	deb_search=(`find ./ -maxdepth 1 -name "*.deb"`) # kinda a legacy array method, but it works.
@@ -139,8 +134,8 @@ INSTALL_DEB_PERSONALS(){
 LAZYADMIN(){
 	echo -e "::: Installing the Lazy Admin...\\n"
 	wget http://www.debian.wayoflinux.com/a.downloads/pwladmin_1.0.tar.gz
-	tar -xzvf pwladmin_1.0.tar.gz -C $USER_HOME/Downloads/
-	rm $USER_HOME/Downloads/pwladmin_1.0.tar.gz
+	tar -xzvf pwladmin_1.0.tar.gz -C "$USER_HOME"/Downloads/
+	rm "$USER_HOME"/Downloads/pwladmin_1.0.tar.gz
 	echo -e "\n::: Don't forget to run Lazy Admin after install. You'll need it for Firefox Quantum ;)\n\n"
 	sleep 1
 }
