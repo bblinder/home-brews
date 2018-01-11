@@ -22,8 +22,8 @@ apt install dirmngr
 
 # *nix utilities
 apt_array=(axel vim curl python-pip python3-pip python-dev python3-dev flatpak zsh git p7zip-full mtr \
-	bleachbit nmap zenmap netcat pv gdebi lynx iftop tlp redshift filelight gufw glances \
-	fail2ban clementine terminator spotify-client)
+	bleachbit nmap zenmap netcat pv gdebi lynx iftop tlp redshift filelight ufw glances \
+	fail2ban clementine terminator spotify-client unzip)
 
 # python3 utils
 python_array=(httpie youtube-dl requests streamlink tldr paramiko cheat)
@@ -86,7 +86,7 @@ OH_MY_ZSH(){
 	fi
 
 	# Changing default shell
-	chsh -s /usr/bin/zsh
+	# chsh -s /usr/bin/zsh
 }
 
 INSTALL_DEB_PERSONALS(){
@@ -94,13 +94,11 @@ INSTALL_DEB_PERSONALS(){
 	#Skype='https://go.skype.com/skypeforlinux-64-preview.deb' # Preview release
 	#Chrome='https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
 	#Paper='https://launchpadlibrarian.net/337311622/paper-icon-theme_1.4+r692~daily~ubuntu16.04.1_all.deb'
-	#Synergy='https://symless.com/synergy/download/beta/direct?platform=debian&architecture=x64'
 	#Caprine='https://github.com/sindresorhus/caprine/releases/download/v2.9.0/caprine_2.9.0_amd64.deb'
 
 	deb_array=('https://go.skype.com/skypeforlinux-64-preview.deb' \
 		'https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb' \
 		'https://launchpadlibrarian.net/337311622/paper-icon-theme_1.4+r692~daily~ubuntu16.04.1_all.deb' \
-		'https://symless.com/synergy/download/beta/direct?platform=debian&architecture=x64' \
 		'https://github.com/sindresorhus/caprine/releases/download/v2.9.0/caprine_2.9.0_amd64.deb')
 
 	echo -e "\\n\\n::: Installing personals:\\n"
