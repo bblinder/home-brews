@@ -17,6 +17,9 @@ fi
 username='vagrant' # change to whatever the regular username on the target machine is.
 USER_HOME='/home/$username/'
 
+#Quick pre-requisite install:
+apt install dirmngr
+
 # *nix utilities
 apt_array=(axel vim curl python-pip python3-pip python-dev python3-dev flatpak zsh git p7zip-full mtr \
 	bleachbit nmap zenmap netcat pv gdebi lynx iftop tlp redshift filelight gufw glances \
@@ -28,7 +31,7 @@ python_array=(httpie youtube-dl requests streamlink tldr paramiko cheat)
 INSTALL_NIX_UTILS(){
 	# Backing up our sources list
 	cp /etc/apt/sources.list /etc/apt/sources.list.bak
-	rm /etc/apt/source.list
+	rm /etc/apt/sources.list
 	# tweaking it to include non-free sources
 	sed -e 's/main/main contrib non-free/g' /etc/apt/sources.list.bak > /etc/apt/sources.list
 
@@ -42,7 +45,7 @@ INSTALL_NIX_UTILS(){
 
 	apt-get update ;  apt-get -y upgrade ;  apt-get -y dist-upgrade
 	# install nix utilities
-	apt-get install -qq --print-uris -y "${apt_array[@]}" >> script.log 2>>script_error.log || return 1
+	apt-get install -y "${apt_array[@]}" || return 1
 }
 
 INSTALL_PYTHON3_UTILS(){
