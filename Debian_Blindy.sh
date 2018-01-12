@@ -17,8 +17,8 @@ fi
 username='vagrant' # change to whatever the regular username on the target machine is.
 USER_HOME='/home/$username/'
 
-#Quick pre-requisite install:
-apt install dirmngr
+# Quick pre-requisite install:
+apt-get -qq install dirmngr
 
 # *nix utilities
 apt_array=(axel vim curl python-pip python3-pip python-dev python3-dev flatpak zsh git p7zip-full mtr \
