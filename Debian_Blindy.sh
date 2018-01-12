@@ -93,12 +93,6 @@ OH_MY_ZSH(){
 }
 
 INSTALL_DEB_PERSONALS(){
-	#Skype='https://go.skype.com/skypeforlinux-64.deb' # mainstream release
-	#Skype='https://go.skype.com/skypeforlinux-64-preview.deb' # Preview release
-	#Chrome='https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
-	#Paper='https://launchpadlibrarian.net/337311622/paper-icon-theme_1.4+r692~daily~ubuntu16.04.1_all.deb'
-	#Caprine='https://github.com/sindresorhus/caprine/releases/download/v2.9.0/caprine_2.9.0_amd64.deb'
-
 	deb_array=('https://go.skype.com/skypeforlinux-64-preview.deb' \
 		'https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb' \
 		'https://launchpadlibrarian.net/337311622/paper-icon-theme_1.4+r692~daily~ubuntu16.04.1_all.deb' \
