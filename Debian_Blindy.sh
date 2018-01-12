@@ -89,7 +89,7 @@ OH_MY_ZSH(){
 	fi
 
 	# Changing default shell
-	su "$username" bash -c chsh -s /usr/bin/zsh
+	sh -s /usr/bin/zsh
 }
 
 INSTALL_DEB_PERSONALS(){
@@ -135,8 +135,8 @@ INSTALL_DEB_PERSONALS(){
 LAZYADMIN(){
 	echo -e "::: Installing the Lazy Admin...\\n"
 	wget http://www.debian.wayoflinux.com/a.downloads/pwladmin_1.0.tar.gz
-	tar -xzvf pwladmin_1.0.tar.gz -C "$USER_HOME"/Downloads/
-	rm "$USER_HOME"/Downloads/pwladmin_1.0.tar.gz
+	tar -xzvf pwladmin_1.0.tar.gz -C /home/$username/Downloads/
+	rm /home/$username/pwladmin_1.0.tar.gz
 	echo -e "\n::: Don't forget to run Lazy Admin after install. You'll need it for Firefox Quantum ;)\n\n"
 	sleep 1
 }
