@@ -69,7 +69,7 @@ MKDIR_GITHUB(){
 
 TUNNELBEAR(){
 	apt-get install network-manager-openvpn-gnome
-	wget https://s3.amazonaws.com/tunnelbear/linux/openvpn.zip -P /home/$username/Downloads/
+	wget https://s3.amazonaws.com/tunnelbear/linux/openvpn.zip -P /home/$username/Downloads
 }
 
 ADAPTA_ICONS(){
@@ -84,12 +84,12 @@ ADAPTA_ICONS(){
 
 OH_MY_ZSH(){
 	if [[ "$(command -v curl)" ]] ; then
-		sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" || \
-		sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+		su "$username" sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" || \
+		su "$username" sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
 	fi
 
 	# Changing default shell
-	# chsh -s /usr/bin/zsh
+	su "$username" bash -c chsh -s /usr/bin/zsh
 }
 
 INSTALL_DEB_PERSONALS(){
