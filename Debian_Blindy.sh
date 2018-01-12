@@ -153,7 +153,9 @@ UNINSTALL_STUFF(){
 
 ## Now onto the actual work...
 
-echo "::: Username: $username"
+read -rp "::: Enter Username -->   " username
+#echo "::: Username: $username"
+echo -e "\\n::: Username is '$username'"
 echo
 read -rp "Install (1) or Uninstall (2) base packages? -->  " base_response
 case "$base_response" in
