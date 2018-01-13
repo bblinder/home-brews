@@ -14,18 +14,17 @@ if [[ "$EUID" -ne 0 ]] ; then
 	exit
 fi
 
-username='vagrant' # change to whatever the regular username on the target machine is.
-USER_HOME='/home/$username/'
-
 # Quick pre-requisite install:
-apt-get -qq install dirmngr
+echo -e "::: Quick pre-requisite install..."
+echo -e "::: Standby..."
+apt-get -qq install dirmngr > /dev/null
 
 # *nix utilities
 apt_array=(axel vim curl python-pip python3-pip python-dev python3-dev flatpak zsh git p7zip-full mtr \
 	bleachbit nmap zenmap netcat pv gdebi lynx iftop tlp redshift filelight ufw glances \
 	fail2ban clementine terminator spotify-client unzip exiftool mediainfo)
 
-backports_array=(ffmpeg mkchromecast) # will include the kernel here when I'm a little braver
+backports_array=(ffmpeg mkchromecast vagrant virtualbox) # will include the kernel here when I'm a little braver
 
 # python3 utils
 python_array=(httpie youtube-dl requests streamlink tldr paramiko cheat)
