@@ -152,7 +152,7 @@ UNINSTALL_STUFF(){
 
 ## Now onto the actual work...
 
-read -rp "::: Enter Username -->   " username
+read -rp "::: Enter Username -->" username
 #echo "::: Username: $username"
 echo -e "\\n::: Username is '$username'"
 echo
