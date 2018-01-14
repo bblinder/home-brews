@@ -22,7 +22,7 @@ apt-get -qq install dirmngr > /dev/null
 # *nix utilities
 apt_array=(axel vim curl python-pip python3-pip python-dev python3-dev flatpak zsh git p7zip-full mtr \
 	bleachbit nmap zenmap netcat pv gdebi lynx iftop tlp redshift filelight ufw glances \
-	fail2ban clementine terminator spotify-client unzip exiftool mediainfo inkscape)
+	fail2ban clementine terminator spotify-client unzip exiftool mediainfo inkscape neofetch)
 
 backports_array=(ffmpeg mkchromecast vagrant virtualbox) # will include the kernel here when I'm a little braver
 
