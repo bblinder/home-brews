@@ -18,7 +18,7 @@ track = argv
 print track
 
 def upload_music(track):
-	mm.upload(track, enable_matching=True)
+	mm.upload(track, enable_matching=True, enable_transcoding=True)
 
 if __name__ == '__main__':
 	upload_music(track)
