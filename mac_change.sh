@@ -2,7 +2,7 @@
 
 # Changes/restores my machine's MAC address. Useful for hostile or unfamiliar networks.
 
-set -euo pipefail
+set -eu pipefail
 IFS=$'\n\t'
 
 if [[ "$(uname -s)" != "Linux" ]] ; then
@@ -15,9 +15,14 @@ if [[ "$EUID" -ne 0 ]] ; then
     echo "::: Please run as root" ; exit
 fi
 
-interface='' # insert whatever 'ifconfig' or similar shows you
+interface="wlp2s0" # insert whatever 'ifconfig' or similar shows you
 current_mac="$(macchanger -s $interface | grep -i 'Current Mac:' | awk '{ print $3 }')"
 permanent_mac="$(macchanger -s $interface | grep -i 'Permanent Mac:' | awk '{ print $3 }')"
+
+if [[ ! -n "$interface" ]] ; then
+    echo "::: Network interface can't be empty. Try running 'ifconfig' to get it."
+    exit 1
+fi
 
 CHANGE_MAC(){
     ifconfig "$interface" down
