@@ -15,7 +15,7 @@ if [[ "$EUID" -ne 0 ]] ; then
     echo "::: Please run as root" ; exit
 fi
 
-interface="wlp2s0" # insert whatever 'ifconfig' or similar shows you
+interface="" # insert whatever 'ifconfig' or similar shows you
 current_mac="$(macchanger -s $interface | grep -i 'Current Mac:' | awk '{ print $3 }')"
 permanent_mac="$(macchanger -s $interface | grep -i 'Permanent Mac:' | awk '{ print $3 }')"
 
