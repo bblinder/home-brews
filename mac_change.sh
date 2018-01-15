@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Changes/restores my machine's MAC address. Useful for hostile or unfamiliar networks."
+# Changes/restores my machine's MAC address. Useful for hostile or unfamiliar networks.
 
 set -euo pipefail
 IFS=$'\n\t'
@@ -15,7 +15,7 @@ if [[ "$EUID" -ne 0 ]] ; then
     echo "::: Please run as root" ; exit
 fi
 
-interface='wlp2s0'
+interface='' # enter what ifconfig (or similar) shows you here.
 
 if [[ ! "$(command -v macchanger)" ]] ; then
     echo "::: macchanger not installed"
