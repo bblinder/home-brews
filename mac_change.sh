@@ -15,7 +15,7 @@ if [[ "$EUID" -ne 0 ]] ; then
     echo "::: Please run as root" ; exit
 fi
 
-interface='' # insert whatever 'ifconfig' or similar shows you
+interface='wlp2s0'
 current_mac="$(macchanger -s $interface | grep -i 'Current Mac:' | awk '{ print $3 }')"
 permanent_mac="$(macchanger -s $interface | grep -i 'Permanent Mac:' | awk '{ print $3 }')"
 
@@ -35,20 +35,10 @@ RESTORE_MAC(){
     service network-manager restart
 }
 
-if [[ ! "$(command -v macchanger)" ]] ; then
-    echo "::: macchanger not installed"
-    read -rp "::: Install it? [y/n] -->   "macchanger_response
-    case "$macchanger_response" in
-        [yY])
-            apt-get install macchanger
-            ;;
-        [nN])
-            exit
-            ;;
-    esac
-else
-    echo "::: Current MAC Address: $current_mac"
-    echo "::: Permanent MAC Address: $permanent_mac"
+if [[ "$(command -v macchanger)" ]] ; then
+    echo "::: Current MAC Address: '$current_mac'"
+    echo "::: Permanent MAC Address: '$permanent_mac'"
+    
     if [[ "$current_mac" != "$permanent_mac" ]] ; then
         read -rp "Change MAC address (1) or restore MAC address (2)? -->   " MAC_change_restore
         case "$MAC_change_restore" in
