@@ -15,7 +15,25 @@ if [[ "$EUID" -ne 0 ]] ; then
     echo "::: Please run as root" ; exit
 fi
 
-interface='' # enter what ifconfig (or similar) shows you here.
+interface='wlp2s0'
+current_mac="$(macchanger -s $interface | grep -i 'Current Mac:' | awk '{ print $3 }')"
+permanent_mac="$(macchanger -s $interface | grep -i 'Permanent Mac:' | awk '{ print $3 }')"
+
+CHANGE_MAC(){
+    ifconfig "$interface" down
+    echo "::: Changing the MAC Address to random value..."
+    macchanger -A "$interface"
+    ifconfig "$interface" up
+    service network-manager restart
+}
+
+RESTORE_MAC(){
+    ifconfig "$interface" down
+    echo "::: Restoring MAC Address to original, permanent value...\n\n"
+    macchanger -p "$interface"
+    ifconfig "$interface" up
+    service network-manager restart
+}
 
 if [[ ! "$(command -v macchanger)" ]] ; then
     echo "::: macchanger not installed"
@@ -29,24 +47,34 @@ if [[ ! "$(command -v macchanger)" ]] ; then
             ;;
     esac
 else
-    read -rp "Change MAC address (1) or restore MAC address (2)? -->   " MAC_change
-    case "$MAC_change" in
-        1)
-            ifconfig "$interface" down
-            echo "::: Changing MAC address to random value..."
-            macchanger -A "$interface"
-            ifconfig "$interface" up
-            service network-manager restart
-            ;;
-        2)
-            ifconfig "$interface" down
-            echo "::: Restoring MAC address to original permanent value..."
-            macchanger -p "$interface"
-            ifconfig "$interface" up
-            service network-manager restart
-            ;;
-        *)
-            echo "::: Please enter (1) or (2)"
-            ;;
-    esac
+    echo "::: Current MAC Address: $current_mac"
+    echo "::: Permanent MAC Address: $permanent_mac"
+    if [[ "$current_mac" != "$permanent_mac" ]] ; then
+        read -rp "Change MAC address (1) or restore MAC address (2)? -->   " MAC_change_restore
+        case "$MAC_change_restore" in
+            1)
+                CHANGE_MAC
+                ;; 
+            2)
+                RESTORE_MAC
+                ;;
+            *)
+                echo "::: Please enter (1) or (2)"
+                ;;
+        esac
+    else
+        read -rp "Change MAC address? [y/n] -->  " MAC_change
+        case "$MAC_change" in
+            [yY])
+                CHANGE_MAC
+                ;;
+            [nN])
+                exit
+                ;;
+            *)
+                echo "::: Enter Y/N"
+                ;;
+        esac
+    fi
 fi
+
