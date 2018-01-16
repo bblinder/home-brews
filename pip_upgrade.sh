@@ -10,14 +10,14 @@ IFS=$'\n\t'
 LIST='/tmp/pip_list.txt' # Where we're temporarily keeping our stuff.
 
 general_packages(){
-	pip2 list | awk '{ print $1 }' > "$LIST"
+	pip2 list | awk '{ print $1 }' | sed -e 's/--//g' -e '/^$/d' | tail -n +2 > "$LIST"
 }
 
 choice_packages(){
 	pip2 list | awk '{ print $1 }' | grep -Ei "pip|livestreamer|youtube-dl|\
-    thefuck|tldr|zenmap|paramiko|clf|Fabric|\
-    speedtest-cli|setuptools|ohmu|haxor-news|httpie|stormssh|waybackpack|\
-    http-prompt|glances|musicrepair" > "$LIST" 
+		thefuck|tldr|zenmap|paramiko|clf|Fabric|\
+		speedtest-cli|setuptools|ohmu|haxor-news|httpie|stormssh|waybackpack|\
+		http-prompt|glances|musicrepair" > "$LIST" 
 }
 
 pip_upgrade(){

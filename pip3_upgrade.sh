@@ -7,7 +7,7 @@ IFS=$'\n\t'
 LIST='/tmp/pip3_list.txt'
 
 general_packages(){
-	pip3 list | awk '{ print $1 }' > "$LIST"
+	pip3 list | awk '{ print $1 }' | sed -e 's/--//g' -e '/^$/d' | tail -n +2 > "$LIST"
 }
 
 pip3_upgrade(){
