@@ -4,20 +4,11 @@
 
 set -eou pipefail
 IFS=$'\n\t'
-shopt -s nullglob
+#shopt -s nullglob
 
 ffmpeg_check(){
 	type ffmpeg >/dev/null 2>&1 || { echo >$2 "::: ffmpeg not installed. Please install it at: https://ffmpeg.org/download.html" ; exit 1; }
 }
-
-# An older check; leaving it here in case the newer method breaks compatibility.
-#ffmpeg_check(){
-#	if [[ ! ( -f /usr/bin/ffmpeg || -f /usr/local/bin/ffmpeg ) ]] ; then
-#		echo "FFmpeg not installed!"
-#		echo "Please install it at: https://ffmpeg.org/download.html"
-#		exit 1
-#	fi
-#}
 
 ffmpeg_single(){
 	while read -r x ; do
@@ -52,11 +43,6 @@ ffmpeg_batch(){
 	done
 	exit 0
 }
-EOL
-
-ffmpeg_check
-ffmpeg_single
-<<EOL
 read -rp "Enter (1) to transcode a single file, or (2) to transcode a folder -->   " TRANSCODE_CHOICE
 case "$TRANSCODE_CHOICE" in
 	1)
