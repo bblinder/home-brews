@@ -29,7 +29,7 @@ apt_array=(axel vim curl python-pip python3-pip python-dev python3-dev flatpak \
 backports_array=(ffmpeg mkchromecast vagrant virtualbox) # will include the kernel here when I'm a little braver
 
 # python3 utils
-python_array=(httpie hangups youtube-dl requests streamlink tldr paramiko gmusicapi cheat)
+python_array=(httpie hangups youtube-dl requests streamlink tldr paramiko gmusicapi gmusicapi-scripts cheat)
 
 INSTALL_NIX_UTILS(){
 	# Backing up our sources list
