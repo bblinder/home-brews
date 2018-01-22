@@ -90,7 +90,7 @@ OH_MY_ZSH(){
 	fi
 
 	# sh -s /usr/bin/zsh # Changing default shell
-	echo -e "\\nDon't forget to run 'chsh -s /usr/bin/zsh'\n"
+	echo -e "\\nDon't forget to run 'chsh -s /usr/bin/zsh'\\n"
 }
 
 INSTALL_DEB_PERSONALS(){

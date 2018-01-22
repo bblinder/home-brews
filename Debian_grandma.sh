@@ -16,15 +16,22 @@ fi
 
 # *nix utilities
 apt_array=(axel vim python-pip python3-pip python-dev python3-dev flatpak zsh git p7zip-full mtr \
-	bleachbit nmap zenmap netcat pv gdebi lynx iftop filelight ufw glances fail2ban)
+	bleachbit nmap zenmap netcat pv gdebi lynx iftop filelight ufw ffmpeg glances fail2ban)
 
 # python3 utils
 python_array=(httpie youtube-dl requests streamlink tldr paramiko cheat)
 
 INSTALL_NIX_UTILS(){
+	sources_list='/etc/apt/sources.list'
+	# backing up our sources list
+	cp "$sources_list" /etc/apt/sources.list.bak
+	rm "$sources_list"
+
+	# Tweaking it to include non-free sources
+	sed -e 's/main/main contrib non-free/g' /etc/apt/sources.list.bak > "$sources_list"
 	# adding stretch-backports
-	echo -e "\\ndeb http://ftp.us.debian.org/debian stretch-backports main contrib non-free" >> /etc/apt/sources.list
-	#echo -e "\ndeb http://ftp.us.debian.org/debian sid main" >> /etc/apt/sources.list
+	echo -e "\\ndeb http://ftp.us.debian.org/debian stretch-backports main contrib non-free" >> "$sources_list"
+
 	# Apt-pinning Firefox Quantum and its dependencies
 	#echo -e "Package: *\nPin: release a=stable\nPin-Priority: 500\n\nPackage *\nPin: release a=unstable\nPin-Priority: 2\n\nPackage: firefox\nPin: release a=unstable\nPin-Priority: 1001\n\nPackage: libfontconfig1\nPin: release a=unstable\nPin-Priority: 1001\n\nPackage: fontconfig-config\nPin: release a=unstable\nPin-Priority: 1001\n\nPackage: libss3\nPin: release a=unstable\nPin-Priority: 1001" > /etc/apt/preferences.d/pinning
 
@@ -52,27 +59,17 @@ MKDIR_GITHUB(){
 }
 
 INSTALL_GRANDMA_PERSONALS(){
-	#Skype='https://go.skype.com/skypeforlinux-64.deb' # mainstream release
-	Skype='https://go.skype.com/skypeforlinux-64-preview.deb' # Preview release
-	Chrome='https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb'
+	deb_array=('https://go.skype.com/skypeforlinux-64-preview.deb' \
+	'https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb')
+		#Skype='https://go.skype.com/skypeforlinux-64.deb' # mainstream release
 
 	echo -e "\\n\\n::: Installing personals:\\n"
 	echo -e "::: Skype (preview version), Chrome (stable)...\n\n"
 
-	if [[ ! "$(command -v skypeforlinux)" ]] ; then
-		if [[ "$(command -v axel)" ]] ; then
-			axel -an 5 "$Skype"
-		else
-			wget "$Skype"
-		fi
-	fi
-
-	if [[ ! "$(command -v google-chrome)" ]] ; then
-		if [[ "$(command -v axel)" ]] ; then
-			axel -an 5 "$Chrome"
-		else
-			wget "$Chrome"
-		fi
+	if [[ "$(command -v axel)" ]] ; then
+		axel -an 5 "${deb_array[@]}"
+	else
+		wget "${deb_array[@]}"
 	fi
 
 	# Installing...
@@ -112,9 +109,8 @@ UNINSTALL_STUFF(){
 
 ## Now onto the actual work
 
-username='vagrant' # change to whatever the regular username on the target machine is.
-
-echo "::: Username: $username"
+read -rp "::: Enter Username --> " Username
+echo -e "\\n::: Username is '$username'"
 echo
 read -rp "Install (1) or Uninstall (2) base packages? -->  " base_response
 case "$base_response" in
