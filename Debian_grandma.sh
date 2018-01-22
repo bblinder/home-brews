@@ -60,8 +60,9 @@ MKDIR_GITHUB(){
 
 INSTALL_GRANDMA_PERSONALS(){
 	deb_array=('https://go.skype.com/skypeforlinux-64-preview.deb' \
-	'https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb')
-		#Skype='https://go.skype.com/skypeforlinux-64.deb' # mainstream release
+		'https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb')
+	
+	#Skype='https://go.skype.com/skypeforlinux-64.deb' # mainstream release
 
 	echo -e "\\n\\n::: Installing personals:\\n"
 	echo -e "::: Skype (preview version), Chrome (stable)...\n\n"
@@ -92,7 +93,6 @@ LAZYADMIN(){
 FIREWALL_RULES(){
 	ufw enable
 	ufw default deny incoming ; ufw default allow outgoing
-	ufw allow ssh
 
 	service fail2ban start
 }
