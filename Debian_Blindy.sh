@@ -89,8 +89,8 @@ OH_MY_ZSH(){
 		su "$username" sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
 	fi
 
-	# Changing default shell
-	sh -s /usr/bin/zsh
+	# sh -s /usr/bin/zsh # Changing default shell
+	echo -e "\\nDon't forget to run 'chsh -s /usr/bin/zsh'\n"
 }
 
 INSTALL_DEB_PERSONALS(){
@@ -154,7 +154,7 @@ UNINSTALL_STUFF(){
 
 ## Now onto the actual work...
 
-read -rp "::: Enter Username -->" username
+read -rp "::: Enter Username --> " username
 #echo "::: Username: $username"
 echo -e "\\n::: Username is '$username'"
 echo
