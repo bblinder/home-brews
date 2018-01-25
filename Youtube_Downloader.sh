@@ -1,72 +1,53 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# This script assumes you have a working version of youtube-dl and ffmpeg. If not, install youtube-dl at
-# https://rg3.github.io/youtube-dl/download.html
-# If on Mac OS X, you can install via homebrew with `brew install youtube-dl'
+set -euo pipefail
+shopt -s nullglob
+shopt -s nocaseglob
 
-ffmpeg_check(){
-	if [[ ! ( -f /usr/bin/ffmpeg || -f /usr/local/bin/ffmpeg ) ]] ; then
-		echo "FFmpeg not installed!"
- 		echo "Please install it at: https://ffmpeg.org/download.html"
- 		exit 1
- 	fi
-}
- 
-youtube(){
-	youtube-dl -x "$1"
-}	
- 
-m4a_convert(){
-	for fname in *.m4a ; do # Youtube-dl usually downloads audio files as m4a's
+mp3_convert() {
+	for fname in ./*.{m4a,webm,opus,ogg,mp3}; do
 		ffmpeg -i "$fname" -c:a libmp3lame -b:a 320k "${fname%.*}.mp3"
 	done
 }
 
-webm_convert(){
-	for fname in *.webm ; do
-		ffmpeg -i "$fname" -c:a libmp3lame -b:a 320k "${fname%.*}.mp3"
-	done
-}
-
-opus_convert(){
-	for fname in *.opus ; do
-		ffmpeg -i "$fname" -c:a libmp3lame -b:a 320k "${fname%.*}.mp3"
-	done
-}
-
-ogg_convert(){
-	for fname in *.ogg ; do
-		ffmpeg -i "$fname" -c:a libmp3lame -b:a 320k "${fname%.*}.mp3"
-	done
-}
-
-ffmpeg_check && youtube "$@"
-
-if [[ -e "${fname%.*}.mp3" ]] ; then
-	echo "'${fname%.*}.mp3' already exists!"
-	echo "Do you want to overwite it? [y/n]"
-
-	read -r response
-	if [[ $response == "y" ]] ; then
-		m4a_convert || webm_convert || opus_convert || ogg_convert
-	else
-		exit 0
-	fi
-else
-	m4a_convert || webm_convert || opus_convert || ogg_convert
+if [[ ! "$(command -v ffmpeg)" ]]; then
+	echo -e "::: ffmpeg not found. Please make sure it's installed.\\n"
+	exit 1
 fi
 
-if [[ -e "$fname" ]] ; then
-	echo "Do you want to delete the originals? [y/n]"
-	
-	read -r response
-	if [[ $response == "y" ]] ; then
-		rm ./*.m4a || rm ./*.webm || rm ./*.opus || rm ./*.ogg
-		echo "Deleting..."
-		sleep 1
-		exit 0
-	else
-		exit 0
-	fi
+if [[ ! "$(command -v youtube-dl)" ]]; then
+	echo -e "::: Youtube-dl not found in your PATH"
+	echo -e "::: Please make sure it's installed.\\n"
+	exit 1
 fi
 
+YT_DL() {
+	if [[ "$#" -eq 0 ]]; then
+		echo -e "::: No URL provided"
+		exit 1
+	else
+		youtube-dl -x "$1"
+	fi
+}
+
+remove_originals() {
+	read -rp "::: Delete the originals [y/n]? -->  " delete_response
+	case "$delete_response" in
+	[yY])
+		echo -e "::: Deleting..."
+		sleep 0.5
+		rm ./*.{m4a,webm,opus,ogg}
+		sleep 0.5
+		;;
+	*)
+		exit
+		;;
+	esac
+}
+
+YT_DL "$@"
+mp3_convert
+remove_originals
+
+shopt -u nullglob
+shopt -u nocaseglob
