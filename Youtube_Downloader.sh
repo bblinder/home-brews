@@ -24,6 +24,7 @@ fi
 YT_DL() {
 	if [[ "$#" -eq 0 ]]; then
 		echo -e "::: No URL provided"
+		echo -e "\\n::: Usage: ./Youtube_Downloader.sh [URL]"
 		exit 1
 	else
 		youtube-dl -x "$1"
