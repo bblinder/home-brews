@@ -35,7 +35,7 @@ remove_originals() {
 	read -rp "::: Delete the originals [y/n]? -->  " delete_response
 	case "$delete_response" in
 	[yY])
-		echo -e "::: Deleting..."
+		echo -e "\\n::: Deleting..."
 		sleep 0.5
 		rm ./*.{m4a,webm,opus,ogg}
 		sleep 0.5
