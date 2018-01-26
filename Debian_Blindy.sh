@@ -111,9 +111,7 @@ INSTALL_DEB_PERSONALS(){
 	#wget "$Caprine"
 
 	if [[ "$(command -v axel)" ]] ; then
-		axel -an 5 "${deb_array[@]}"
-	else
-		wget "${deb_array[@]}"
+		axel -an 5 "${deb_array[@]}" || wget "${deb_array[@]}"
 	fi
 
 	# Installing...
