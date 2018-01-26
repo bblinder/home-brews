@@ -10,7 +10,7 @@ if [[ "$(uname -s)" != "Linux" ]] ; then
 fi
 
 if [[ "$EUID" -ne 0 ]] ; then
-	echo "Please run as root"
+	echo "::: Please run as root"
 	exit
 fi
 
@@ -68,9 +68,7 @@ INSTALL_GRANDMA_PERSONALS(){
 	echo -e "::: Skype (preview version), Chrome (stable)...\n\n"
 
 	if [[ "$(command -v axel)" ]] ; then
-		axel -an 5 "${deb_array[@]}"
-	else
-		wget "${deb_array[@]}"
+		axel -an 5 "${deb_array[@]}" || wget "${deb_array[@]}"
 	fi
 
 	# Installing...
