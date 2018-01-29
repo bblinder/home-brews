@@ -108,6 +108,12 @@ UNINSTALL_STUFF(){
 ## Now onto the actual work
 
 read -rp "::: Enter Username --> " username
+
+if [[ ! -n "$username" ]] ; then
+	echo -e "::: Username can't be empty."
+	exit 1
+fi
+
 echo -e "\\n::: Username is '$username'"
 echo
 read -rp "Install (1) or Uninstall (2) base packages? -->  " base_response
