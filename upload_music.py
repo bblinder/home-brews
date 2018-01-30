@@ -22,3 +22,5 @@ def upload_music(track):
 
 if __name__ == '__main__':
 	upload_music(track)
+        mm.logout(revoke_oauth=False)
+
