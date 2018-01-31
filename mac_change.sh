@@ -6,7 +6,7 @@ set -eu pipefail
 IFS=$'\n\t'
 
 if [[ "$(uname -s)" != "Linux" ]] ; then
-    echo "::: ERROR this will only run on Linux systems"
+    echo "::: ERROR: this will only run on Linux systems"
     echo "::: Exiting..."
     exit 1
 fi
