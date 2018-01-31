@@ -10,7 +10,7 @@ if [[ "$(uname -s)" != "Linux" ]] ; then
 fi
 
 if [[ "$EUID" -ne 0 ]] ; then
-	echo "Please run as root"
+	echo "::: Please run as root"
 	exit
 fi
 
@@ -121,7 +121,8 @@ INSTALL_DEB_PERSONALS(){
 	if [[ "${#deb_search[@]}" -gt 0 ]] ; then
 		for d in *.deb ; do
 			dpkg -i "$d"
-		done || apt-get install -f || apt --fix-broken install -y ; rm *.deb* # in case of missing dependencies
+		done || apt-get install -f || apt --fix-broken install -y
+		# rm *.deb* # in case of missing dependencies
 	fi
 }
 
