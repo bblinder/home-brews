@@ -2,8 +2,6 @@
 
 set -euo pipefail
 
-linux_version=$(cat /etc/*-release | grep -i "version=" | awk '{ print $1 }' | sed -e 's/"//g')
-
 if [[ "$(uname -s)" != "Linux" ]] ; then
     echo "::: This script will only run on Linux systems"
     exit 1
@@ -12,6 +10,8 @@ elif
     echo "::: This script will only run on systems with systemd (Debian Jessie, etc.)"
     exit 1
 fi
+
+linux_version=$(cat /etc/*-release | grep -i "version=" | awk '{ print $1 }' | sed -e 's/"//g')
 
 disable_suspend(){
     sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
