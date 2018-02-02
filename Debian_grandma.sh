@@ -74,12 +74,14 @@ INSTALL_GRANDMA_PERSONALS(){
 	# Installing...
 	deb_search=(`find ./ -maxdepth 1 -name "*.deb"`) # kinda a legacy array method, but it works.
 
+<<EOL
 	if [[ "${#deb_search[@]}" -gt 0 ]] ; then
 		for d in *.deb ; do
 			dpkg -i "$d"
 		done || apt --fix-broken install -y ; rm *.deb* # in case of missing dependencies
 	fi
 }
+EOL
 
 LAZYADMIN(){
 	echo -e "::: Installing the Lazy Admin...\\n"
