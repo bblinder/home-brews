@@ -99,16 +99,10 @@ INSTALL_DEB_PERSONALS(){
 		'https://launchpadlibrarian.net/337311622/paper-icon-theme_1.4+r692~daily~ubuntu16.04.1_all.deb' \
 		'https://github.com/sindresorhus/caprine/releases/download/v2.9.0/caprine_2.9.0_amd64.deb' \
 		'https://github.com/atom/atom/releases/download/v1.23.3/atom-amd64.deb' \
-		'https://az764295.vo.msecnd.net/stable/490ef761b76b3f3b3832eff7a588aac891e5fe80/code_1.19.2-1515599945_amd64.deb')
+		'https://az764295.vo.msecnd.net/stable/490ef761b76b3f3b3832eff7a588aac891e5fe80/code_1.19.2-1515599945_amd64.deb' \
+		'https://www.fadeinpro.com/download/demo/fadein-linux-amd64-demo.deb')
 
 	echo -e "\\n\\n::: Installing personals:\\n"
-
-	# Paper icons
-	#wget "$Paper"
-	# Synergy
-	#wget "$Synergy"
-	# Caprine
-	#wget "$Caprine"
 
 	if [[ "$(command -v axel)" ]] ; then
 		axel -an 5 "${deb_array[@]}" || wget "${deb_array[@]}"
@@ -116,7 +110,7 @@ INSTALL_DEB_PERSONALS(){
 
 	# Installing...
 	deb_search=(`find ./ -maxdepth 1 -name "*.deb"`) # kinda a legacy array method, but it works.
-
+	<<EOL
 	# Batch installation
 	if [[ "${#deb_search[@]}" -gt 0 ]] ; then
 		for d in *.deb ; do
@@ -125,6 +119,7 @@ INSTALL_DEB_PERSONALS(){
 		# rm *.deb* # in case of missing dependencies
 	fi
 }
+EOL
 
 LAZYADMIN(){
 	echo -e "::: Installing the Lazy Admin...\\n"
