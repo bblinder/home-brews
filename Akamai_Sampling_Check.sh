@@ -14,7 +14,7 @@ if [[ ! "$(command -v http)" ]]; then
 fi
 
 URL='' # Testing URL/Domain. Insert before flight.
-Log='/tmp/Sampling_Log.txt'
+Log='' # Example: '/tmp/Sampling_Log.txt'
 
 ORIGINAL='' #insert before flight
 NEXT=''     #insert before flight.
@@ -23,11 +23,18 @@ if [[ -e "$Log" ]]; then
 	rm "$Log"
 fi
 
-# Now onto the actual work
-
-if [[ ! ( -n "$URL" || -n "$ORIGINAL" || -n "$NEXT") ]] ; then
-	echo "::: [URL], [ORIGINAL], or [NEXT] fields cannot be left blank"
-	exit 1
+if [[ ! -n "$URL" ]] ; then
+        echo "::: [URL] field cannot be blank" ; exit 1
+elif
+	[[ ! -n "$LOG" ]] ; then
+	echo "::: [LOG] field cannot be left blank." ; exit 1
+elif
+        [[ ! -n "$ORIGINAL" ]] ; then
+        echo "::: [ORIGINAL] field cannot be left blank." ; exit 1
+elif
+        [[ ! -n "$NEXT" ]] ; then
+        echo "::: [NEXT] field cannot be left blank."
+        exit 1
 fi
 
 read -rp "::: How many iterations? --> " iter_response
