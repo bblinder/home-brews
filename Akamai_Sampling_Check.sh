@@ -24,14 +24,9 @@ if [[ -e "$Log" ]]; then
 fi
 
 # Now onto the actual work
-if [[ ! -n "$URL" ]]; then
-	echo "::: Testing [URL] field cannot be blank."
-	exit 1
-elif [[ ! -n "$ORIGINAL" ]]; then
-	echo "::: [ORIGINAL] field cannot be blank."
-	exit 1
-elif [[ ! -n "$NEXT" ]]; then
-	echo "::: [NEXT] field cannot be blank."
+
+if [[ ! ( -n "$URL" || -n "$ORIGINAL" || -n "$NEXT") ]] ; then
+	echo "::: [URL], [ORIGINAL], or [NEXT] fields cannot be left blank"
 	exit 1
 fi
 
@@ -40,6 +35,7 @@ if [[ ! -n "$iter_response" ]]; then
 	echo "::: Input can't be blank. Try again."
 	exit 1
 fi
+
 echo -e "\\nTesting '$iter_response' iterations..\\n\\nStandby..."
 sleep 1.5
 for ((i=1; i<$iter_response; i++)); do
