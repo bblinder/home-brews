@@ -118,8 +118,8 @@ INSTALL_DEB_PERSONALS(){
 		done || apt-get install -f || apt --fix-broken install -y
 		# rm *.deb* # in case of missing dependencies
 	fi
-}
 EOL
+}
 
 LAZYADMIN(){
 	echo -e "::: Installing the Lazy Admin...\\n"
