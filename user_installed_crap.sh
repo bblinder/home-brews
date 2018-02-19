@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # First off, this is messy as hell and probably offensive to an actual developer.
 # Second, I'm sincerely sorry to any developer

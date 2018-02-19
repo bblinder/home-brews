@@ -110,15 +110,14 @@ INSTALL_DEB_PERSONALS(){
 
 	# Installing...
 	deb_search=(`find ./ -maxdepth 1 -name "*.deb"`) # kinda a legacy array method, but it works.
-	<<EOL
+
 	# Batch installation
-	if [[ "${#deb_search[@]}" -gt 0 ]] ; then
-		for d in *.deb ; do
-			dpkg -i "$d"
-		done || apt-get install -f || apt --fix-broken install -y
+	#if [[ "${#deb_search[@]}" -gt 0 ]] ; then
+	#	for d in *.deb ; do
+	#		dpkg -i "$d"
+	#	done || apt-get install -f || apt --fix-broken install -y
 		# rm *.deb* # in case of missing dependencies
-	fi
-EOL
+	#fi
 }
 
 LAZYADMIN(){

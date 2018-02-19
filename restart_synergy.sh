@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # quick and dirty script to restart synergy on my OS's.
 
