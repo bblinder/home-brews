@@ -5,7 +5,7 @@ shopt -s nullglob
 shopt -s nocaseglob
 
 mp3_convert() {
-	for fname in *.{m4a,webm,opus,ogg}; do
+	for fname in *.{m4a,webm,opus,ogg,mkv,mp4}; do
 		ffmpeg -i "$fname" -c:a libmp3lame -b:a 320k "${fname%.*}.mp3"
 	done
 }
