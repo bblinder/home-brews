@@ -105,7 +105,7 @@ INSTALL_DEB_PERSONALS(){
 	echo -e "\\n\\n::: Installing personals:\\n"
 
 	if [[ "$(command -v axel)" ]] ; then
-		axel -an 5 "${deb_array[@]}" || wget "${deb_array[@]}"
+		wget "${deb_array[@]}" || axel -an 5 "${deb_array[@]}"
 	fi
 
 	# Installing...
