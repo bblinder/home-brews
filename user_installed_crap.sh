@@ -41,7 +41,8 @@ choice_packages(){
 }
 
 homebrew_upgrade(){
-	if [[ $(echo $((1 + RANDOM %5))) -eq 4 ]] ; then
+	## Randomly doing some housekeeping ##
+	if [[ $((1 + RANDOM %5)) -eq 4 ]] ; then
 		brew doctor
 	fi
 	
