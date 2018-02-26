@@ -41,6 +41,10 @@ choice_packages(){
 }
 
 homebrew_upgrade(){
+	if [[ $(echo $((1 + RANDOM %5))) -eq 4 ]] ; then
+		brew doctor
+	fi
+	
 	brew update ; brew upgrade
 	brew cleanup ; brew cask cleanup ; brew prune
 }
