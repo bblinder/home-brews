@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Tested only on Debian 8 "Jessie" and Mac OS X 10.10
 
@@ -10,11 +10,11 @@ IFS=$'\n\t'
 LIST='/tmp/pip_list.txt' # Where we're temporarily keeping our stuff.
 
 general_packages(){
-	pip2 list | awk '{ print $1 }' | sed -e 's/--//g' -e '/^$/d' | tail -n +2 > "$LIST"
+	pip list | awk '{ print $1 }' | sed -e 's/-//g' -e 's/youtubedl/youtube-dl/g' -e '/^\s*$/d' | tail -n +2 > "$LIST"
 }
 
 choice_packages(){
-	pip2 list | awk '{ print $1 }' | grep -Ei "pip|livestreamer|youtube-dl|\
+	pip list | awk '{ print $1 }' | grep -Ei "pip|livestreamer|youtube-dl|\
 		thefuck|tldr|zenmap|paramiko|clf|Fabric|\
 		speedtest-cli|setuptools|ohmu|haxor-news|httpie|stormssh|waybackpack|\
 		http-prompt|glances|musicrepair" > "$LIST" 
@@ -22,7 +22,7 @@ choice_packages(){
 
 pip_upgrade(){
     while read -r package; do
-        sudo -H pip2 install "$package" --upgrade
+        sudo -H pip install "$package" --upgrade
     done < "$LIST" || return 1
 }
 
