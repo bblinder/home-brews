@@ -9,35 +9,39 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-LIST="/tmp/pip_list.txt" # Where we're temporarily keeping our stuff.
+PIP2_LIST="/tmp/pip2_list.txt" # Where we're temporarily keeping our stuff.
+PIP3_LIST="/tmp/pip3_list.txt"
 
-MAKE_LIST(){
-	pip2 list | awk '{ print $1 }'
+PIP2_MAKE_LIST(){
+	pip2 list | awk '{ print $1 }' | sed -e 's/-//g' -e 's/youtubedl/youtube-dl/g' -e '/^\s*$/d' | tail -n +2 > "$PIP2_LIST"
 }
 
+PIP3_MAKE_LIST(){
+	pip3 list | awk '{ print $1 }' | sed -e 's/-//g' -e 's/youtubedl/youtube-dl/g' -e '/^\s*$/d' | tail -n +2 > "$PIP3_LIST"
+}
 REMOVE_LIST(){
-	if pip_upgrade ; then
-		if [[ -e "$LIST" ]] ; then
-			rm "$LIST"
+	if pip2_upgrade ; then
+		if [[ -e "$PIP2_LIST" ]] ; then
+			rm "$PIP2_LIST"
 		fi
 	else
-		echo "There was an error. Please try again." && \
-			if [[ -e /usr/local/bin/noti ]] ; then
-				noti -t PIP_Update -m "There was an error upgrading python packages..."
-			fi
-		rm "$LIST"
+		echo "There was an error. Please try again."
+		rm "$PIP2_LIST"
+	fi
+
+	if pip3_upgrade ; then
+		if [[ -e "$PIP3_LIST" ]] ; then
+			rm "$PIP3_LIST"
+	else
+		echo "There was an error. Please try again."
+			rm "$PIP3_LIST"
+		fi
 	fi
 }
 
 general_packages(){
-	MAKE_LIST > "$LIST"
-}
-
-choice_packages(){
-	MAKE_LIST | grep -Ei "pip|livestreamer|youtube-dl|\
-	thefuck|tldr|zenmap|paramiko|clf|Fabric|\
-	speedtest-cli|setuptools|haxor-news|ohmu|httpie|\
-	waybackpack|http-prompt|rtv|glances|musicrepair" > "$LIST"
+	PIP2_MAKE_LIST
+	PIP3_MAKE_LIST
 }
 
 homebrew_upgrade(){
@@ -51,10 +55,16 @@ homebrew_upgrade(){
 	brew cleanup ; brew cask cleanup ; brew prune
 }
 
-pip_upgrade(){
+pip2_upgrade(){
     while read -r package; do
         sudo -H pip2 install "$package" --upgrade || return 1
-    done < "$LIST" ; return 0
+    done < "$PIP2_LIST" ; return 0
+}
+
+pip3_upgrade(){
+	while read -r package; do
+		sudo -H pip3 install "$package" --upgrade || return 1
+	done < "$PIP3_LIST" ; return 0
 }
 
 ruby_upgrade(){
@@ -136,29 +146,14 @@ fi
 read -rp "Update Python packages? [y/n]? -->  " PYTHON_CHOICE
 case "$PYTHON_CHOICE" in
 	[yY])
-		if [[ -e "$LIST" ]] ; then # cleaning up beforehand
-		rm "$LIST"
-		fi
-		read -rp "General update (1) or just the favorites (2) ? -->  " PYTHON_TYPE_CHOICE
-		case "$PYTHON_TYPE_CHOICE" in
-			1)
-				general_packages
-				pip_upgrade
-				REMOVE_LIST
-				;;
-			2)
-				choice_packages
-				pip_upgrade
-				REMOVE_LIST
-				;;
-
-			*)
-				;;
-		esac
-		;;
-	[nN])
+		general_packages
+		pip2_upgrade
+		pip3_upgrade
+		REMOVE_LIST
 		;;
 	*)
+		echo "Please enter (1) or (2)"
+		exit 1
 		;;
 esac
 
