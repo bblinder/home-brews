@@ -33,7 +33,7 @@ REMOVE_LIST(){
 		if [[ -e "$PIP3_LIST" ]] ; then
 			rm "$PIP3_LIST"
 	else
-		echo "There was an error. Please try again."
+		echo "::: There was an error. Please try again."
 			rm "$PIP3_LIST"
 		fi
 	fi
@@ -47,7 +47,7 @@ general_packages(){
 homebrew_upgrade(){
 	## Randomly doing some housekeeping ##
 	if [[ $((1 + RANDOM %5)) -eq 4 ]] ; then
-		echo "Running random brew doctor..."
+		echo "::: Running random brew doctor...\\n"
 		brew doctor
 	fi
 	
