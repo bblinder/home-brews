@@ -153,7 +153,6 @@ case "$PYTHON_CHOICE" in
 		;;
 	*)
 		echo "Please enter (1) or (2)"
-		exit 1
 		;;
 esac
 
