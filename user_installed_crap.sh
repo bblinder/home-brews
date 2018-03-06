@@ -57,14 +57,14 @@ homebrew_upgrade(){
 
 pip2_upgrade(){
     while read -r package; do
-        sudo -H pip2 install "$package" --upgrade || return 1
-    done < "$PIP2_LIST" ; return 0
+        sudo -H pip2 install "$package" --upgrade
+    done < "$PIP2_LIST" ; return 1
 }
 
 pip3_upgrade(){
 	while read -r package; do
-		sudo -H pip3 install "$package" --upgrade || return 1
-	done < "$PIP3_LIST" ; return 0
+		sudo -H pip3 install "$package" --upgrade
+	done < "$PIP3_LIST" ; return 1
 }
 
 ruby_upgrade(){
@@ -102,8 +102,6 @@ if [[ "$(uname -s)" == "Darwin" ]] ; then
 	case "$BREW_CHOICE" in
 		[yY])
 			homebrew_upgrade
-			;;
-		[nN])
 			;;
 		*)
 			;;
@@ -147,8 +145,7 @@ read -rp "Update Python packages? [y/n]? -->  " PYTHON_CHOICE
 case "$PYTHON_CHOICE" in
 	[yY])
 		general_packages
-		pip2_upgrade
-		pip3_upgrade
+		pip2_upgrade & pip3_upgrade
 		REMOVE_LIST
 		;;
 	*)
