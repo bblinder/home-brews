@@ -47,7 +47,7 @@ general_packages(){
 homebrew_upgrade(){
 	## Randomly doing some housekeeping ##
 	if [[ $((1 + RANDOM %5)) -eq 4 ]] ; then
-		echo "::: Running random brew doctor...\\n"
+		echo "::: Running random brew doctor...\n"
 		brew doctor
 	fi
 	
