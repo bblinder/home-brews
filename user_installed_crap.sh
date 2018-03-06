@@ -152,7 +152,6 @@ case "$PYTHON_CHOICE" in
 		REMOVE_LIST
 		;;
 	*)
-		echo "Please enter (1) or (2)"
 		;;
 esac
 
