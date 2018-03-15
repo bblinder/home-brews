@@ -109,7 +109,7 @@ INSTALL_DEB_PERSONALS(){
 	wget "${deb_array[@]}"
 
 	dpkg -iR /home/$username/Deb_Packages/ || apt-get install -f || apt --fix-broken install -y
-	cd ; rm -rf /home/Deb_Packages
+	cd ; rm -rf /home/$username/Deb_Packages
 
 	# Installing...
 	#deb_search=(`find ./ -maxdepth 1 -name "*.deb"`) # kinda a legacy array method, but it works.
