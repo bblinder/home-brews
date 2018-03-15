@@ -27,7 +27,7 @@ apt_array=(axel vim curl python-pip python3-pip python-dev python3-dev flatpak \
 	libgdk-pixbuf2.0-dev)
 
 # Stuff I need newer packages of. Will include the kernel here when I'm a little braver...
-backports_array=(ffmpeg mkchromecast vagrant virtualbox)
+backports_array=(ffmpeg mkchromecast chromium vagrant virtualbox)
 
 # python3 utils
 python_array=(httpie hangups youtube-dl requests streamlink tldr paramiko gmusicapi gmusicapi-scripts cheat)
@@ -96,7 +96,6 @@ OH_MY_ZSH(){
 
 INSTALL_DEB_PERSONALS(){
 	deb_array=('https://go.skype.com/skypeforlinux-64-preview.deb' \
-		'https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb' \
 		'https://launchpadlibrarian.net/337311622/paper-icon-theme_1.4+r692~daily~ubuntu16.04.1_all.deb' \
 		'https://github.com/sindresorhus/caprine/releases/download/v2.9.0/caprine_2.9.0_amd64.deb' \
 		'https://github.com/atom/atom/releases/download/v1.23.3/atom-amd64.deb' \
