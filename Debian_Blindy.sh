@@ -70,7 +70,7 @@ MKDIR_GITHUB(){
 }
 
 TUNNELBEAR(){
-	apt-get install network-manager-openvpn-gnome
+	apt-get install network-manager-openvpn-gnome -y 
 	wget https://s3.amazonaws.com/tunnelbear/linux/openvpn.zip -P /home/$username/Downloads
 }
 
