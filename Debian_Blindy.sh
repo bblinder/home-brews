@@ -105,12 +105,14 @@ INSTALL_DEB_PERSONALS(){
 
 	echo -e "\\n\\n::: Installing personals:\\n"
 
-	if [[ "$(command -v axel)" ]] ; then
-		wget "${deb_array[@]}" || axel -an 5 "${deb_array[@]}"
-	fi
+	mkdir Deb_Packages ; cd Deb_Packages
+	wget "${deb_array[@]}"
+
+	dpkg -iR /home/$username/Deb_Packages/ || apt-get install -f || apt --fix-broken install -y
+	cd ; rm -rf /home/Deb_Packages
 
 	# Installing...
-	deb_search=(`find ./ -maxdepth 1 -name "*.deb"`) # kinda a legacy array method, but it works.
+	#deb_search=(`find ./ -maxdepth 1 -name "*.deb"`) # kinda a legacy array method, but it works.
 
 	# Batch installation
 	#if [[ "${#deb_search[@]}" -gt 0 ]] ; then
