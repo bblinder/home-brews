@@ -10,7 +10,7 @@ IFS=$'\n\t'
 LIST='/tmp/pip2_list.txt' # Where we're temporarily keeping our stuff.
 
 general_packages(){
-	pip2 list | awk '{ print $1 }' | sed -e 's/-//g' -e 's/youtubedl/youtube-dl/g' -e '/^\s*$/d' | tail -n +2 > "$LIST"
+	pip2 list | awk '{ print $1 }' | sed -e '/^\s*$/d' | tail -n +3 > "$LIST"
 }
 
 pip2_upgrade(){
