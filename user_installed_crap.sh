@@ -52,7 +52,7 @@ homebrew_upgrade(){
 	fi
 	
 	brew update ; brew upgrade
-	brew cleanup ; brew cask cleanup ; brew prune
+	brew cleanup ; brew prune
 }
 
 pip2_upgrade(){
