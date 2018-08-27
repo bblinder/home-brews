@@ -18,7 +18,7 @@ brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff\
 	gnu-units lnav ranger watch iftop ffmpeg ssh-copy-id spoof-mac\ 
 	parallel pdfgrep dtrx lepton sslh jq woof coreutils\ 
 	zsh-syntax-highlighting mediainfo pandoc rtv cheat figlet rig fortune httrack\ 
-	akamai)
+	akamai bat prettyping)
 
 # Casks/GUI stuff
 cask_array=(alfred flux ccleaner virtualbox google-chrome firefox\ 
