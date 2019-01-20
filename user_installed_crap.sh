@@ -21,7 +21,7 @@ PIP3_MAKE_LIST(){
 }
 REMOVE_LIST(){
 	if pip2_upgrade ; then
-		if [[ -e "$PIP2_LIST" ]] ; then
+		if [[ -z "$PIP2_LIST" ]] ; then
 			rm "$PIP2_LIST"
 		fi
 	else
@@ -30,11 +30,10 @@ REMOVE_LIST(){
 	fi
 
 	if pip3_upgrade ; then
-		if [[ -e "$PIP3_LIST" ]] ; then
+		if [[ -z "$PIP3_LIST" ]] ; then
 			rm "$PIP3_LIST"
 	else
 		echo "::: There was an error. Please try again."
-			rm "$PIP3_LIST"
 		fi
 	fi
 }
