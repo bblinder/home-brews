@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Adapted from a coworker's script to generate internal SSH keys.
+
 DATENOW="$(date +%Y-%m-%d)"
 
 for i in "$@"; do
