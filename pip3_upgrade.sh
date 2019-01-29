@@ -7,7 +7,7 @@ IFS=$'\n\t'
 LIST='/tmp/pip3_list.txt'
 
 general_packages(){
-	pip3 list | awk '{ print $1 }' | sed -e '/^\s*$/d' | tail -n +3 > "$LIST"
+	pip3 list --outdated | awk '{ print $1 }' | sed -e '/^\s*$/d' | tail -n +3 > "$LIST"
 }
 
 pip3_upgrade(){
@@ -28,4 +28,3 @@ if [[ pip3_upgrade ]] ; then
 else
 	echo "There was a problem. Try again."
 fi
-
