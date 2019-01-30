@@ -13,11 +13,11 @@ PIP2_LIST="/tmp/pip2_list.txt" # Where we're temporarily keeping our stuff.
 PIP3_LIST="/tmp/pip3_list.txt"
 
 PIP2_MAKE_LIST(){
-	pip2 list | awk '{ print $1 }' | sed -e '/^\s*$/d' | tail -n +3 > "$PIP2_LIST"
+	pip2 list --outdated | awk '{ print $1 }' | sed -e '/^\s*$/d' | tail -n +3 > "$PIP2_LIST"
 }
 
 PIP3_MAKE_LIST(){
-	pip3 list | awk '{ print $1 }' | sed -e '/^\s*$/d' | tail -n +3 > "$PIP3_LIST"
+	pip3 list --outdated | awk '{ print $1 }' | sed -e '/^\s*$/d' | tail -n +3 > "$PIP3_LIST"
 }
 REMOVE_LIST(){
 	if pip2_upgrade ; then
