@@ -4,7 +4,7 @@
 # Second, I'm sincerely sorry to any developer
 # who has the misfortune of reading this...
 
-# Tested only on Debian 8 "Jessie" and Mac OS X 10.10 and 10.11
+# Tested Debian 8/9 and Mac OS X 10.{11-14}
 
 set -euo pipefail
 IFS=$'\n\t'
