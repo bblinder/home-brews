@@ -7,12 +7,12 @@ IFS=$'\n\t'
 LIST='/tmp/pip3_list.txt'
 
 general_packages(){
-	pip3 list --outdated | awk '{ print $1 }' | sed -e '/^\s*$/d' | tail -n +3 > "$LIST"
+	python3 -m pip list --outdated | awk '{ print $1 }' | sed -e '/^\s*$/d' | tail -n +3 > "$LIST"
 }
 
 pip3_upgrade(){
 	while read -r package; do
-		sudo -H pip3 install "$package" --upgrade
+		sudo -H python3 -m pip install "$package" --upgrade
 	done < "$LIST" || return 1
 }
 

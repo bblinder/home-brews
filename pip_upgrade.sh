@@ -10,12 +10,12 @@ IFS=$'\n\t'
 LIST='/tmp/pip2_list.txt' # Where we're temporarily keeping our stuff.
 
 general_packages(){
-	pip2 list --outdated | awk '{ print $1 }' | sed -e '/^\s*$/d' | tail -n +3 > "$LIST"
+	python2 -m pip list --outdated | awk '{ print $1 }' | sed -e '/^\s*$/d' | tail -n +3 > "$LIST"
 }
 
 pip2_upgrade(){
     while read -r package; do
-        sudo -H pip2 install "$package" --upgrade
+        sudo -H python2 -m pip install "$package" --upgrade
     done < "$LIST" || return 1
 }
 
