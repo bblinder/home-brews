@@ -22,23 +22,28 @@ msg['To'] = toaddr
 msg['Subject'] = "Custom PDF"
 
 body = "New PDF"
- 
-msg.attach(MIMEText(body, 'plain'))
 
 fn = sys.argv[1]
 filename = os.path.basename(fn)
 attachment = open(os.path.abspath(fn), "rb")
 
-part = MIMEBase('application', 'octet-stream')
-part.set_payload((attachment).read())
-encoders.encode_base64(part)
-part.add_header('Content-Disposition', "attachment; filename= %s" % filename)
- 
-msg.attach(part)
- 
-server = smtplib.SMTP('smtp.gmail.com', 587)
-server.starttls()
-server.login(fromaddr, "your-gmail-password")
-text = msg.as_string()
-server.sendmail(fromaddr, toaddr, text)
-server.quit()
+# Now onto the actual work...
+def send_email():
+    msg.attach(MIMEText(body, 'plain'))
+    part = MIMEBase('application', 'octet-stream')
+    part.set_payload((attachment).read())
+    encoders.encode_base64(part)
+    part.add_header('Content-Disposition', "attachment; filename= %s" % filename)
+    
+    msg.attach(part)
+    
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login(fromaddr, "your-gmail-password")
+    text = msg.as_string()
+    server.sendmail(fromaddr, toaddr, text)
+    server.quit()
+
+if __name__ == "__main__":
+    send_email()
+    sys.exit(0)
