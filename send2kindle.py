@@ -28,7 +28,7 @@ filename = os.path.basename(fn)
 attachment = open(os.path.abspath(fn), "rb")
 
 # Now onto the actual work...
-def send_email():
+def build_email():
     msg.attach(MIMEText(body, 'plain'))
     part = MIMEBase('application', 'octet-stream')
     part.set_payload((attachment).read())
@@ -36,7 +36,8 @@ def send_email():
     part.add_header('Content-Disposition', "attachment; filename= %s" % filename)
     
     msg.attach(part)
-    
+
+def send_email():
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.starttls()
     server.login(fromaddr, "your-gmail-password")
@@ -45,5 +46,6 @@ def send_email():
     server.quit()
 
 if __name__ == "__main__":
+    build_email()
     send_email()
     sys.exit(0)
