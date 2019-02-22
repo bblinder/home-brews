@@ -5,6 +5,8 @@
 
 import sys
 import os
+
+# Mail stuff
 import smtplib
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
