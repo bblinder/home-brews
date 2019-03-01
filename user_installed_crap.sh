@@ -66,7 +66,12 @@ pip3_upgrade(){
 }
 
 ruby_upgrade(){
-	sudo gem update ; sudo gem update --system
+	if [[ "$(uname -s)" == "Darwin" ]] ; then
+		# Weird Mac OS thing where it doesn't let you write to /usr/bin
+		sudo gem update -n /usr/local/bin ; sudo gem update --system
+	else
+		sudo gem update ; sudo gem update --system
+	fi
 }
 
 bulk_git_update(){
