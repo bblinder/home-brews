@@ -121,7 +121,7 @@ if [[ "$(uname -s)" == "Linux" ]] ; then
 			;;
 	esac
 
-	if [[ "$(command -v pihole)" ]] ; then
+	if [[ -n "$(command -v pihole)" ]] ; then
 		read -rp "Update Pihole? [y/n]? -->  " PIHOLE_CHOICE
 		case "$PIHOLE_CHOICE" in
 			[yY])
@@ -132,7 +132,7 @@ if [[ "$(uname -s)" == "Linux" ]] ; then
 		esac
 	fi
 
-	if [[ "$(command -v flatpak)" ]] ; then
+	if [[ -n "$(command -v flatpak)" ]] ; then
 		read -rp "Update Flatpak? [y/n]? -->  " FLATPAK_CHOICE
 		case "$FLATPAK_CHOICE" in
 			[yY])
