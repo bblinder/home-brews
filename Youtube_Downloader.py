@@ -25,6 +25,7 @@ def my_hook(d):
 		print('Done downloading, now converting...')
 
 ydl_opts = {
+                'writethumbnail': True,
 		'format': 'bestaudio/best',
 		'postprocessors': [{
 			'key': 'FFmpegExtractAudio',
