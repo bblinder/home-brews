@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ## Blindy Cask/Brewfile
 
@@ -18,16 +18,16 @@ brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff\
 	gnu-units lnav ranger watch iftop ffmpeg ssh-copy-id spoof-mac\ 
 	parallel pdfgrep dtrx lepton sslh jq woof coreutils\ 
 	zsh-syntax-highlighting mediainfo pandoc rtv cheat figlet rig fortune httrack\ 
-	akamai bat prettyping magic-wormhole)
+	akamai bat prettyping magic-wormhole python3 heroku streamlink imagemagick aria2)
 
 # Casks/GUI stuff
-cask_array=(alfred flux ccleaner virtualbox google-chrome firefox\ 
-	opera iterm2 adium slack skype sublime-text atom xquartz caprine\ 
-	spotify beardedspice the-unarchiver gpgtools vlc grandperspective\ 
+cask_array=(alfred flux virtualbox google-chrome firefox krisp nightowl\ 
+	brave-browser iterm2 atom xquartz caprine calibre ransomwhere platypus\ 
+	spotify beardedspice the-unarchiver gpgtools vlc vienna ubersicht vagrant\ 
 	spectacle github-desktop gfxcardstatus superduper chrome-remote-desktop-host\ 
-	handbrake carbon-copy-cloner clipmenu etrecheck charles visual-studio-code\ 
-	malwarebytes-anti-malware postman jadengeller-helium oversight grandperspective\ 
-	signal copyq android-platform-tools imageoptim google-play-music-desktop-player)
+	handbrake carbon-copy-cloner copyq etrecheck charles visual-studio-code\ 
+	malwarebytes postman jadengeller-helium oversight grandperspective\ 
+	signal android-platform-tools imageoptim google-play-music-desktop-player)
 
 INSTALL_STUFF(){
 	# Install HomeBrew
