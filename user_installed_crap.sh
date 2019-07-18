@@ -49,8 +49,8 @@ homebrew_upgrade(){
 		echo -e "::: Running random brew doctor...\\n"
 		brew doctor
 	fi
-	
-	brew update ; brew upgrade ; brew cleanup
+
+	brew update ; brew upgrade ; brew cask upgrade ; brew cleanup
 }
 
 pip2_upgrade(){
@@ -94,7 +94,7 @@ apt_update(){
 }
 
 flatpak_update(){
-	# sudo needed here? 
+	# sudo needed here?
 	flatpak update
 }
 
