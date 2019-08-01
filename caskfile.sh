@@ -12,22 +12,23 @@ fi
 # Or via ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 # *nix utilities
-brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff\ 
-	irssi httpie lynx mplayer mtr osxfuse p7zip pstree sshfs tcpdump\ 
-	speedtest_cli pv rtmpdump tldr wget youtube-dl zsh git m-cli\ 
-	gnu-units lnav ranger watch iftop ffmpeg ssh-copy-id spoof-mac\ 
-	parallel pdfgrep dtrx lepton sslh jq woof coreutils\ 
-	zsh-syntax-highlighting mediainfo pandoc rtv cheat figlet rig fortune httrack\ 
+brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff\
+	irssi httpie lynx mplayer mtr osxfuse p7zip pstree sshfs tcpdump\
+	speedtest_cli pv rtmpdump tldr wget youtube-dl zsh git m-cli\
+	gnu-units lnav ranger watch iftop ffmpeg ssh-copy-id spoof-mac\
+	parallel pdfgrep dtrx lepton sslh jq woof coreutils\
+	zsh-syntax-highlighting mediainfo pandoc rtv cheat figlet rig fortune httrack\
 	akamai bat prettyping magic-wormhole python3 heroku streamlink imagemagick aria2)
 
 # Casks/GUI stuff
-cask_array=(alfred flux virtualbox google-chrome firefox krisp nightowl\ 
-	brave-browser iterm2 atom xquartz caprine calibre ransomwhere platypus\ 
-	spotify beardedspice the-unarchiver gpgtools vlc vienna ubersicht vagrant\ 
-	spectacle github-desktop gfxcardstatus superduper chrome-remote-desktop-host\ 
-	handbrake carbon-copy-cloner copyq etrecheck charles visual-studio-code\ 
-	malwarebytes postman jadengeller-helium oversight grandperspective\ 
-	signal android-platform-tools imageoptim google-play-music-desktop-player)
+cask_array=(alfred flux virtualbox brave firefox krisp nightowl\
+	brave-browser iterm2 atom xquartz caprine calibre ransomwhere platypus\
+	spotify beardedspice the-unarchiver gpgtools vlc vienna ubersicht vagrant\
+	spectacle github-desktop gfxcardstatus superduper chrome-remote-desktop-host\
+	handbrake carbon-copy-cloner copyq etrecheck charles visual-studio-code\
+	malwarebytes postman jadengeller-helium oversight grandperspective\
+	brave-browser bunch signal android-platform-tools imageoptim \
+	google-play-music-desktop-player)
 
 INSTALL_STUFF(){
 	# Install HomeBrew
