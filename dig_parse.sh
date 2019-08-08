@@ -26,7 +26,7 @@ strip_subdomains(){
 cat "$1" | strip_subdomains | remove_akamai_domains > "$TLD_list"
 EOF
 
-if [[ -z "$1" ]] ||'' [[ -z "$2" ]]
+if [[ -z "$1" ]] || [[ -z "$2" ]]
 then
     echo "No input files found."
     exit 1
