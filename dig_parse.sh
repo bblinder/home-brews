@@ -47,6 +47,6 @@ do
   #cname_space=$(echo -e "$cname" | tr '\n' ',' | tr -d "[:blank:]")
   nameserver_space=$(echo -e "$nameserver" | tr '\n' ',' | tr -d "[:blank:]")
 
-  # Outputting to the filename domains.csv
-  echo -e "$domain,$nameserver_space" >> "$2".csv
+  # Outputting to the filename of choice for "$2"
+  echo -e "$domain,$nameserver_space" >> "$2"
 done < "$1"
