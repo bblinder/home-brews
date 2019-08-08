@@ -39,7 +39,7 @@ do
   echo "$domain"
 
   # Using +short to avoid auxiliary information.
-  ipaddress=(dig $domain +short)
+  ipaddress=$(dig $domain +short)
   nameserver=$(dig ns $domain +short)
 
   # Using 'tr' to replace new lines with commas, and strip horizontal whitespace.
