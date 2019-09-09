@@ -16,7 +16,7 @@ brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff\
 	irssi httpie lynx mplayer mtr osxfuse p7zip pstree sshfs tcpdump\
 	speedtest_cli pv rtmpdump tldr wget youtube-dl zsh git m-cli\
 	gnu-units lnav ranger watch iftop ffmpeg ssh-copy-id spoof-mac\
-	parallel pdfgrep dtrx lepton sslh jq woof coreutils\
+	parallel pdfgrep dtrx lepton sslh jq woof coreutils goaccess\
 	zsh-syntax-highlighting mediainfo pandoc rtv cheat figlet rig fortune httrack\
 	akamai bat prettyping magic-wormhole python3 heroku streamlink imagemagick aria2)
 
