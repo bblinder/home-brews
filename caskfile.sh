@@ -37,9 +37,11 @@ INSTALL_STUFF(){
 	# Install utilities
 	brew_install='brew install'
 
-	for item in ${brew_array[*]} ; do
-		$brew_install "$item"
-	done
+	if which brew >/dev/null 2>&1 ; then
+		for item in ${brew_array[*]} ; do
+			$brew_install "$item"
+		done
+	fi
 
 	# Install Caskroom
 	$brew_install caskroom/cask/brew-cask
