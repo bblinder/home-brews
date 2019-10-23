@@ -21,13 +21,13 @@ brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff\
 	akamai bat prettyping magic-wormhole python3 heroku streamlink imagemagick aria2)
 
 # Casks/GUI stuff
-cask_array=(alfred flux virtualbox brave firefox krisp nightowl\
-	brave-browser iterm2 atom xquartz caprine calibre ransomwhere platypus\
+cask_array=(alfred flux brave firefox krisp nightowl\
+	brave-browser iterm2 atom xquartz caprine calibre ransomwhere\
 	spotify beardedspice the-unarchiver gpgtools vlc vienna ubersicht vagrant\
 	spectacle github-desktop gfxcardstatus superduper chrome-remote-desktop-host\
 	handbrake carbon-copy-cloner copyq etrecheck charles visual-studio-code\
 	malwarebytes postman jadengeller-helium oversight grandperspective\
-	brave-browser bunch signal android-platform-tools imageoptim \
+	brave-browser bunch signal android-platform-tools imageoptim\
 	google-play-music-desktop-player)
 
 INSTALL_STUFF(){
