@@ -15,11 +15,11 @@ then
     exit 1
 fi
 
-
+sleep=0.1
 # Don't read lines with 'for'. Use a 'while' loop and 'read'.
 while IFS= read -r domain
 do
-  #sleep "$sleep"
+  sleep "$sleep"
   echo -e "$domain"
 
   # Using +short to avoid auxiliary information.
