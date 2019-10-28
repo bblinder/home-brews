@@ -18,7 +18,8 @@ brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff\
 	gnu-units lnav ranger watch iftop ffmpeg ssh-copy-id spoof-mac\
 	parallel pdfgrep dtrx lepton sslh jq woof coreutils goaccess\
 	zsh-syntax-highlighting mediainfo pandoc rtv cheat figlet rig fortune httrack\
-	akamai bat prettyping magic-wormhole python3 heroku streamlink imagemagick aria2)
+	akamai bat prettyping magic-wormhole python3 heroku streamlink imagemagick aria2\
+	restic ncdu)
 
 # Casks/GUI stuff
 cask_array=(alfred flux brave firefox krisp nightowl\
@@ -28,7 +29,7 @@ cask_array=(alfred flux brave firefox krisp nightowl\
 	handbrake carbon-copy-cloner copyq etrecheck charles visual-studio-code\
 	malwarebytes postman jadengeller-helium oversight grandperspective\
 	brave-browser bunch signal android-platform-tools imageoptim\
-	google-play-music-desktop-player)
+	google-play-music-desktop-player backblaze)
 
 INSTALL_STUFF(){
 	# Install HomeBrew
