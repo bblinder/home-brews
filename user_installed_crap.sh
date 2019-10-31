@@ -50,7 +50,14 @@ homebrew_upgrade(){
 		brew doctor
 	fi
 
-	brew update ; brew upgrade ; brew cask upgrade ; brew cleanup -s
+	brew update ; brew upgrade ; brew cask upgrade ; brew cleanup
+
+	read -rp "Clean up Homebrew caches too? (y/N) --> " cache_response
+	case "$cache_response" in
+		[yY])
+			brew cleanup -s
+			;;
+	esac
 }
 
 pip2_upgrade(){
@@ -67,7 +74,7 @@ pip3_upgrade(){
 
 ruby_upgrade(){
 	if [[ "$(uname -s)" == "Darwin" ]] ; then
-		# Weird Mac OS thing where it doesn't let you write to /usr/bin
+		## Weird Mac OS thing where it does not let you write to /usr/bin
 		sudo gem update -n /usr/local/bin ; sudo gem update --system
 	else
 		sudo gem update ; sudo gem update --system
