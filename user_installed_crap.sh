@@ -50,7 +50,7 @@ homebrew_upgrade(){
 		brew doctor
 	fi
 
-	brew update ; brew upgrade ; brew cask upgrade ; brew cleanup
+	brew update ; brew upgrade ; brew cask upgrade ; brew cleanup -s
 }
 
 pip2_upgrade(){
