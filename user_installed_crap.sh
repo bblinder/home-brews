@@ -160,7 +160,7 @@ case "$PYTHON_CHOICE" in
 
 		## checking if pip lists exists
 		if [[ -s "$PIP2_LIST" ]] || [[ -s "$PIP3_LIST" ]] ; then
-			pip2_upgrade & pip3_upgrade
+			pip2_upgrade ; pip3_upgrade
 			REMOVE_LIST
 		else
 			echo -e "::: No new pip packages..."
