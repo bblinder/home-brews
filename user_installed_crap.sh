@@ -13,12 +13,13 @@ PIP2_LIST="/tmp/pip2_list.txt" # Where we're temporarily keeping our stuff.
 PIP3_LIST="/tmp/pip3_list.txt"
 
 PIP2_MAKE_LIST(){
-	pip2 list --outdated | awk '{ print $1 }' | sed -e '/^\s*$/d' | tail -n +3 > "$PIP2_LIST"
+	python2 -m pip list --outdated | awk '{ print $1 }' | sed -e '/^\s*$/d' | tail -n +3 > "$PIP2_LIST"
 }
 
 PIP3_MAKE_LIST(){
-	pip3 list --outdated | awk '{ print $1 }' | sed -e '/^\s*$/d' | tail -n +3 > "$PIP3_LIST"
+	python3 -m pip list --outdated | awk '{ print $1 }' | sed -e '/^\s*$/d' | tail -n +3 > "$PIP3_LIST"
 }
+
 REMOVE_LIST(){
 	if pip2_upgrade ; then
 		if [[ -z "$PIP2_LIST" ]] ; then
@@ -62,13 +63,13 @@ homebrew_upgrade(){
 
 pip2_upgrade(){
     while read -r package; do
-        sudo -H pip2 install "$package" --upgrade
+        sudo -H python2 -m pip install "$package" --upgrade
     done < "$PIP2_LIST" ; return 1
 }
 
 pip3_upgrade(){
 	while read -r package; do
-		sudo -H pip3 install "$package" --upgrade
+		sudo -H python3 -m pip install "$package" --upgrade
 	done < "$PIP3_LIST" ; return 1
 }
 
@@ -151,16 +152,25 @@ if [[ "$(uname -s)" == "Linux" ]] ; then
 	fi
 fi
 
+
 read -rp "Update Python packages? [y/n]? -->  " PYTHON_CHOICE
 case "$PYTHON_CHOICE" in
 	[yY])
 		general_packages
-		pip2_upgrade & pip3_upgrade
-		REMOVE_LIST
+
+		## checking if pip lists exists
+		if [[ -s "$PIP2_LIST" ]] || [[ -s "$PIP3_LIST" ]] ; then
+			pip2_upgrade & pip3_upgrade
+			REMOVE_LIST
+		else
+			echo -e "::: No new pip packages..."
+		fi
+		
 		;;
 	*)
 		;;
 esac
+
 
 read -rp "Move on to ruby update? [y/n] -->  "  RUBY_CHOICE
 if [[ $RUBY_CHOICE == "y" ]] ; then
