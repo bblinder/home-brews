@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ## A quick and dirty script to losslessly compress my jpegs using Dropbox's lepton tool.
 ## https://github.com/dropbox/lepton
