@@ -15,7 +15,7 @@ general_packages(){
 
 pip2_upgrade(){
     while read -r package; do
-        sudo -H python2 -m pip install "$package" --upgrade
+	    python2 -m pip install "$package" --upgrade
     done < "$LIST" || return 1
 }
 

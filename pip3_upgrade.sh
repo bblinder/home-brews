@@ -12,7 +12,7 @@ general_packages(){
 
 pip3_upgrade(){
 	while read -r package; do
-		sudo -H python3 -m pip install "$package" --upgrade
+		python3 -m pip install "$package" --upgrade
 	done < "$LIST" || return 1
 }
 
