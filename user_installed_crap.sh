@@ -63,13 +63,13 @@ homebrew_upgrade(){
 
 pip2_upgrade(){
     while read -r package; do
-        sudo -H python2 -m pip install "$package" --upgrade
+	    python2 -m pip install "$package" --upgrade --user
     done < "$PIP2_LIST" ; return 1
 }
 
 pip3_upgrade(){
 	while read -r package; do
-		sudo -H python3 -m pip install "$package" --upgrade
+		python3 -m pip install "$package" --upgrade --user
 	done < "$PIP3_LIST" ; return 1
 }
 
