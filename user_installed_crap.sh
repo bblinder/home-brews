@@ -108,15 +108,16 @@ flatpak_update(){
 
 # Ruling out non Mac OS X systems...
 if [[ "$(uname -s)" == "Darwin" ]] ; then
-	read -rp "Update Homebrew? [y/n] -->  " BREW_CHOICE
-
-	case "$BREW_CHOICE" in
-		[yY])
-			homebrew_upgrade
-			;;
-		*)
-			;;
-	esac
+	if [[ "$(command -v brew)" ]] ; then
+		read -rp "Update Homebrew? [y/n] -->  " BREW_CHOICE
+		case "$BREW_CHOICE" in
+			[yY])
+				homebrew_upgrade
+				;;
+			*)
+				;;
+		esac
+	fi
 fi
 
 if [[ "$(uname -s)" == "Linux" ]] ; then
