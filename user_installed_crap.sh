@@ -186,8 +186,6 @@ case "$GIT_CHOICE" in
 	[yY])
 		bulk_git_update
 		;;
-	[nN])
-		;;
 	*)
 		;;
 esac
@@ -198,8 +196,6 @@ if [[ "$(uname -s)" == "Darwin" ]] ; then
 	case "$APPLE_CHOICE" in
 		[yY])
 			softwareupdate --list
-			;;
-		[nN])
 			;;
 		*)
 			;;
