@@ -27,7 +27,7 @@ cask_array=(alfred flux firefox krisp nightowl docker\
 	spotify beardedspice the-unarchiver gpgtools vlc vienna ubersicht vagrant\
 	spectacle github-desktop gfxcardstatus superduper chrome-remote-desktop-host\
 	handbrake carbon-copy-cloner copyq etrecheckpro charles visual-studio-code\
-	malwarebytes postman jadengeller-helium oversight grandperspective\
+	malwarebytes postman jadengeller-helium oversight font-input grandperspective\
 	brave-browser bunch signal android-platform-tools imageoptim deckset\
 	google-play-music-desktop-player backblaze do-not-disturb reikey gas-mask)
 
