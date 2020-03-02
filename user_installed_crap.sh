@@ -13,7 +13,7 @@ PIP2_LIST="/tmp/pip2_list.txt" # Where we're temporarily keeping our stuff.
 PIP3_LIST="/tmp/pip3_list.txt"
 
 PIP2_MAKE_LIST(){
-	python2 -m pip list --outdated | awk '{ print $1 }' | sed -e '/^\s*$/d' | tail -n +3 > "$PIP2_LIST"
+	python2 -m pip list --outdated --no-python-version-warning | awk '{ print $1 }' | sed -e '/^\s*$/d' | tail -n +3 > "$PIP2_LIST"
 }
 
 PIP3_MAKE_LIST(){
@@ -63,7 +63,7 @@ homebrew_upgrade(){
 
 pip2_upgrade(){
     while read -r package; do
-	    python2 -m pip install "$package" --upgrade --user
+	    python2 -m pip install "$package" --upgrade --user --no-python-version-warning
     done < "$PIP2_LIST"
     	# return 1
 }
