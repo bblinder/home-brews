@@ -31,8 +31,10 @@ do
   # Using 'tr' to replace new lines with commas, and strip horizontal whitespace.
   # Now with commas as delimiters, software can convert results to spreadsheet.
   #cname_space=$(echo -e "$cname" | tr '\n' ',' | tr -d "[:blank:]")
+  ipaddr_space=$(echo -e "$ipaddress" | tr '\n' ',' | tr -d "[:blank:]")
+
   nameserver_space=$(echo -e "$nameserver" | tr '\n' ',' | tr -d "[:blank:]")
 
   # Outputting to the filename of choice for "$2"
-  echo -e "$domain,$nameserver_space" >> "$2"
+  echo -e "$domain,$nameserver_space,$ipaddr_space" >> "$2"
 done < "$1"
