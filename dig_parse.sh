@@ -9,7 +9,7 @@
 # By default, the script uses a 300ms delay.
 # Sleep is not necessary, but always a nice option.
 
-set -euo pipefail # bash strict mode
+#set -euo pipefail # bash strict mode
 
 if [[ -z "$1" ]] || [[ -z "$2" ]]
 then
