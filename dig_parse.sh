@@ -3,25 +3,24 @@
 # based on dig-dug
 # A mass domain dig to csv tool.
 
-# Usage: ./dig-dug.sh domain outputfile
+# Usage: ./dig-dug.sh domain_file output_file
 # If reading from a list, the 'domains' file should contain one domain per line
 
 # By default, the script uses a 300ms delay.
 # Sleep is not necessary, but always a nice option.
 
 set -uo pipefail # bash strict mode
-#IFS=$'\n\t'
+IFS=$'\n\t'
 
 if [[ -z "$1" ]] || [[ -z "$2" ]]
 then
-    echo "No input files found."
+    echo "Usage: ./dig-dug.sh domain_file output_file"
     exit 1
 fi
 
 sleep=0.1
 master_dig='/tmp/dig_domain.txt'
 ns_dig='/tmp/ns_dig.txt'
-
 
 # Don't read lines with 'for'. Use a 'while' loop and 'read'.
 while IFS= read -r domain
@@ -49,5 +48,5 @@ do
   ipaddr_space="$(echo -e "$ipaddress" | tr '\n' ',' | tr -d "[:blank:]")"
   
   # Outputting to the filename of choice for "$2" (ideally a csv)
-  echo -e "$provider,$domain,$nameserver_space,$ipaddr_space" >> "$2"
+  echo -e "$provider,$domain,$nameserver_space,$cname,$ipaddr_space" >> "$2"
 done < "$1"
