@@ -3,7 +3,7 @@
 # based on dig-dug
 # A mass domain dig to csv tool.
 
-# Usage: ./dig-dug.sh domain_file output_file
+# Usage: ./dig-parse.sh domain_file output_file
 # If reading from a list, the 'domains' file should contain one domain per line
 
 # By default, the script uses a 300ms delay.
@@ -12,9 +12,8 @@
 set -uo pipefail # bash strict mode
 IFS=$'\n\t'
 
-if [[ -z "$1" ]] || [[ -z "$2" ]]
-then
-    echo "Usage: ./dig-dug.sh domain_file output_file"
+if [[ -z "$1" ]] || [[ -z "$2" ]] ; then
+    echo "Usage: ./dig-parse.sh domain_file output_file"
     exit 1
 fi
 
@@ -44,7 +43,7 @@ do
   # Using 'tr' to replace new lines with commas, and strip horizontal whitespace.
   # Now with commas as delimiters, software can convert results to spreadsheet.
   #cname_space=$(echo -e "$cname" | tr '\n' ',' | tr -d "[:blank:]")
-  nameserver_space="$(echo -e "$nameserver" | tr '\n' ',' | tr -d "[:blank:]")"
+  nameserver_space="$(echo -e "$nameserver" | tr '\n' ' ' | tr -d "[:blank:]")"
   ipaddr_space="$(echo -e "$ipaddress" | tr '\n' ',' | tr -d "[:blank:]")"
   
   # Outputting to the filename of choice for "$2" (ideally a csv)
