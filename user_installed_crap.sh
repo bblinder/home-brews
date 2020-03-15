@@ -4,7 +4,7 @@
 # Second, I'm sincerely sorry to any developer
 # who has the misfortune of reading this...
 
-# Tested Debian 8/9 and Mac OS X 10.{11-14}
+# Tested Debian 8/9, Mac OS X 10.{11-15}, and WSL (Win 10)
 
 set -euo pipefail
 IFS=$'\n\t'
@@ -51,7 +51,12 @@ homebrew_upgrade(){
 		brew doctor
 	fi
 
-	brew update ; brew upgrade ; brew cask upgrade ; brew cleanup
+	brew update ; brew upgrade
+
+	# Only have homebrew/cask installed on my Mac; trying to keep it that way...
+	if [[ "$(uname -s)" == "Darwin" ]]; then
+		 brew cask upgrade ; brew cleanup
+	fi
 
 	read -rp "Clean up Homebrew caches too? (y/N) --> " cache_response
 	case "$cache_response" in
@@ -108,18 +113,16 @@ flatpak_update(){
 	flatpak update
 }
 
-# Ruling out non Mac OS X systems...
-if [[ "$(uname -s)" == "Darwin" ]] ; then
-	if [[ "$(command -v brew)" ]] ; then
-		read -rp "Update Homebrew? [y/n] -->  " BREW_CHOICE
-		case "$BREW_CHOICE" in
-			[yY])
-				homebrew_upgrade
-				;;
-			*)
-				;;
-		esac
-	fi
+# Checking for and updating homebrew (Mac OS or Linuxbrew)
+if [[ "$(command -v brew)" ]] ; then
+	read -rp "Update Homebrew? [y/n] -->  " BREW_CHOICE
+	case "$BREW_CHOICE" in
+		[yY])
+			homebrew_upgrade
+			;;
+		*)
+			;;
+	esac
 fi
 
 if [[ "$(uname -s)" == "Linux" ]] ; then
