@@ -17,7 +17,7 @@ general_packages(){
 
 pip2_upgrade(){
     while read -r package; do
-	    python2 -m pip install "$package" --upgrade --user
+	    python2 -m pip install "$package" --upgrade --user --no-python-version-warning
     done < "$LIST" || return 1
 }
 
