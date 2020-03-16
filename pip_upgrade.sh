@@ -10,7 +10,9 @@ IFS=$'\n\t'
 LIST='/tmp/pip2_list.txt' # Where we're temporarily keeping our stuff.
 
 general_packages(){
-	python2 -m pip list --outdated | awk '{ print $1 }' | sed -e '/^\s*$/d' | tail -n +3 > "$LIST"
+	python2 -m pip list --outdated --no-python-version-warning | \
+		awk '{ print $1 }' | sed -e '/^\s*$/d' | \
+		tail -n +3 > "$LIST"
 }
 
 pip2_upgrade(){
@@ -23,6 +25,7 @@ if [[ -z "$LIST" ]] ; then
 	rm "$LIST"
 fi
 
+echo -e "Updating python2 packages... please wait..."
 general_packages
 pip2_upgrade
 
