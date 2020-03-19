@@ -25,7 +25,7 @@ if [[ -z "$LIST" ]] ; then
 	rm "$LIST"
 fi
 
-echo -e "Updating python2 packages... please wait..."
+echo -e "::: Updating python2 packages... please wait..."
 general_packages
 pip2_upgrade
 
@@ -33,5 +33,5 @@ if [[ pip2_upgrade ]] ; then
     echo "Done."
     rm "$LIST"
 else
-    echo "There was an error. Please try again."
+    echo "::: There was an error. Please try again."
 fi
