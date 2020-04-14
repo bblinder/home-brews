@@ -20,6 +20,7 @@ if [[ -z "$LIST" ]] ; then
 	rm "$LIST"
 fi
 
+echo -e "::: Updating python3 packages... please wait..."
 general_packages && pip3_upgrade
 
 if [[ pip3_upgrade ]] ; then
