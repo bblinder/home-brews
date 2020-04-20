@@ -28,7 +28,7 @@ cask_array=(alfred flux firefox krisp nightowl docker\
 	github-desktop gfxcardstatus superduper chrome-remote-desktop-host\
 	handbrake carbon-copy-cloner copyq etrecheckpro charles visual-studio-code\
 	malwarebytes postman jadengeller-helium oversight font-input grandperspective\
-	brave-browser bunch signal android-platform-tools imageoptim deckset\
+	brave-browser bunch signal android-platform-tools imageoptim deckset lastpass\
 	google-play-music-desktop-player backblaze do-not-disturb reikey gas-mask)
 
 INSTALL_STUFF(){
