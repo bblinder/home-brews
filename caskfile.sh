@@ -25,7 +25,7 @@ brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff\
 cask_array=(alfred flux firefox krisp nightowl docker\
 	brave-browser iterm2 atom xquartz caprine calibre ransomwhere\
 	spotify beardedspice the-unarchiver gpgtools vlc vienna ubersicht vagrant\
-	github-desktop gfxcardstatus superduper chrome-remote-desktop-host\
+	github-desktop gfxcardstatus numi superduper chrome-remote-desktop-host\
 	handbrake carbon-copy-cloner copyq etrecheckpro charles visual-studio-code\
 	malwarebytes postman jadengeller-helium oversight font-input grandperspective\
 	brave-browser bunch signal android-platform-tools imageoptim deckset lastpass\
