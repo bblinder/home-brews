@@ -12,9 +12,12 @@ except ImportError:
 	print ("Exiting...")
 	sys.exit()
 
+# A unique id as a MAC address, eg '00:11:22:33:AA:BB'. 
+# Per the docs, this should only be provided in cases where the default (host MAC address incremented by 1) will not work.
 mac_address = '38:F9:D3:57:68:FC'
+
 mm = Musicmanager()
-#mm.perform_oauth() # For the first run/implementation only. Not needed afterwards.
+# mm.perform_oauth() # For the first run/implementation only. Not needed afterwards.
 mm.login(uploader_id=mac_address)
 
 ''' For later, when I'm generating a random MAC address
