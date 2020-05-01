@@ -3,7 +3,6 @@
 # Simple script to upload mp3's to my Google Music account. Uses the unofficial gmusic API.
 
 import sys
-from sys import argv
 import random
 try:
 	from gmusicapi import Musicmanager
@@ -32,7 +31,7 @@ def rand_mac():
         )
 '''
 
-track = argv
+track = sys.argv[1]
 print(track)
 
 def upload_music(track):
