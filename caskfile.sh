@@ -29,7 +29,7 @@ cask_array=(alfred flux firefox krisp nightowl docker\
 	handbrake carbon-copy-cloner copyq etrecheckpro charles visual-studio-code\
 	malwarebytes postman jadengeller-helium oversight font-input grandperspective\
 	brave-browser bunch signal android-platform-tools imageoptim deckset lastpass\
-	google-play-music-desktop-player backblaze do-not-disturb reikey gas-mask)
+	google-play-music-desktop-player backblaze do-not-disturb reikey gas-mask appcleaner)
 
 INSTALL_STUFF(){
 	# Install HomeBrew
