@@ -22,7 +22,7 @@ brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff\
 	restic ncdu minikube lazydocker dive plantuml rkhunter)
 
 # Casks/GUI stuff
-cask_array=(alfred flux firefox krisp nightowl docker\
+cask_array=(alfred flux firefox krisp nightowl docker lulu\
 	brave-browser iterm2 atom xquartz caprine calibre ransomwhere\
 	spotify beardedspice the-unarchiver gpgtools vlc vienna ubersicht vagrant\
 	github-desktop gfxcardstatus numi superduper chrome-remote-desktop-host\
