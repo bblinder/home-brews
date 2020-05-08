@@ -23,13 +23,13 @@ brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff\
 
 # Casks/GUI stuff
 cask_array=(alfred flux firefox krisp nightowl docker lulu\
-	brave-browser iterm2 atom xquartz caprine calibre ransomwhere\
-	spotify beardedspice the-unarchiver gpgtools vlc vienna ubersicht vagrant\
-	github-desktop gfxcardstatus numi superduper chrome-remote-desktop-host\
+	iterm2 xquartz caprine calibre ransomwhere microsoft-edge\
+	spotify beardedspice the-unarchiver gpgtools iina visual-studio-code\
+	numi vanilla station\
 	handbrake carbon-copy-cloner copyq etrecheckpro charles visual-studio-code\
 	malwarebytes postman jadengeller-helium oversight font-input grandperspective\
-	brave-browser bunch signal android-platform-tools imageoptim deckset lastpass\
-	google-play-music-desktop-player backblaze do-not-disturb reikey gas-mask appcleaner)
+	bunch signal android-platform-tools imageoptim deckset lastpass\
+	backblaze do-not-disturb reikey gas-mask appcleaner)
 
 INSTALL_STUFF(){
 	# Install HomeBrew
