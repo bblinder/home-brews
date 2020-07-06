@@ -21,7 +21,7 @@ toaddr = "RECEIVING-AT-THIS-EMAIL" # The Kindle's email address
 msg = MIMEMultipart()
 msg['From'] = fromaddr
 msg['To'] = toaddr
-msg['Subject'] = "Custom PDF"
+msg['Subject'] = "Convert"
 
 body = "New PDF"
 
