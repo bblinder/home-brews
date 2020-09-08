@@ -55,7 +55,7 @@ homebrew_upgrade(){
 
 	# Only have homebrew/cask installed on my Mac; trying to keep it that way...
 	if [[ "$(uname -s)" == "Darwin" ]]; then
-		 brew cask upgrade ; brew cleanup
+		 brew upgrade --cask ; brew cleanup
 	fi
 
 	read -rp "Clean up Homebrew caches too? (y/N) --> " cache_response
