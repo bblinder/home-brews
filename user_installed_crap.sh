@@ -171,7 +171,6 @@ case "$PYTHON_CHOICE" in
 		else
 			echo -e "::: No new pip packages..."
 		fi
-		
 		;;
 	*)
 		;;
