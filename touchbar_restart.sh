@@ -3,8 +3,8 @@
 #restarts the touchbar on my 2019 MBP
 
 if [[ "$(id -u)" -ne 0 ]] ; then
-	echo "::: Please run as root."
-	exit
+    echo "::: Please run as root."
+    exit
 fi
 
 if [[ "$(uname -s)" == "Darwin" ]] ; then
