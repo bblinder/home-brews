@@ -3,8 +3,8 @@
 ## Blindy Cask/Brewfile
 
 if [[ $(uname -s) != "Darwin" ]] ; then
-	# Ruling out non-Mac OS X systems
-	echo "::: ERROR: This script will only run on Mac OS X"
+	# Ruling out non-Mac OS systems
+	echo "::: ERROR: This script will only run on Mac OS"
 	exit 1
 fi
 
@@ -47,7 +47,7 @@ INSTALL_STUFF(){
 	# Install Caskroom
 	$brew_install caskroom/cask/brew-cask
 
-	cask_install='brew cask install'
+	cask_install='brew install --cask'
 
 	for item in ${cask_array[*]} ; do
 		$cask_install "$item"
@@ -59,7 +59,7 @@ INSTALL_STUFF(){
 
 UNINSTALL_STUFF(){
 	UNINSTALL='brew uninstall'
-	ZAP='brew cask zap'
+	ZAP='brew uninstall --cask --zap'
 
 	# killing brew utils
 	for item in ${brew_array[*]} ; do
@@ -71,7 +71,7 @@ UNINSTALL_STUFF(){
 		$ZAP "$item"
 	done
 
-	brew cleanup ; brew cask cleanup ; brew prune
+	brew cleanup -s
 
 	brew uninstall caskroom/cask/brew-cask
 
