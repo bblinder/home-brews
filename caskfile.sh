@@ -22,18 +22,17 @@ brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff\
 	restic ncdu minikube lazydocker dive plantuml rkhunter switchaudio-osx)
 
 # Casks/GUI stuff
-cask_array=(alfred flux firefox krisp nightowl docker lulu\
-	iterm2 xquartz caprine calibre ransomwhere microsoft-edge\
-	spotify beardedspice the-unarchiver gpgtools iina visual-studio-code\
-	numi vanilla station\
-	handbrake carbon-copy-cloner copyq etrecheckpro charles visual-studio-code\
-	malwarebytes postman jadengeller-helium oversight font-input grandperspective\
-	bunch signal android-platform-tools imageoptim deckset lastpass\
-	backblaze do-not-disturb reikey gas-mask appcleaner)
+cask_array=(alfred firefox krisp nightowl docker lulu obsidian onedrive \
+	iterm2 xquartz caprine calibre ransomwhere microsoft-edge telegram \
+	spotify beardedspice the-unarchiver gpgtools iina visual-studio-code \
+	numi handbrake carbon-copy-cloner copyq etrecheckpro rectangle typora \
+	charles visual-studio-code malwarebytes postman anki appcleaner \
+	oversight font-input grandperspective bunch signal android-platform-tools \
+	imageoptim deckset lastpass backblaze do-not-disturb reikey gas-mask appcleaner)
 
 INSTALL_STUFF(){
 	# Install HomeBrew
-	ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 	# Install utilities
 	brew_install='brew install'
@@ -81,7 +80,7 @@ PURGE_HOMEBREW(){
 	read -rp "Do you want to remove HomeBrew as well? [y/n]   " response
 	if [[ $response == "y" ]] ; then
 		## a rare instance where homebrew requires sudo privileges.
-		sudo ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"
+		/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall.sh)"
 	else
 		exit 0
 	fi
