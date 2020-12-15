@@ -25,7 +25,7 @@ brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff\
 cask_array=(alfred firefox krisp nightowl docker lulu obsidian onedrive \
 	iterm2 xquartz caprine calibre ransomwhere microsoft-edge telegram \
 	spotify beardedspice the-unarchiver gpgtools iina visual-studio-code \
-	numi handbrake carbon-copy-cloner copyq etrecheckpro rectangle typora \
+	numi handbrake carbon-copy-cloner jumpcut etrecheckpro rectangle typora \
 	charles visual-studio-code malwarebytes postman anki appcleaner \
 	oversight font-input grandperspective bunch signal android-platform-tools \
 	imageoptim deckset lastpass backblaze do-not-disturb reikey gas-mask appcleaner)
