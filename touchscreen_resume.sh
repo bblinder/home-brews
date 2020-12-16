@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# Fixes the intermittent touchscreen issue on my XPS 13 running Debian Jessie.
+# Fixes the intermittent touchscreen issue on my XPS 13 (2015) running Debian Jessie.
 # Script stored in /opt/touchscreen-fix
 
 set -euo pipefail
