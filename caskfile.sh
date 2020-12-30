@@ -58,6 +58,7 @@ INSTALL_STUFF(){
 
 CONFIG_PREFERENCES(){
 	if INSTALL_STUFF; then
+		## installing keybindings and fuzzy completion
 		$(brew --prefix)/opt/fzf/install
 	fi
 }
