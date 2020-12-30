@@ -15,7 +15,7 @@ fi
 brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff\
 	irssi httpie lynx mplayer mtr osxfuse p7zip pstree sshfs tcpdump\
 	speedtest_cli pv rtmpdump tldr wget youtube-dl zsh git m-cli\
-	gnu-units lnav ranger watch iftop ffmpeg ssh-copy-id spoof-mac\
+	gnu-units lnav ranger watch iftop ffmpeg ssh-copy-id spoof-mac fzf\
 	parallel pdfgrep dtrx lepton sslh jq woof coreutils goaccess exa wifi-password\
 	zsh-syntax-highlighting mediainfo pandoc rtv cheat figlet rig fortune httrack\
 	akamai bat prettyping magic-wormhole python3 heroku streamlink imagemagick aria2\
@@ -56,6 +56,12 @@ INSTALL_STUFF(){
 	brew cleanup ; brew cask cleanup ; brew prune
 }
 
+CONFIG_PREFERENCES(){
+	if INSTALL_STUFF; then
+		$(brew --prefix)/opt/fzf/install
+	fi
+}
+
 UNINSTALL_STUFF(){
 	UNINSTALL='brew uninstall'
 	ZAP='brew uninstall --cask --zap'
@@ -92,6 +98,7 @@ read -rp "Install (1) or Uninstall (2) ?   " response
 case $response in
 	1)
 		INSTALL_STUFF
+		CONFIG_PREFERENCES
 		;;
 	2)
 		read -rp "Are you sure? [y/n]  " uninstall_response
