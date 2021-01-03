@@ -14,7 +14,7 @@ fi
 # *nix utilities
 brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff\
 	irssi httpie lynx mplayer mtr osxfuse p7zip pstree sshfs tcpdump\
-	speedtest_cli pv rtmpdump tldr wget youtube-dl zsh git m-cli\
+	speedtest_cli pv rtmpdump tldr wget youtube-dl zsh git m-cli pwgen\
 	gnu-units lnav ranger watch iftop ffmpeg ssh-copy-id spoof-mac fzf\
 	parallel pdfgrep dtrx lepton sslh jq woof coreutils goaccess exa wifi-password\
 	zsh-syntax-highlighting mediainfo pandoc rtv cheat figlet rig fortune httrack\
