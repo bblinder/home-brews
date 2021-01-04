@@ -8,6 +8,7 @@ IFS=$'\n\t'
 
 
 LIST='/tmp/pip2_list.txt' # Where we're temporarily keeping our stuff.
+trap '{ rm -f "$LIST"; }' EXIT # cleaning up on exit or ctrl-c.
 
 general_packages(){
 	python2 -m pip list --outdated --no-python-version-warning | \

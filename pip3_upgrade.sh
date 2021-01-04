@@ -4,7 +4,8 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-LIST='/tmp/pip3_list.txt'
+LIST='/tmp/pip3_list.txt' # where we're temporarily keeping our stuff
+trap '{ rm -f "$LIST"; }' EXIT # cleaning up on successful exit or ctrl-c.
 
 general_packages(){
 	python3 -m pip list --outdated | awk '{ print $1 }' | sed -e '/^\s*$/d' | tail -n +3 > "$LIST"
