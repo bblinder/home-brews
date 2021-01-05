@@ -35,7 +35,7 @@ do
 
   # stripping subdomains and getting nameserver data
   TLD_domain="$(echo -e $domain | sed "s/^[^.]*\.//")"
-  nameserver="$(dig ns "$TLD_domain" +short | awk 'NR==1{print $1}')"
+  nameserver="$(dig @8.8.8.8 ns "$TLD_domain" +short | awk 'NR==1{print $1}')"
 
   # Assumes you've got a shodan API key living at ~/.shodan/api_key
   #provider=$(shodan host $ipaddress | grep "Organization:" | sed "s/.*Organization: *//")
