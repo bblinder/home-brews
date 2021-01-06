@@ -21,6 +21,10 @@ brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff\
 	akamai bat prettyping magic-wormhole python3 heroku streamlink imagemagick aria2\
 	restic ncdu minikube lazydocker dive plantuml rkhunter switchaudio-osx rga)
 
+#brew taps
+tap_array=(federico-terzi/espanso hashicorp/tap homebrew/cask homebrew/cask-fonts \
+	homebrew/cask-versions homebrew/core nextdns/tap)
+
 # Casks/GUI stuff
 cask_array=(alfred firefox krisp nightowl docker lulu obsidian onedrive \
 	iterm2 xquartz caprine calibre ransomwhere microsoft-edge telegram \
@@ -33,6 +37,15 @@ cask_array=(alfred firefox krisp nightowl docker lulu obsidian onedrive \
 INSTALL_STUFF(){
 	# Install HomeBrew
 	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+	# install taps
+	brew_tap='brew tap'
+
+	if which brew >/dev/null 2>&1 ; then
+		for item in ${tap_array[*]} ; do
+			$brew_tap "$item"
+		done
+	fi
 
 	# Install utilities
 	brew_install='brew install'
