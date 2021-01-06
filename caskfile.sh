@@ -27,7 +27,7 @@ tap_array=(federico-terzi/espanso hashicorp/tap homebrew/cask homebrew/cask-font
 
 # Casks/GUI stuff
 cask_array=(alfred firefox krisp nightowl docker lulu obsidian onedrive \
-	iterm2 xquartz caprine calibre ransomwhere microsoft-edge telegram \
+	iterm2 xquartz caprine calibre ransomwhere microsoft-edge telegram espanso \
 	spotify beardedspice the-unarchiver gpgtools iina visual-studio-code \
 	numi handbrake carbon-copy-cloner jumpcut etrecheckpro rectangle typora \
 	charles visual-studio-code malwarebytes postman anki appcleaner nextdns\
@@ -47,7 +47,7 @@ INSTALL_STUFF(){
 		done
 	fi
 
-	# Install utilities
+	# Install utilities/formulae
 	brew_install='brew install'
 
 	if which brew >/dev/null 2>&1 ; then
@@ -56,9 +56,9 @@ INSTALL_STUFF(){
 		done
 	fi
 
-	# Install Caskroom
-	$brew_install caskroom/cask/brew-cask
-
+	# Install casks
+	# (side note: caskroom was deprecated in favor of tapping homebrew/cask.)
+	# (It's been reflected in the "brew taps" array above.)
 	cask_install='brew install --cask'
 
 	for item in ${cask_array[*]} ; do
