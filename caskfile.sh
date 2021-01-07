@@ -15,18 +15,22 @@ fi
 brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff\
 	irssi httpie lynx mplayer mtr osxfuse p7zip pstree sshfs tcpdump\
 	speedtest_cli pv rtmpdump tldr wget youtube-dl zsh git m-cli pwgen\
-	gnu-units lnav ranger watch iftop ffmpeg ssh-copy-id spoof-mac fzf\
+	gnu-units lnav ranger watch iftop ffmpeg ssh-copy-id spoof-mac fzf nextdns\
 	parallel pdfgrep dtrx lepton sslh jq woof coreutils goaccess exa wifi-password\
 	zsh-syntax-highlighting mediainfo pandoc rtv cheat figlet rig fortune httrack\
 	akamai bat prettyping magic-wormhole python3 heroku streamlink imagemagick aria2\
 	restic ncdu minikube lazydocker dive plantuml rkhunter switchaudio-osx rga)
 
+#brew taps
+tap_array=(federico-terzi/espanso hashicorp/tap homebrew/cask homebrew/cask-fonts \
+	homebrew/cask-versions homebrew/core nextdns/tap)
+
 # Casks/GUI stuff
 cask_array=(alfred firefox krisp nightowl docker lulu obsidian onedrive \
-	iterm2 xquartz caprine calibre ransomwhere microsoft-edge telegram \
-	spotify beardedspice the-unarchiver gpgtools iina visual-studio-code \
+	iterm2 xquartz caprine calibre ransomwhere microsoft-edge telegram espanso \
+	spotify beardedspice the-unarchiver gpgtools iina visual-studio-code font-jetbrains-mono \
 	numi handbrake carbon-copy-cloner jumpcut etrecheckpro rectangle typora \
-	charles visual-studio-code malwarebytes postman anki appcleaner \
+	charles visual-studio-code malwarebytes postman anki appcleaner font-juliamono \
 	oversight font-input grandperspective bunch signal android-platform-tools \
 	imageoptim deckset lastpass backblaze do-not-disturb reikey gas-mask appcleaner)
 
@@ -34,7 +38,16 @@ INSTALL_STUFF(){
 	# Install HomeBrew
 	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-	# Install utilities
+	# install taps
+	brew_tap='brew tap'
+
+	if which brew >/dev/null 2>&1 ; then
+		for item in ${tap_array[*]} ; do
+			$brew_tap "$item"
+		done
+	fi
+
+	# Install utilities/formulae
 	brew_install='brew install'
 
 	if which brew >/dev/null 2>&1 ; then
@@ -43,9 +56,9 @@ INSTALL_STUFF(){
 		done
 	fi
 
-	# Install Caskroom
-	$brew_install caskroom/cask/brew-cask
-
+	# Install casks
+	# (side note: caskroom was deprecated in favor of tapping homebrew/cask.)
+	# (It's been reflected in the "brew taps" array above.)
 	cask_install='brew install --cask'
 
 	for item in ${cask_array[*]} ; do
