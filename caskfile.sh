@@ -66,8 +66,7 @@ INSTALL_STUFF(){
 	done
 
 	# Cleaning up after ourselves
-	brew cleanup ; brew cask cleanup ; brew prune
-}
+	brew cleanup
 
 CONFIG_PREFERENCES(){
 	if INSTALL_STUFF; then
