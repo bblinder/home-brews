@@ -13,7 +13,7 @@ fi
 
 # *nix utilities
 brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff\
-	irssi httpie lynx mplayer mtr osxfuse p7zip pstree sshfs tcpdump\
+	irssi httpie lynx mplayer mtr osxfuse p7zip pstree sshfs tcpdump musikcube\
 	speedtest_cli pv rtmpdump tldr wget youtube-dl zsh git m-cli pwgen\
 	gnu-units lnav ranger watch iftop ffmpeg ssh-copy-id spoof-mac fzf nextdns\
 	parallel pdfgrep dtrx lepton sslh jq woof coreutils goaccess exa wifi-password\
@@ -23,7 +23,7 @@ brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff\
 
 #brew taps
 tap_array=(federico-terzi/espanso hashicorp/tap homebrew/cask homebrew/cask-fonts \
-	homebrew/cask-versions homebrew/core nextdns/tap)
+	homebrew/cask-versions homebrew/core nextdns/tap brew clangen/musikcube)
 
 # Casks/GUI stuff
 cask_array=(alfred firefox krisp nightowl docker lulu obsidian onedrive \
@@ -67,6 +67,7 @@ INSTALL_STUFF(){
 
 	# Cleaning up after ourselves
 	brew cleanup
+}
 
 CONFIG_PREFERENCES(){
 	if INSTALL_STUFF; then
