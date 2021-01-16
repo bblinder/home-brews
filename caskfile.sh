@@ -26,7 +26,7 @@ tap_array=(federico-terzi/espanso hashicorp/tap homebrew/cask homebrew/cask-font
 	homebrew/cask-versions homebrew/core nextdns/tap brew clangen/musikcube)
 
 # Casks/GUI stuff
-cask_array=(alfred firefox krisp nightowl docker lulu obsidian onedrive \
+cask_array=(alfred firefox krisp nightowl docker lulu obsidian onedrive dozer \
 	iterm2 xquartz caprine calibre ransomwhere microsoft-edge telegram espanso \
 	spotify beardedspice the-unarchiver gpgtools iina visual-studio-code font-jetbrains-mono \
 	numi handbrake carbon-copy-cloner jumpcut etrecheckpro rectangle typora \
