@@ -68,14 +68,23 @@ def download(url, pathname):
             progress.update(len(data))
 
 
-def main(url, path):
+'''
+def print_image_urls(url, path):
+    # get all images
+    imgs = get_all_images(url)
+    for img in imgs:
+        # for each img, download it
+        #download(img, path)
+        print(img)
+'''
+
+def download_images(url, path):
     # get all images
     imgs = get_all_images(url)
     for img in imgs:
         # for each img, download it
         download(img, path)
     
-
 
 if __name__ == "__main__":
     import argparse
@@ -91,4 +100,4 @@ if __name__ == "__main__":
         # if path isn't specified, use the domain name of that url as the folder name
         path = urlparse(url).netloc
     
-    main(url, path)
+    download_images(url, path)
