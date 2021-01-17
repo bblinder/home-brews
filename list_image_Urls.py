@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 # Adapted from a found script.
+# This flavor prints the image URLs on a given page.
+# To actually download them, see the `download_images.py` script.
 
 import requests
 import os

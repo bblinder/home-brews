@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 # Adapted from a found script.
+# Downloads all images on a given web page.
+# To merely see/print the image URLs, see the `list_image_Urls.py` script.
 
 import requests
 import os
