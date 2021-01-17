@@ -76,7 +76,7 @@ def download_images(url, path):
         # for each img, download it
         download(img, path)
     
-
+# Now onto the actual work
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="This script downloads all images from a web page")
