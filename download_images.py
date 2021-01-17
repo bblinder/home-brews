@@ -69,17 +69,6 @@ def download(url, pathname):
             # update the progress bar manually
             progress.update(len(data))
 
-
-'''
-def print_image_urls(url, path):
-    # get all images
-    imgs = get_all_images(url)
-    for img in imgs:
-        # for each img, download it
-        #download(img, path)
-        print(img)
-'''
-
 def download_images(url, path):
     # get all images
     imgs = get_all_images(url)
