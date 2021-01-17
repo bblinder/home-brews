@@ -4,6 +4,8 @@
 # Downloads all images on a given web page.
 # To merely see/print the image URLs, see the `list_image_Urls.py` script.
 
+#To Do: account for pages that lazy load.
+
 import requests
 import os
 from tqdm import tqdm
