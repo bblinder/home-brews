@@ -83,7 +83,7 @@ pip3_upgrade(){
 ruby_upgrade(){
 	if [[ "$(uname -s)" == "Darwin" ]] ; then
 		## Weird Mac OS thing where it does not let you write to /usr/bin
-		sudo gem update -n /usr/local/bin ; sudo gem update --system
+		sudo gem update -n /usr/local/bin ; sudo gem update -n /usr/local/bin --system
 	else
 		sudo gem update ; sudo gem update --system
 	fi
