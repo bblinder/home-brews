@@ -6,8 +6,8 @@ import urllib.parse
 
 API_key = '[API Key]'
 article_URL_raw = sys.argv[1]
-article_URL_formatted = urllib.parse.quote_plus(news_article)
-url = "https://api.smmry.com?SM_API_KEY=" + API_key + "&SM_LENGTH=10&SM_URL=" + news_article_formatted
+article_URL_formatted = urllib.parse.quote_plus(article_URL_raw)
+url = "https://api.smmry.com?SM_API_KEY=" + API_key + "&SM_LENGTH=10&SM_URL=" + article_URL_formatted
 
 payload = {}
 headers= {}
