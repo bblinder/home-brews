@@ -61,7 +61,7 @@ homebrew_upgrade(){
 	read -rp "Clean up Homebrew caches too? (y/N) --> " cache_response
 	case "$cache_response" in
 		[yY])
-			brew cleanup -s
+			brew cleanup -s --prune=all
 			;;
 	esac
 }
