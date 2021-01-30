@@ -4,6 +4,14 @@
 
 DATENOW="$(date +%Y-%m-%d)"
 
+# checking if we gave it a key name, else exiting.
+if [[ "$#" -eq 0 ]] ; then
+	echo "::: No key name specified. Exiting..."
+	exit 1
+fi
+
+# Onto the actual work. Generating a 2048 bit RSA key to the directory
+# specificed in the "$1" input (ex: personal, work, dev, etc)
 for i in "$@"; do
 	[[ ! -d "$HOME/.ssh/$i/" ]] && { mkdir -p "$HOME/.ssh/$i"; }
 
