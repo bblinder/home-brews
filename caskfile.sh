@@ -23,7 +23,8 @@ brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff\
 
 #brew taps
 tap_array=(federico-terzi/espanso hashicorp/tap homebrew/cask homebrew/cask-fonts \
-	homebrew/cask-versions homebrew/core nextdns/tap brew clangen/musikcube)
+	homebrew/cask-versions homebrew/core nextdns/tap brew clangen/musikcube \
+	apparition47/tap)
 
 # Casks/GUI stuff
 cask_array=(alfred firefox krisp nightowl docker lulu obsidian onedrive dozer \
