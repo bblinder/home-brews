@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 
-# based on dig-dug
-# A mass domain dig to csv tool.
+#####
+## based on dig-dug
+## A mass domain dig to csv tool.
 
-# Usage: ./dig-parse.sh domain_file output_file
-# If reading from a list, the 'domains' file should contain one domain per line
+## Usage: ./dig-parse.sh domain_file output_file
+## If reading from a list, the 'domains' file should contain one domain per line
 
-# By default, the script uses a 300ms delay.
-# Sleep is not necessary, but always a nice option.
+## By default, the script uses a 300ms delay.
+## Sleep is not strictly necessary, but always a sane option.
+#####
 
 set -uo pipefail # bash strict mode
 IFS=$'\n\t'
