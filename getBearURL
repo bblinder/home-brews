@@ -1,0 +1,14 @@
+#!/usr/bin/osascript
+
+tell application "Bear" to activate
+tell application "System Events"
+	tell its application process "Bear"
+		tell its menu bar 1
+			tell its menu "Note"
+				click menu item "Copy Link to Note" -- or "Copy Note’s Identifier"
+			end tell
+		end tell
+	end tell
+end tell
+delay 0.2 -- sometimes the clipboard needs a 1/5 of second to register
+set theNoteLink to the clipboard
