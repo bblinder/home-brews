@@ -203,3 +203,19 @@ if [[ "$(uname -s)" == "Darwin" ]] ; then
 			;;
 	esac
 fi
+
+
+if [[ "$(uname -s)" == "Darwin" ]] ; then
+	if [[ "$(command -v mas)" ]] ; then
+		read -rp "Check for App Store updates? [y/n] -->  " APP_STORE_CHOICE
+
+		case "$APP_STORE_CHOICE" in
+			[yY])
+				mas outdated
+				mas upgrade
+				;;
+			*)
+				;;
+		esac
+	fi
+fi

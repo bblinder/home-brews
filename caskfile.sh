@@ -8,6 +8,14 @@ if [[ $(uname -s) != "Darwin" ]] ; then
 	exit 1
 fi
 
+# Checking if xcode command line tools are installed.
+# Can't install homebrew without it.
+if [[ ! $(xcode-select -p) ]] ; then
+	echo "::: Xcode command line tools not installed"
+	echo "::: install with 'xcode-select --install'"
+	exit 1
+fi
+
 # Be sure to install HomeBrew first via 'brew.sh'
 # Or via ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
@@ -19,7 +27,7 @@ brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff\
 	parallel pdfgrep dtrx lepton sslh jq woof coreutils goaccess exa wifi-password\
 	zsh-syntax-highlighting mediainfo pandoc rtv cheat figlet rig fortune httrack\
 	akamai bat prettyping magic-wormhole python3 heroku streamlink imagemagick aria2\
-	restic ncdu minikube lazydocker dive plantuml rkhunter switchaudio-osx rga)
+	restic ncdu minikube lazydocker dive plantuml rkhunter switchaudio-osx rga mas)
 
 #brew taps
 tap_array=(federico-terzi/espanso hashicorp/tap homebrew/cask homebrew/cask-fonts \
@@ -35,7 +43,54 @@ cask_array=(alfred firefox krisp nightowl docker lulu obsidian onedrive dozer \
 	oversight font-input grandperspective bunch signal android-platform-tools coteditor \
 	imageoptim deckset lastpass backblaze do-not-disturb reikey gas-mask appcleaner raycast)
 
+# App Store stuff (list acquired by `mas list | awk '{print $1, "#"$2}')`
+app_store_array=(
+	#Reeder
+    1529448980 \
+    #Things
+	904280696 \
+    #Simplenote
+	692867256 \
+	#Keynote
+    409183694 \
+	#Notion Web Clipper
+    1559269364 \
+	#Reader
+    1179373118 \
+	#DaisyDisk
+    411643860 \
+    #Wipr
+	1320666476 \
+    #Cardhop
+	1290358394 \
+    #Craft
+	1487937127 \
+    #Dark Reader for Safari
+	1438243180 \
+    #PDFScanner
+	410968114 \
+    #TextSniper
+	1528890965 \
+    #WhatsApp
+	1147396723 \
+    #Bear
+	1091189122 \
+    #Pages
+	409201541 \
+    #Numbers
+	409203825 \
+    #Spark
+	1176895641 \
+    #Save to Pocket
+	1477385213 \
+     #Boop
+	1518425043 \
+    #Parcel
+	639968404
+)
+
 INSTALL_STUFF(){
+
 	# Install HomeBrew
 	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
@@ -68,6 +123,12 @@ INSTALL_STUFF(){
 
 	# Cleaning up after ourselves
 	brew cleanup
+
+	if which mas >/dev/null 2>&1 ; then
+		for item in ${app_store_array[*]} ; do
+			mas install "$item"
+		done
+	fi
 }
 
 CONFIG_PREFERENCES(){
