@@ -38,7 +38,7 @@ tap_array=(federico-terzi/espanso hashicorp/tap homebrew/cask homebrew/cask-font
 cask_array=(alfred firefox krisp nightowl docker lulu obsidian onedrive dozer \
 	iterm2 xquartz caprine calibre ransomwhere microsoft-edge telegram espanso \
 	spotify beardedspice the-unarchiver gpgtools iina visual-studio-code font-jetbrains-mono \
-	numi handbrake carbon-copy-cloner yippy etrecheckpro rectangle typora beekeeper-studio \
+	numi handbrake carbon-copy-cloner yippy etrecheckpro rectangle beekeeper-studio \
 	charles visual-studio-code malwarebytes postman anki appcleaner font-juliamono skim \
 	oversight font-input grandperspective bunch signal android-platform-tools coteditor \
 	imageoptim deckset lastpass backblaze do-not-disturb reikey gas-mask appcleaner raycast)
