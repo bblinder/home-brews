@@ -10,17 +10,21 @@ set -euo pipefail
 IFS=$'\n\t'
 
 PIP2_LIST="/tmp/pip2_list.txt" # Where we're temporarily keeping our stuff.
+trap '{ rm -f "$PIP2_LIST"; }' EXIT # cleaning up on successful exit or ctrl-c.
+
 PIP3_LIST="/tmp/pip3_list.txt"
+trap '{ rm -f "$PIP3_LIST"; }' EXIT # cleaning up on successful exit or ctrl-c.
+
 
 PIP2_MAKE_LIST(){
-	python2 -m pip list --outdated --no-python-version-warning | awk '{ print $1 }' | sed -e '/^\s*$/d' | tail -n +3 > "$PIP2_LIST"
+	python2 -m pip list --outdated | awk '{ print $1 }' | sed -e '/^\s*$/d' | tail -n +3 > "$PIP2_LIST"
 }
 
 PIP3_MAKE_LIST(){
 	python3 -m pip list --outdated | awk '{ print $1 }' | sed -e '/^\s*$/d' | tail -n +3 > "$PIP3_LIST"
 }
 
-REMOVE_LIST(){
+REMOVE_PIP2_LIST(){
 	if pip2_upgrade ; then
 		if [[ -z "$PIP2_LIST" ]] ; then
 			rm "$PIP2_LIST"
@@ -29,7 +33,9 @@ REMOVE_LIST(){
 		echo "There was an error. Please try again."
 		rm "$PIP2_LIST"
 	fi
+}
 
+REMOVE_PIP3_LIST(){
 	if pip3_upgrade ; then
 		if [[ -z "$PIP3_LIST" ]] ; then
 			rm "$PIP3_LIST"
@@ -167,7 +173,8 @@ case "$PYTHON_CHOICE" in
 		## checking if pip lists exists
 		if [[ -s "$PIP2_LIST" ]] || [[ -s "$PIP3_LIST" ]] ; then
 			pip2_upgrade & pip3_upgrade
-			REMOVE_LIST
+			REMOVE_PIP2_LIST
+			REMOVE_PIP3_LIST
 		else
 			echo -e "::: No new pip packages..."
 		fi
