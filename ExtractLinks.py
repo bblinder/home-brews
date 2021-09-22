@@ -26,4 +26,5 @@ def extract_links():
 	for link in soup.find_all('a'):
 		print(link.get('href'))
 
-extract_links()
+if __name__ == "__main__":
+	extract_links()
