@@ -140,7 +140,12 @@ CONFIG_PREFERENCES(){
 
 UNINSTALL_STUFF(){
 	UNINSTALL='brew uninstall'
-	ZAP='brew uninstall --cask --zap'
+	ZAP='brew uninstall --cask --zap --ignore-dependencies'
+
+	# Uninstalling app store apps
+	for item in ${app_store_array[*]} ; do
+		mas uninstall "$item"
+	done
 
 	# killing brew utils
 	for item in ${brew_array[*]} ; do
