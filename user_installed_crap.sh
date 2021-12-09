@@ -200,19 +200,6 @@ case "$GIT_CHOICE" in
 esac
 
 if [[ "$(uname -s)" == "Darwin" ]] ; then
-	read -rp "Check for Apple Updates? [y/n] -->  " APPLE_CHOICE
-
-	case "$APPLE_CHOICE" in
-		[yY])
-			softwareupdate --list
-			;;
-		*)
-			;;
-	esac
-fi
-
-
-if [[ "$(uname -s)" == "Darwin" ]] ; then
 	if [[ "$(command -v mas)" ]] ; then
 		read -rp "Check for App Store updates? [y/n] -->  " APP_STORE_CHOICE
 
@@ -225,4 +212,16 @@ if [[ "$(uname -s)" == "Darwin" ]] ; then
 				;;
 		esac
 	fi
+fi
+
+if [[ "$(uname -s)" == "Darwin" ]] ; then
+	read -rp "Check for Apple updates? [y/n] -->  " APPLE_CHOICE
+
+	case "$APPLE_CHOICE" in
+		[yY])
+			softwareupdate --list
+			;;
+		*)
+			;;
+	esac
 fi
