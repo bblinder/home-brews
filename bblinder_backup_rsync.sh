@@ -1,5 +1,5 @@
 #########
-# This is now deprecated, and kept here mainly for learning and historical purposes.
+# This is now laughably outdated, and kept here mainly for learning and historical purposes.
 # I recommend using Restic (https://restic.net/) for your backup needs.
 #########
 
