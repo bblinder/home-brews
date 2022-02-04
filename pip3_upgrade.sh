@@ -7,20 +7,6 @@ trap cleanup SIGINT SIGTERM ERR EXIT
 script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
 LIST='/tmp/pip3_list.txt' # where we're temporarily keeping our stuff
 
-usage() {
-  cat <<EOF
-Usage: $(basename "${BASH_SOURCE[0]}")
-
-Updates Python 3 packages.
-
-Available options:
-
--h, --help      Print this help and exit
--v, --verbose   Print script debug info
-EOF
-  exit
-}
-
 cleanup() {
   trap - SIGINT SIGTERM ERR EXIT
   # script cleanup here
