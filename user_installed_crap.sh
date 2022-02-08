@@ -9,47 +9,6 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-PIP2_LIST="/tmp/pip2_list.txt" # Where we're temporarily keeping our stuff.
-trap '{ rm -f "$PIP2_LIST"; }' EXIT # cleaning up on successful exit or ctrl-c.
-
-PIP3_LIST="/tmp/pip3_list.txt"
-trap '{ rm -f "$PIP3_LIST"; }' EXIT # cleaning up on successful exit or ctrl-c.
-
-
-PIP2_MAKE_LIST(){
-	python2 -m pip list --outdated | awk '{ print $1 }' | sed -e '/^\s*$/d' | tail -n +3 > "$PIP2_LIST"
-}
-
-PIP3_MAKE_LIST(){
-	python3 -m pip list --outdated | awk '{ print $1 }' | sed -e '/^\s*$/d' | tail -n +3 > "$PIP3_LIST"
-}
-
-REMOVE_PIP2_LIST(){
-	if pip2_upgrade ; then
-		if [[ -z "$PIP2_LIST" ]] ; then
-			rm "$PIP2_LIST"
-		fi
-	else
-		echo "There was an error. Please try again."
-		rm "$PIP2_LIST"
-	fi
-}
-
-REMOVE_PIP3_LIST(){
-	if pip3_upgrade ; then
-		if [[ -z "$PIP3_LIST" ]] ; then
-			rm "$PIP3_LIST"
-	else
-		echo "::: There was an error. Please try again."
-		fi
-	fi
-}
-
-general_packages(){
-	PIP2_MAKE_LIST
-	PIP3_MAKE_LIST
-}
-
 homebrew_upgrade(){
 	## Randomly doing some housekeeping ##
 	if [[ $((1 + RANDOM %5)) -eq 4 ]] ; then
@@ -70,20 +29,6 @@ homebrew_upgrade(){
 			brew cleanup -s --prune=all
 			;;
 	esac
-}
-
-pip2_upgrade(){
-    while read -r package; do
-	    python2 -m pip install "$package" --upgrade --user --no-python-version-warning
-    done < "$PIP2_LIST"
-    	# return 1
-}
-
-pip3_upgrade(){
-	while read -r package; do
-		python3 -m pip install "$package" --upgrade --user
-	done < "$PIP3_LIST"
-	# return 1
 }
 
 ruby_upgrade(){
@@ -163,26 +108,6 @@ if [[ "$(uname -s)" == "Linux" ]] ; then
 		esac
 	fi
 fi
-
-
-read -rp "Update Python packages? [y/n]? -->  " PYTHON_CHOICE
-case "$PYTHON_CHOICE" in
-	[yY])
-		general_packages
-
-		## checking if pip lists exists
-		if [[ -s "$PIP2_LIST" ]] || [[ -s "$PIP3_LIST" ]] ; then
-			pip2_upgrade & pip3_upgrade
-			REMOVE_PIP2_LIST
-			REMOVE_PIP3_LIST
-		else
-			echo -e "::: No new pip packages..."
-		fi
-		;;
-	*)
-		;;
-esac
-
 
 read -rp "Move on to ruby update? [y/n] -->  "  RUBY_CHOICE
 if [[ $RUBY_CHOICE == "y" ]] ; then
