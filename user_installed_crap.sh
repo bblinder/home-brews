@@ -65,8 +65,8 @@ homebrew_upgrade(){
 	esac
 }
 
-pip_upgrade(){
-	./pip3_upgrade.sh
+python_upgrade(){
+	./pip3_upgrade.sh # this assumes this script lives in the same directory.
 }
 
 ruby_upgrade(){
@@ -151,7 +151,7 @@ if [[ check_for_pip_script ]] ; then
 	read -rp "Move on to Python update? [y/n] --> "  PIP_CHOICE
 	case "$PIP_CHOICE" in 
 		[yY])
-			pip_upgrade
+			python_upgrade
 			;;
 		*)
 			;;
