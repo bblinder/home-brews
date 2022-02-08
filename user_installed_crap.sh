@@ -6,7 +6,7 @@
 
 # Tested Debian 8/9, Mac OS X 10.{11-15}, and WSL (Win 10)
 
-set -euo pipefail
+set -Eeuo pipefail
 IFS=$'\n\t'
 trap cleanup SIGINT SIGTERM ERR EXIT
 
@@ -35,6 +35,12 @@ die() {
   exit "$code"
 }
 
+check_for_pip_script(){
+	if [[ ! -e pip3_upgrade.sh ]] ; then
+	echo -e "::: Can't find python3 update script. Continuing..."
+	fi
+}
+
 setup_colors
 
 homebrew_upgrade(){
@@ -57,6 +63,10 @@ homebrew_upgrade(){
 			brew cleanup -s --prune=all
 			;;
 	esac
+}
+
+pip_upgrade(){
+	./pip3_upgrade.sh
 }
 
 ruby_upgrade(){
@@ -137,11 +147,25 @@ if [[ "$(uname -s)" == "Linux" ]] ; then
 	fi
 fi
 
-read -rp "Move on to ruby update? [y/n] -->  "  RUBY_CHOICE
-if [[ $RUBY_CHOICE == "y" ]] ; then
-	ruby_upgrade
+if [[ check_for_pip_script ]] ; then
+	read -rp "Move on to Python update? [y/n] --> "  PIP_CHOICE
+	case "$PIP_CHOICE" in 
+		[yY])
+			pip_upgrade
+			;;
+		*)
+			;;
+	esac
 fi
 
+read -rp "Move on to ruby update? [y/n] -->  "  RUBY_CHOICE
+case "$RUBY_CHOICE" in
+	[yY])
+		ruby_upgrade
+		;;
+	*)
+		;;
+esac
 
 read -rp "Bulk update Git repos? [y/n]? -->  " GIT_CHOICE
 case "$GIT_CHOICE" in
