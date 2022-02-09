@@ -10,6 +10,8 @@ set -Eeuo pipefail
 IFS=$'\n\t'
 trap cleanup SIGINT SIGTERM ERR EXIT
 
+script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
+
 cleanup() {
   trap - SIGINT SIGTERM ERR EXIT
   # script cleanup here
@@ -36,7 +38,7 @@ die() {
 }
 
 check_for_pip_script(){
-	if [[ ! -e pip3_upgrade.sh ]] ; then
+	if [[ ! -e $script_dir/pip3_upgrade.sh ]] ; then
 	echo -e "::: Can't find python3 update script. Continuing..."
 	fi
 }
@@ -66,7 +68,7 @@ homebrew_upgrade(){
 }
 
 python_upgrade(){
-	./pip3_upgrade.sh # this assumes this script lives in the same directory.
+	$script_dir/pip3_upgrade.sh # assumes script is living in the same directory
 }
 
 ruby_upgrade(){
