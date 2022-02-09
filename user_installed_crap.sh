@@ -11,6 +11,7 @@ IFS=$'\n\t'
 trap cleanup SIGINT SIGTERM ERR EXIT
 
 script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
+python3_script=$script_dir/pip3_upgrade.sh
 
 cleanup() {
   trap - SIGINT SIGTERM ERR EXIT
@@ -35,12 +36,6 @@ die() {
   local code=${2-1} # default exit status 1
   msg "$msg"
   exit "$code"
-}
-
-check_for_pip_script(){
-	if [[ ! -e $script_dir/pip3_upgrade.sh ]] ; then
-	echo -e "::: Can't find python3 update script. Continuing..."
-	fi
 }
 
 setup_colors
@@ -149,7 +144,9 @@ if [[ "$(uname -s)" == "Linux" ]] ; then
 	fi
 fi
 
-if [[ check_for_pip_script ]] ; then
+if [[ ! -f "$python3_script" ]] ; then
+	echo -e "::: Can't find python3 update script. Please ensure it's in the same directory. Continuing..."
+else
 	read -rp "Move on to Python update? [y/n] --> "  PIP_CHOICE
 	case "$PIP_CHOICE" in 
 		[yY])
