@@ -2,7 +2,7 @@
 
 # Changes/restores my machine's MAC address. Useful for hostile or unfamiliar networks.
 
-set -eu pipefail
+set -Eeuo pipefail
 IFS=$'\n\t'
 
 if [[ "$(uname -s)" != "Linux" ]] ; then
