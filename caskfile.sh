@@ -2,6 +2,17 @@
 
 ## Blindy Cask/Brewfile
 
+set -Eeuo pipefail
+trap cleanup SIGINT SIGTERM ERR EXIT
+
+script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
+
+cleanup() {
+  trap - SIGINT SIGTERM ERR EXIT
+  # script cleanup here
+}
+
+
 if [[ $(uname -s) != "Darwin" ]] ; then
 	# Ruling out non-Mac OS systems
 	echo "::: ERROR: This script will only run on Mac OS"
@@ -183,14 +194,18 @@ case $response in
 		;;
 	2)
 		read -rp "Are you sure? [y/n]  " uninstall_response
-		if [[ $uninstall_response == "y" ]] ; then
-			UNINSTALL_STUFF
-			PURGE_HOMEBREW
-		else
-			exit
-		fi
+		case "$uninstall_response" in
+			[yY])
+				UNINSTALL_STUFF
+				PURGE_HOMEBREW
+				;;
+			*)
+				;;
+		esac
 		;;
 	*)
 		echo "::: Please enter (1) or (2)"
 		;;
 esac
+
+exit
