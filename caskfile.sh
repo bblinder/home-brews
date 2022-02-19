@@ -50,8 +50,8 @@ cask_array=(alfred firefox krisp nightowl docker lulu obsidian onedrive dozer ke
 	iterm2 xquartz caprine calibre ransomwhere microsoft-edge telegram espanso latest \
 	spotify beardedspice the-unarchiver gpgtools iina visual-studio-code font-jetbrains-mono \
 	numi handbrake carbon-copy-cloner font-terminus yippy etrecheckpro rectangle beekeeper-studio \
-	charles visual-studio-code malwarebytes postman anki appcleaner font-juliamono skim \
-	oversight font-input grandperspective bunch signal android-platform-tools coteditor \
+	charles visual-studio-code malwarebytes postman anki appcleaner font-juliamono skim monitorcontrol \
+	oversight font-input grandperspective bunch signal android-platform-tools coteditor keka \
 	imageoptim deckset lastpass backblaze do-not-disturb reikey gas-mask appcleaner raycast)
 
 # App Store stuff (list acquired by `mas list | awk '{print $1, "#"$2}')`
