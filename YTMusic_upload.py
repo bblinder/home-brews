@@ -13,7 +13,7 @@ except ImportError:
     print("::: Exiting...")
     sys.exit(1)
 
-authFile = 'headers_auth.json'
+authFile = 'headers_auth.json' # You need to create this ahead of time.
 ytmusic = YTMusic(authFile)
 
 d = sys.argv[1] # track or music directory
