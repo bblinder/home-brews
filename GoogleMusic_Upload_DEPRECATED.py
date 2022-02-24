@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
+# DEPRECATED: Google's retired the Google Music service. Left here for historical reference.
+
 # Simple script to upload mp3's to my Google Music account. Uses the unofficial gmusic API.
+
 
 import sys
 import random
