@@ -13,6 +13,14 @@ except ImportError:
     print("::: Exiting...")
     sys.exit(1)
 
+try:
+    from halo import Halo
+except ImportError:
+    print("::: Halo not installed - please install with: ")
+    print("::: 'pip install halo' ")
+    print("::: Exiting... ")
+    sys.exit(1)
+
 authFile = 'headers_auth.json' # You need to create this ahead of time.
 ytmusic = YTMusic(authFile)
 
@@ -22,7 +30,8 @@ def upload(track):
     print(track)
     filesize = os.path.getsize(track)
     print('Size of track: ' + str(filesize) + ' ' + 'bytes')
-    ytmusic.upload_song(track)
+    with Halo(text='Uploading...', spinner='dots'):
+        ytmusic.upload_song(track)
         
 
 def main(d):
