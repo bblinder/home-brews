@@ -26,12 +26,12 @@ ytmusic = YTMusic(authFile)
 
 d = sys.argv[1] # track or music directory
 
+@Halo(text="Uploading...", spinner='dots')
 def upload(track):
     print(track)
     filesize = os.path.getsize(track)
     print('Size of track: ' + str(filesize) + ' ' + 'bytes')
-    with Halo(text='Uploading...', spinner='dots'):
-        ytmusic.upload_song(track)
+    ytmusic.upload_song(track)
         
 
 def main(d):
