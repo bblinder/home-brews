@@ -3,8 +3,6 @@
 # A dirty script to send PDFs to my personal Kindle.
 # Credentials (gmail password, email addresses, etc, should be kept in a `.env` file.)
 
-from ast import Sub
-from re import sub
 import sys
 import os
 from dotenv import load_dotenv
