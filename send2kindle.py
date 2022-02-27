@@ -14,7 +14,8 @@ except ImportError:
     print("::: Please install with: `pip install halo` ")
     sys.exit(1)
 
-load_dotenv() # importing .env file as a environment variable(s)
+if os.path.isfile('.env'):
+    load_dotenv() # importing .env file as a environment variable(s)
 
 # Mail stuff
 import smtplib
