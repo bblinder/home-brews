@@ -5,7 +5,6 @@
 
 import sys
 import os
-from dotenv import load_dotenv
 
 try:
     from halo import Halo
@@ -14,7 +13,8 @@ except ImportError:
     print("::: Please install with: `pip install halo` ")
     sys.exit(1)
 
-if os.path.isfile('.env'):
+if os.path.isfile('.env'): # Checking if .env file exists
+    from dotenv import load_dotenv
     load_dotenv() # importing .env file as a environment variable(s)
 
 # Mail stuff
