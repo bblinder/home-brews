@@ -26,9 +26,9 @@ from email import encoders, message
  
 # I usually use a dummy/throwaway gmail account for this.
 # Just be sure to whitelist it in your Amazon account under "Content and Devices" -> "Preferences" -> "Personal Document Settings"
-fromaddr = os.getenv('GMAIL_ADDRESS')
-gmail_password = os.getenv('GMAIL_PASSWORD')
-toaddr = os.getenv('KINDLE_ADDRESS') # The Kindle's email address
+fromaddr = os.environ['GMAIL_ADDRESS']
+gmail_password = os.environ['GMAIL_PASSWORD']
+toaddr = os.environ['KINDLE_ADDRESS'] # The Kindle's email address
 
 fn = sys.argv[1] # the file to be sent (equivalent to "$1" in bash/zsh)
 subject = sys.argv[2] # The subject of the email. Use "Convert" if you want Amazon to convert the PDF into a MOBI file, otherwise use whatever you like.
@@ -69,3 +69,4 @@ if __name__ == "__main__":
         print("::: Error. Could not be sent.")
         sys.exit(1)
     sys.exit(0)
+    '''
