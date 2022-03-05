@@ -26,11 +26,25 @@ ytmusic = YTMusic(authFile)
 
 d = sys.argv[1] # track or music directory
 
+def convert_bytes(bytes_number):
+    tags = [ "Bytes", "KB", "MB", "GB", "TB" ]
+ 
+    i = 0
+    double_bytes = bytes_number
+ 
+    while (i < len(tags) and  bytes_number >= 1024):
+            double_bytes = bytes_number / 1024.0
+            i = i + 1
+            bytes_number = bytes_number / 1024
+ 
+    return str(round(double_bytes, 2)) + " " + tags[i]
+ 
+
 @Halo(text="Uploading...", spinner='dots')
 def upload(track):
     print(track)
     filesize = os.path.getsize(track)
-    print('Size of track: ' + str(filesize) + ' ' + 'bytes')
+    print('Size of track: ' + convert_bytes(filesize) + ' ')
     ytmusic.upload_song(track)
         
 
