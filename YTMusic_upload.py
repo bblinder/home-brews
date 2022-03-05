@@ -3,6 +3,7 @@
 # derived from: https://ytmusicapi.readthedocs.io/
 # See "Setup" on how to get auth headers.
 
+from ast import parse
 import sys, os
 from pprint import pprint
 
@@ -24,7 +25,7 @@ except ImportError:
 authFile = 'headers_auth.json' # You need to create this ahead of time.
 ytmusic = YTMusic(authFile)
 
-d = sys.argv[1] # track or music directory
+#d = sys.argv[1] # track or music directory
 
 def convert_bytes(bytes_number):
     tags = [ "Bytes", "KB", "MB", "GB", "TB" ]
@@ -48,18 +49,25 @@ def upload(track):
     ytmusic.upload_song(track)
         
 
-def main(d):
-    if os.path.isfile(d):
-        track = d
+def main(track):
+    if os.path.isfile(track):
         filesize = os.path.getsize(track)
         upload(track)
-    elif os.path.isdir(d):
-        for path in os.listdir(d):
-            full_path = os.path.join(d, path)
+    elif os.path.isdir(track):
+        for path in os.listdir(track):
+            full_path = os.path.join(track, path)
             track = full_path
             upload(track)
     else:
         print("No track or music folder specificed")
         sys.exit(1)
     
-main(d)
+
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser(description="This script uploads a music track or directory of tracks to YouTube Music")
+    parser.add_argument("track", help="The path to the track or directory to upload")
+    
+    args = parser.parse_args()
+    track = args.track
+    main(track)
