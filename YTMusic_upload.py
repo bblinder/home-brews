@@ -3,7 +3,6 @@
 # derived from: https://ytmusicapi.readthedocs.io/
 # See "Setup" on how to get auth headers.
 
-from ast import parse
 import sys, os
 from pprint import pprint
 
@@ -23,8 +22,12 @@ except ImportError:
     sys.exit(1)
 
 authFile = 'headers_auth.json' # You need to create this ahead of time.
-ytmusic = YTMusic(authFile)
 
+if os.path.isfile(authFile):
+    ytmusic = YTMusic(authFile)
+else:
+    print("::: " + authFile + " does not exist...")
+    sys.exit(1)
 #d = sys.argv[1] # track or music directory
 
 def convert_bytes(bytes_number):
