@@ -10,6 +10,7 @@ except ImportError:
 
 def get_url(url):
     r = requests.get(url, allow_redirects=True)
+    print(r.history)
     return r.url
 
 if __name__ == '__main__':
@@ -20,7 +21,6 @@ if __name__ == '__main__':
     url = args.URL
 
     # Copies the output to the system clipboard.
-
     output = get_url(url)
     print(output)
     pc.copy(output)
