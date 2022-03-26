@@ -6,10 +6,13 @@ try:
     import pyperclip as pc
 except ImportError:
     print("::: Pyperclip module not found.")
+    exit(1)
 
-def get_url(url):
+# Follow redirect of url
+def follow_redirect(url):
     r = requests.get(url, allow_redirects=True)
-    print(r.history)
+    if r.history:
+        print(r.history)
     return r.url
 
 if __name__ == '__main__':
@@ -20,6 +23,6 @@ if __name__ == '__main__':
     url = args.URL
 
     # Copies the output to the system clipboard.
-    output = get_url(url)
+    output = follow_redirect(url)
     print(output)
     pc.copy(output)
