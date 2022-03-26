@@ -17,6 +17,13 @@ if os.path.isfile('.env'): # Checking if .env file exists
     from dotenv import load_dotenv
     load_dotenv() # importing .env file as a environment variable(s)
 
+import argparse
+parser = argparse.ArgumentParser(description='Send a PDF to my Kindle.')
+parser.add_argument('file', help='The file to be sent.')
+parser.add_argument('subject', default='Convert', help='The subject of the email.')
+args = parser.parse_args()
+
+
 # Mail stuff
 import smtplib
 from email.mime.text import MIMEText
@@ -30,16 +37,16 @@ fromaddr = os.environ['GMAIL_ADDRESS']
 gmail_password = os.environ['GMAIL_PASSWORD']
 toaddr = os.environ['KINDLE_ADDRESS'] # The Kindle's email address
 
-fn = sys.argv[1] # the file to be sent (equivalent to "$1" in bash/zsh)
-subject = sys.argv[2] # The subject of the email. Use "Convert" if you want Amazon to convert the PDF into a MOBI file, otherwise use whatever you like.
-filename = os.path.basename(fn)
-attachment = open(os.path.abspath(fn), "rb")
+#fn = sys.argv[1] # the file to be sent (equivalent to "$1" in bash/zsh)
+#subject = sys.argv[2] # The subject of the email. Use "Convert" if you want Amazon to convert the PDF into a MOBI file, otherwise use whatever you like.
 
+filename = os.path.basename(args.file)
+attachment = open(os.path.abspath(args.file), "rb")
+    
 msg = MIMEMultipart()
 msg['From'] = fromaddr
 msg['To'] = toaddr
-msg['Subject'] = subject
-
+msg['Subject'] = args.subject # Subject of the email
 body = "New Doc"
 
 # Now onto the actual work...
