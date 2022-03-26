@@ -3,26 +3,24 @@
 # A dirty script to send PDFs to my personal Kindle.
 # Credentials (gmail password, email addresses, etc, should be kept in a `.env` file.)
 
-import sys
 import os
-
 try:
     from halo import Halo
 except ImportError:
     print("::: Halo (needed for progress bar) not installed ")
     print("::: Please install with: `pip install halo` ")
-    sys.exit(1)
+    exit(1)
 
 if os.path.isfile('.env'): # Checking if .env file exists
     from dotenv import load_dotenv
     load_dotenv() # importing .env file as a environment variable(s)
 
+# arguments
 import argparse
 parser = argparse.ArgumentParser(description='Send a PDF to my Kindle.')
 parser.add_argument('file', help='The file to be sent.')
 parser.add_argument('subject', default='Convert', help='The subject of the email.')
 args = parser.parse_args()
-
 
 # Mail stuff
 import smtplib
@@ -36,9 +34,6 @@ from email import encoders, message
 fromaddr = os.environ['GMAIL_ADDRESS']
 gmail_password = os.environ['GMAIL_PASSWORD']
 toaddr = os.environ['KINDLE_ADDRESS'] # The Kindle's email address
-
-#fn = sys.argv[1] # the file to be sent (equivalent to "$1" in bash/zsh)
-#subject = sys.argv[2] # The subject of the email. Use "Convert" if you want Amazon to convert the PDF into a MOBI file, otherwise use whatever you like.
 
 filename = os.path.basename(args.file)
 attachment = open(os.path.abspath(args.file), "rb")
@@ -74,5 +69,5 @@ if __name__ == "__main__":
         send_email()
     except:
         print("::: Error. Could not be sent.")
-        sys.exit(1)
-    sys.exit(0)
+        exit(1)
+    exit()
