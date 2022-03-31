@@ -6,6 +6,7 @@ import argparse
 import json
 import os
 
+# Options and arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('-u', '--url', help='URL to summarize', required=True)
 parser.add_argument('-k', '--key', help='API key', required=False)

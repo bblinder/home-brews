@@ -3,7 +3,8 @@
 # A dirty script to send PDFs to my personal Kindle.
 # Credentials (gmail password, email addresses, etc, should be kept in a `.env` file.)
 
-import os
+import os, sys
+
 try:
     from halo import Halo
 except ImportError:
@@ -69,5 +70,5 @@ if __name__ == "__main__":
         send_email()
     except:
         print("::: Error. Could not be sent.")
-        exit(1)
-    exit()
+        sys.exit(1)
+    sys.exit()
