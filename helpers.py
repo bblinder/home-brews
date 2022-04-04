@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
 
 # Lambda function to "Clear" the terminal
-'''
 clear = lambda: os.system('cls' if os.name == 'nt' else 'clear')
-clear()
-'''
+
+def get_downloads_folder():
+    if os.name == 'nt':
+        return os.path.join(os.environ['USERPROFILE'], 'Downloads')
+    else:
+        return os.path.join(os.path.expanduser('~'), 'Downloads')
+
 
 # Convert bytes depending on file size
 def convert_bytes(bytes_number):
