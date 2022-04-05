@@ -1,13 +1,19 @@
 #!/usr/bin/env python3
 
+import os
+
 # Lambda function to "Clear" the terminal
 clear = lambda: os.system('cls' if os.name == 'nt' else 'clear')
+<<<<<<< HEAD
 
 def get_downloads_folder():
     if os.name == 'nt':
         return os.path.join(os.environ['USERPROFILE'], 'Downloads')
     else:
         return os.path.join(os.path.expanduser('~'), 'Downloads')
+=======
+# clear()
+>>>>>>> e1a0d92 (	modified:   helpers.py)
 
 
 # Convert bytes depending on file size
