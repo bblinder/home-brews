@@ -1,18 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+# Turns a twitter thread URL into a thethreaderapp.com URL for easier reading
+
 import requests
 import argparse
-import sys
+import sys, os
 
+# Lambda function to "Clear" the terminal
+clear = lambda: os.system('cls' if os.name == 'nt' else 'clear')
 
 parser = argparse.ArgumentParser(description='Get the thread ID from a twitter URL')
 parser.add_argument('url', help='the URL of the thread')
 args = parser.parse_args()
 
 url = args.url
-
-valid_twitter_domains = ['twitter.com', 'mobile.twitter.com']
+valid_twitter_domains = ['twitter.com', 'mobile.twitter.com', 't.co']
 
 def format_url(url):
     # remove www. from the URL
@@ -26,7 +29,7 @@ def format_url(url):
 
 url = (format_url(url))
 
-# Make a HEAD request to the URL to check if valid/still exist
+# Make a HEAD request to the URL to check if valid/still exists
 def check_url(url):
     try:
         r = requests.head(url)
@@ -59,4 +62,5 @@ def threader_app(thread_id):
 
 
 if __name__ == '__main__':
+    clear()
     threader_app(thread_id)
