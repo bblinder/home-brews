@@ -40,6 +40,7 @@ def get_thread_id(url):
             return url.split('/')[-1]
     else:
         print('Invalid URL')
+        sys.exit(1)
 
 thread_id = get_thread_id(url)
 
