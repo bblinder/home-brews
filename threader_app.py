@@ -5,10 +5,7 @@
 
 import requests
 import argparse
-import sys, os
-
-# Lambda function to "Clear" the terminal
-clear = lambda: os.system('cls' if os.name == 'nt' else 'clear')
+import sys
 
 parser = argparse.ArgumentParser(description='Get the thread ID from a twitter URL')
 parser.add_argument('url', help='the URL of the thread')
@@ -27,7 +24,7 @@ def format_url(url):
         url = 'https://' + url
     return url
 
-url = (format_url(url))
+url = format_url(url)
 
 # Make a HEAD request to the URL to check if valid/still exists
 def check_url(url):
@@ -53,7 +50,6 @@ def get_thread_id(url):
 
 thread_id = get_thread_id(url)
 
-
 # Generating a "The Thread App" URL
 def threader_app(thread_id):
     threader_domain = "https://threadreaderapp.com/thread/"
@@ -62,5 +58,4 @@ def threader_app(thread_id):
 
 
 if __name__ == '__main__':
-    clear()
     threader_app(thread_id)
