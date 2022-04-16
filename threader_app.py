@@ -27,16 +27,7 @@ def format_url(url):
 url = format_url(url)
 
 # Make a HEAD request to the URL to check if valid/still exists
-def check_url(url):
-    try:
-        r = requests.head(url)
-        if r.status_code == 200:
-            return True
-        else:
-            return False
-    except requests.exceptions.RequestException as e:
-        print(e)
-        sys.exit(1)
+check_url = lambda url: requests.head(url).status_code == 200
 
 # get the thread ID from a twitter URL
 def get_thread_id(url):
@@ -47,6 +38,8 @@ def get_thread_id(url):
             # sanitize the URL of query strings
             url = url.split('?')[0]
             return url.split('/')[-1]
+    else:
+        print('Invalid URL')
 
 thread_id = get_thread_id(url)
 
