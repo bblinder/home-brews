@@ -8,14 +8,15 @@ import random
 
 script_directory = os.path.dirname(os.path.realpath(__file__))
 github_directory = os.path.join(os.environ['HOME'], 'Github')
-python3_upgrade_script = os.path.join(script_directory, 'pip3_upgrade.sh')
+python3_upgrade_script = os.path.join(script_directory, 'home-brews', 'pip3_upgrade.sh')
+
 
 def homebrew_upgrade():
     if sys.platform == 'darwin':
-        doctor = run(['brew', 'doctor'], capture_output=True)
-        if random.randint(0, 3) == 1: #  running brew doctor at random
+        doctor = run(['brew', 'doctor'])
+        if random.randint(0, 3) == 1:  # running brew doctor at random
             print("::: Running random brew doctor")
-            run([doctor])
+            doctor
 
         print("::: Updating Homebrew")
         run(['brew', 'update'])
@@ -27,6 +28,7 @@ def homebrew_upgrade():
         if cleanup_choice.lower() == 'y':
             print("::: Running brew cleanup")
             run(['brew', 'cleanup'])
+            run(['brew', 'cleanup', '-s', '--prune=all'])
         else:
             pass
     else:
@@ -37,16 +39,18 @@ def homebrew_upgrade():
 def python_upgrade():
     if which('pip-review'):
         run(['pip-review', '--auto'])
-    else:
+    elif os.path.isfile(python3_upgrade_script):
         run([python3_upgrade_script])
+    else:
+        print("::: No pip-review or pip3_upgrade.sh found")
 
 
 def apt_upgrade():
     cmds = ['update', 'upgrade', 'dist-upgrade', 'autoremove', 'autoclean']
     for cmd in cmds:
         run(['sudo', 'apt-get', cmd])
-        
-        
+
+
 def flatpak_upgrade():
     run(['flatpak', 'update'])
 
@@ -54,7 +58,7 @@ def flatpak_upgrade():
 def bulk_git_update():
     for repo in os.listdir(github_directory):
         repo_path = os.path.join(github_directory, repo)
-        if os.path.isdir(repo_path):
+        if os.path.isdir(repo_path) and not repo.startswith('.'):
             print(f"Updating {repo}")
             run(['git', 'remote', 'update'], cwd=repo_path)
             run(['git', 'pull', '--rebase'], cwd=repo_path)
@@ -70,44 +74,37 @@ def ruby_update():
 
 
 def main():
-    if which('brew'):
-        brew_choice = input("Update Homebrew? [y/N] --> ")
-        if brew_choice.lower() == 'y':
-            homebrew_upgrade()
+    cmds = ['brew', 'flatpak', 'gem', 'git']
+    for cmd in cmds:
+        if which(cmd):
+            user_choice = input(f"Update {cmd}? [y/N] --> ")
+            if user_choice.lower() == 'y':
+                if cmd == 'brew':
+                    homebrew_upgrade()
+                elif cmd == 'flatpak':
+                    flatpak_upgrade()
+                elif cmd == 'gem':
+                    ruby_update()
+                elif cmd == 'git':
+                    bulk_git_update()
+                else:
+                    pass
 
     if sys.platform == 'linux':
-        apt_choice = input("Update apt repo? [y/N] --> ")
-        if apt_choice.lower() == 'y':
+        user_choice = input("Update apt? [y/N] --> ")
+        if user_choice.lower() == 'y':
             apt_upgrade()
 
-    if which('flatpak'):
-        flatpak_choice = input("Update flatpak? [y/N] --> ")
-        if flatpak_choice.lower() == 'y':
-            flatpak_upgrade()
-
-    if python3_upgrade_script:
-        python_choice = input("Update python? [y/N] --> ")
-        if python_choice.lower() == 'y':
-            python_upgrade()
-
-    if which('gem'):
-        ruby_choice = input("Update ruby? [y/N] --> ")
-        if ruby_choice.lower() == 'y':
-            ruby_update()
-
-    if which('git'):
-        git_choice = input("Update git repos? [y/N] --> ")
-        if git_choice.lower() == 'y':
-            bulk_git_update()
+    python_upgrade()
 
     if sys.platform == 'darwin':
-        apple_choice = input("Check for Apple updates? [y/N] --> ")
-        if apple_choice.lower() == 'y':
+        user_choice = input("Check for Apple updates? [y/N] --> ")
+        if user_choice.lower() == 'y':
             run(['softwareupdate', '--list'])
 
     if sys.platform == 'darwin':
-        app_store_choice = input("Check for App Store updates? [y/N] --> ")
-        if app_store_choice.lower() == 'y':
+        user_choice = input("Check for App Store updates? [y/N] --> ")
+        if user_choice.lower() == 'y':
             run(['mas', 'outdated'])
             run(['mas', 'upgrade'])
 
