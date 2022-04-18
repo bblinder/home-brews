@@ -51,11 +51,17 @@ if [[ -z "$LIST" ]] ; then
 fi
 
 echo -e "::: Updating python3 packages... please wait..."
-general_packages && pip3_upgrade
-
-if [[ pip3_upgrade ]] ; then
-	echo "Done."
-	rm "$LIST"
+if [[ "$(command -v pip-review)" ]] ; then
+  pip-review --auto
 else
-	echo "There was a problem. Try again."
+  echo -e "::: pip-review not installed, doing it the old fashioned way..."
+  general_packages
+  pip3_upgrade
+  if [[ pip3_upgrade ]]
+  then
+    echo "Done."
+    rm "$LIST"
+  else
+  echo "There was a problem. Try again."
+  fi
 fi

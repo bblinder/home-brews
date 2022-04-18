@@ -8,6 +8,7 @@ import random
 
 script_directory = os.path.dirname(os.path.realpath(__file__))
 python3_upgrade_script = os.path.join(script_directory, 'pip3_upgrade.sh')
+github_directory = os.path.join(os.environ['HOME'], 'Github')
 
 
 def homebrew_upgrade():
@@ -55,7 +56,6 @@ def flatpak_upgrade():
 
 
 def bulk_git_update():
-    github_directory = os.path.join(os.environ['HOME'], 'Github')
     for directory in github_directory:
         run(['git', 'remote', 'update'], cwd=directory)
         run(['git', 'pull', '--rebase'], cwd=directory)
@@ -95,6 +95,11 @@ def main():
         ruby_choice = input("Update ruby? [y/N] ")
         if ruby_choice.lower() == 'y':
             ruby_update()
+
+    if which('git') and github_directory:
+        git_choice = input("Update git repos? [y/N] ")
+        if git_choice.lower() == 'y':
+            bulk_git_update()
 
     if sys.platform == 'darwin':
         apple_choice = input("Check for Apple updates? [y/N] ")
