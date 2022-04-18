@@ -13,8 +13,7 @@ python3_upgrade_script = os.path.join(script_directory, 'pip3_upgrade.sh')
 def homebrew_upgrade():
     if sys.platform == 'darwin':
         doctor = run(['brew', 'doctor'], capture_output=True)
-        # run brew doctor at random
-        if random.randint(0, 3) == 1:
+        if random.randint(0, 3) == 1: #  running brew doctor at random
             print("::: Running random brew doctor")
             run([doctor])
 
@@ -53,10 +52,13 @@ def flatpak_upgrade():
 
 
 def bulk_git_update():
-    for directory in github_directory:
-        run(['git', 'remote', 'update'])
-        run(['git', 'pull', '--rebase'])
-        run(['git', 'gc', '--auto'])
+    for repo in os.listdir(github_directory):
+        repo_path = os.path.join(github_directory, repo)
+        if os.path.isdir(repo_path):
+            print(f"Updating {repo}")
+            run(['git', 'remote', 'update'], cwd=repo_path)
+            run(['git', 'pull', '--rebase'], cwd=repo_path)
+            run(['git', 'gc', '--auto'], cwd=repo_path)
 
 
 def ruby_update():
@@ -93,7 +95,7 @@ def main():
         if ruby_choice.lower() == 'y':
             ruby_update()
 
-    if which('git') and github_directory:
+    if which('git'):
         git_choice = input("Update git repos? [y/N] --> ")
         if git_choice.lower() == 'y':
             bulk_git_update()
