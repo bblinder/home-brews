@@ -37,12 +37,14 @@ def homebrew_upgrade():
 
 
 def python_upgrade():
-    if which('pip-review'):
-        run(['pip-review', '--auto'])
-    elif os.path.isfile(python3_upgrade_script):
-        run([python3_upgrade_script])
-    else:
-        print("::: No pip-review or pip3_upgrade.sh found")
+    user_choice = input("Upgrade Python? [y/N] --> ")
+    if user_choice.lower() == 'y':
+        if which('pip-review'):
+            run(['pip-review', '--auto'])
+        elif os.path.isfile(python3_upgrade_script):
+            run([python3_upgrade_script])
+        else:
+            print("::: No pip-review or pip3_upgrade.sh found")
 
 
 def apt_upgrade():
@@ -78,7 +80,9 @@ def main():
     for cmd in cmds:
         if which(cmd):
             user_choice = input(f"Update {cmd}? [y/N] --> ")
-            if user_choice.lower() == 'y':
+            if user_choice.lower() != 'y':
+                continue
+            else:
                 if cmd == 'brew':
                     homebrew_upgrade()
                 elif cmd == 'flatpak':
@@ -87,8 +91,6 @@ def main():
                     ruby_update()
                 elif cmd == 'git':
                     bulk_git_update()
-                else:
-                    pass
 
     if sys.platform == 'linux':
         user_choice = input("Update apt? [y/N] --> ")
