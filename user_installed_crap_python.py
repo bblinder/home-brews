@@ -13,10 +13,9 @@ python3_upgrade_script = os.path.join(script_directory, 'home-brews', 'pip3_upgr
 
 def homebrew_upgrade():
     if sys.platform == 'darwin':
-        doctor = run(['brew', 'doctor'])
         if random.randint(0, 3) == 1:  # running brew doctor at random
             print("::: Running random brew doctor")
-            doctor
+            run(['brew', 'doctor'])
 
         print("::: Updating Homebrew")
         run(['brew', 'update'])
@@ -39,17 +38,19 @@ def homebrew_upgrade():
 def python_upgrade():
     user_choice = input("Upgrade Python? [y/N] --> ")
     if user_choice.lower() == 'y':
+        print("::: Updating Python packages")
         if which('pip-review'):
             run(['pip-review', '--auto'])
         elif os.path.isfile(python3_upgrade_script):
             run([python3_upgrade_script])
         else:
             print("::: No pip-review or pip3_upgrade.sh found")
+            pass
 
 
 def apt_upgrade():
-    cmds = ['update', 'upgrade', 'dist-upgrade', 'autoremove', 'autoclean']
-    for cmd in cmds:
+    apt_cmds = ['update', 'upgrade', 'dist-upgrade', 'autoremove', 'autoclean']
+    for cmd in apt_cmds:
         run(['sudo', 'apt-get', cmd])
 
 
@@ -100,13 +101,12 @@ def main():
     python_upgrade()
 
     if sys.platform == 'darwin':
-        user_choice = input("Check for Apple updates? [y/N] --> ")
-        if user_choice.lower() == 'y':
+        macos_upgrade_choice = input("Check for Apple updates? [y/N] --> ")
+        if macos_upgrade_choice.lower() == 'y':
             run(['softwareupdate', '--list'])
 
-    if sys.platform == 'darwin':
-        user_choice = input("Check for App Store updates? [y/N] --> ")
-        if user_choice.lower() == 'y':
+        appstore_choice = input("Check for App Store updates? [y/N] --> ")
+        if appstore_choice.lower() == 'y':
             run(['mas', 'outdated'])
             run(['mas', 'upgrade'])
 
