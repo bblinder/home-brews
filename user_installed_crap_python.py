@@ -5,6 +5,7 @@ import sys
 from shutil import which
 from subprocess import run
 import random
+from simple_colors import *
 
 script_directory = os.path.dirname(os.path.realpath(__file__))
 github_directory = os.path.join(os.environ['HOME'], 'Github')
@@ -14,37 +15,37 @@ python3_upgrade_script = os.path.join(script_directory, 'home-brews', 'pip3_upgr
 def homebrew_upgrade():
     if sys.platform == 'darwin':
         if random.randint(0, 3) == 1:  # running brew doctor at random
-            print("::: Running random brew doctor")
+            print(green("::: Running random brew doctor"))
             run(['brew', 'doctor'])
 
-        print("::: Updating Homebrew")
+        print(green("::: Updating Homebrew"))
         run(['brew', 'update'])
         run(['brew', 'upgrade'])
         run(['brew', 'upgrade', '--cask'])
 
         # Running brew cleanup
-        cleanup_choice = input("Cleanup Homebrew? [y/N] --> ")
+        cleanup_choice = input(blue("Cleanup Homebrew? [y/N] --> ", ['italic']))
         if cleanup_choice.lower() == 'y':
-            print("::: Running brew cleanup")
+            print(green("::: Running brew cleanup"))
             run(['brew', 'cleanup'])
             run(['brew', 'cleanup', '-s', '--prune=all'])
         else:
             pass
     else:
-        print("::: Not on a mac, skipping homebrew")
+        print(red("::: Not on a mac, skipping homebrew"))
         sys.exit()
 
 
 def python_upgrade():
-    user_choice = input("Upgrade Python? [y/N] --> ")
+    user_choice = input(blue("Upgrade Python? [y/N] --> ", ['italic']))
     if user_choice.lower() == 'y':
-        print("::: Updating Python packages")
+        print(green("::: Updating Python packages"))
         if which('pip-review'):
             run(['pip-review', '--auto'])
         elif os.path.isfile(python3_upgrade_script):
             run([python3_upgrade_script])
         else:
-            print("::: No pip-review or pip3_upgrade.sh found")
+            print(red("::: No pip-review or pip3_upgrade.sh found"))
             pass
 
 
@@ -62,7 +63,7 @@ def bulk_git_update():
     for repo in os.listdir(github_directory):
         repo_path = os.path.join(github_directory, repo)
         if os.path.isdir(repo_path) and not repo.startswith('.'):
-            print(f"Updating {repo}")
+            print(green(f"Updating {repo}"))
             run(['git', 'remote', 'update'], cwd=repo_path)
             run(['git', 'pull', '--rebase'], cwd=repo_path)
             run(['git', 'gc', '--auto'], cwd=repo_path)
@@ -80,7 +81,7 @@ def main():
     cmds = ['brew', 'flatpak', 'gem', 'git']
     for cmd in cmds:
         if which(cmd):
-            user_choice = input(f"Update {cmd}? [y/N] --> ")
+            user_choice = input(blue(f"Update {cmd}? [y/N] --> ", ['italic']))
             if user_choice.lower() != 'y':
                 continue
             else:
@@ -94,18 +95,18 @@ def main():
                     bulk_git_update()
 
     if sys.platform == 'linux':
-        user_choice = input("Update apt? [y/N] --> ")
+        user_choice = input(blue("Update apt? [y/N] --> ", ['italic']))
         if user_choice.lower() == 'y':
             apt_upgrade()
 
     python_upgrade()
 
     if sys.platform == 'darwin':
-        macos_upgrade_choice = input("Check for Apple updates? [y/N] --> ")
+        macos_upgrade_choice = input(blue("Check for Apple updates? [y/N] --> ", ['italic']))
         if macos_upgrade_choice.lower() == 'y':
             run(['softwareupdate', '--list'])
 
-        appstore_choice = input("Check for App Store updates? [y/N] --> ")
+        appstore_choice = input(blue("Check for App Store updates? [y/N] --> ", ['italic']))
         if appstore_choice.lower() == 'y':
             run(['mas', 'outdated'])
             run(['mas', 'upgrade'])
