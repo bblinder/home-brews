@@ -14,7 +14,6 @@ except ImportError:
 
 if os.path.isfile('.env'):  # Checking if .env file exists
     from dotenv import load_dotenv
-
     load_dotenv()  # importing .env file as a environment variable(s)
 
 # arguments
