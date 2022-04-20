@@ -13,12 +13,15 @@ die() {
   exit "$code"
 }
 
-# if imagemagick is not installed
+# checking if imagemagick and ghostscript are installed
+COMMANDS="convert gs"
 
-if ! command -v convert >/dev/null 2>&1; then
-    die "imagemagick is not installed"
+for cmd in $COMMANDS; do
+  if ! command -v "$cmd" >/dev/null 2>&1; then
+    echo -e "'$cmd' is not installed. Please install it."
     exit 1
-fi
+  fi
+done
 
 cleanup() {
   trap - SIGINT SIGTERM ERR EXIT
@@ -49,12 +52,6 @@ if IM ; then
 fi
 
 if ghostscript ; then
-    read -rp "Do you want to delete the original file? [y/N] " response
-    case "$response" in
-        [yY])
-            rm -f SCANNED.pdf
-            ;;
-        *)
-            ;;
-    esac
+    echo "PDF compressed!"
+    rm SCANNED.pdf
 fi
