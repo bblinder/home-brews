@@ -6,6 +6,11 @@ trap cleanup SIGINT SIGTERM ERR EXIT
 script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
 DOCUMENT="$1"
 
+if [[ -z "$DOCUMENT" ]] ; then
+    echo "Usage: ./scanmypdf.sh <PDF_FILE>"
+    exit 1
+fi
+
 die() {
   local msg=$1
   local code=${2-1} # default exit status 1
@@ -47,6 +52,7 @@ ghostscript(){
 }
 
 IM
+
 if IM ; then
     ghostscript
 fi
