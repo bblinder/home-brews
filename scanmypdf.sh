@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
 set -Eeuo pipefail
-trap cleanup SIGINT SIGTERM ERR EXIT
+#trap cleanup SIGINT SIGTERM ERR EXIT
 
 script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
 DOCUMENT="$1"
 
 if [[ -z "$DOCUMENT" ]] ; then
-    echo "Usage: ./scanmypdf.sh <PDF_FILE>"
+    echo -e "Usage: ./scanmypdf.sh <PDF_FILE>"
     exit 1
 fi
 
@@ -28,10 +28,10 @@ for cmd in $COMMANDS; do
   fi
 done
 
-cleanup() {
-  trap - SIGINT SIGTERM ERR EXIT
-  # script cleanup here
-}
+# cleanup() {
+#   trap - SIGINT SIGTERM ERR EXIT
+#   # script cleanup here
+# }
 
 
 IM(){

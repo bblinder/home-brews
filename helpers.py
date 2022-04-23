@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import os
 
 # Lambda function to "Clear" the terminal
