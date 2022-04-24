@@ -13,7 +13,7 @@ python3_upgrade_script = os.path.join(script_directory, 'home-brews', 'pip3_upgr
 
 
 def homebrew_upgrade():
-    if sys.platform == 'darwin':
+    if sys.platform == 'darwin' or sys.platform == 'linux':
         if random.randint(0, 3) == 1:  # running brew doctor at random
             print(green("::: Running random brew doctor"))
             run(['brew', 'doctor'])
