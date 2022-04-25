@@ -21,28 +21,30 @@ except ImportError:
     print("::: Exiting... ")
     sys.exit(1)
 
-authFile = 'headers_auth.json' # You need to create this ahead of time.
+authFile = 'headers_auth.json'  # You need to create this ahead of time.
 
 if os.path.isfile(authFile):
     ytmusic = YTMusic(authFile)
 else:
     print("::: " + authFile + " does not exist...")
     sys.exit(1)
-#d = sys.argv[1] # track or music directory
+
+
+# d = sys.argv[1] # track or music directory
 
 def convert_bytes(bytes_number):
-    tags = [ "Bytes", "KB", "MB", "GB", "TB" ]
- 
+    tags = ["Bytes", "KB", "MB", "GB", "TB"]
+
     i = 0
     double_bytes = bytes_number
- 
-    while (i < len(tags) and  bytes_number >= 1024):
-            double_bytes = bytes_number / 1024.0
-            i = i + 1
-            bytes_number = bytes_number / 1024
- 
+
+    while i < len(tags) and bytes_number >= 1024:
+        double_bytes = bytes_number / 1024.0
+        i = i + 1
+        bytes_number = bytes_number / 1024
+
     return str(round(double_bytes, 2)) + " " + tags[i]
- 
+
 
 @Halo(text="Uploading...", spinner='dots')
 def upload(track):
@@ -50,7 +52,7 @@ def upload(track):
     filesize = os.path.getsize(track)
     print('Size of track: ' + convert_bytes(filesize) + ' ')
     ytmusic.upload_song(track)
-        
+
 
 def main(track):
     if os.path.isfile(track):
@@ -64,13 +66,15 @@ def main(track):
     else:
         print("No track or music folder specificed")
         sys.exit(1)
-    
+
 
 if __name__ == '__main__':
     import argparse
-    parser = argparse.ArgumentParser(description="This script uploads a music track or directory of tracks to YouTube Music")
+
+    parser = argparse.ArgumentParser(
+        description="This script uploads a music track or directory of tracks to YouTube Music")
     parser.add_argument("track", help="The path to the track or directory to upload")
-    
+
     args = parser.parse_args()
     track = args.track
     main(track)
