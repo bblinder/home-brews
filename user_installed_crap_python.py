@@ -6,6 +6,7 @@ from shutil import which
 from subprocess import run
 import random
 from simple_colors import *
+import re
 
 script_directory = os.path.dirname(os.path.realpath(__file__))
 github_directory = os.path.join(os.environ['HOME'], 'Github')
@@ -42,11 +43,13 @@ def python_upgrade():
         print(green("::: Updating Python packages"))
         if which('pip-review'):
             run(['pip-review', '--auto'])
-        elif os.path.isfile(python3_upgrade_script):
-            run([python3_upgrade_script])
         else:
-            print(red("::: No pip-review or pip3_upgrade.sh found"))
-            pass
+            pip_packages = []
+            # output only the pip package names and not the versions
+            for line in run(['pip3', 'list', '--outdated'], capture_output=True).stdout.decode('utf-8').split('\n'):
+                if re.search(r'\s\d+\.', line):
+                    pip_packages.append(line.split(' ')[0])
+                    run(['pip3', 'install', '--upgrade'] + pip_packages)
 
 
 def apt_upgrade():
