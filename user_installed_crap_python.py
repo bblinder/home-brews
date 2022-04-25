@@ -10,13 +10,12 @@ import re
 
 script_directory = os.path.dirname(os.path.realpath(__file__))
 github_directory = os.path.join(os.environ['HOME'], 'Github')
-python3_upgrade_script = os.path.join(script_directory, 'home-brews', 'pip3_upgrade.sh')
 
 
 def homebrew_upgrade():
     if sys.platform == 'darwin' or sys.platform == 'linux':
         if random.randint(0, 3) == 1:  # running brew doctor at random
-            print(green("::: Running random brew doctor"))
+            print(yellow("::: Running random brew doctor"))
             run(['brew', 'doctor'])
 
         print(green("::: Updating Homebrew"))
@@ -45,8 +44,7 @@ def python_upgrade():
             run(['pip-review', '--auto'])
         else:
             pip_packages = []
-            # output only the pip package names and not the versions
-            for line in run(['pip3', 'list', '--outdated'], capture_output=True).stdout.decode('utf-8').split('\n'):
+            for line in run(['pip3', 'list', '--outdated'], capture_output=True).stdout.decode('utf-8').split('\n'):  # output only the pip package names and not the versions
                 if re.search(r'\s\d+\.', line):
                     pip_packages.append(line.split(' ')[0])
                     run(['pip3', 'install', '--upgrade'] + pip_packages)
