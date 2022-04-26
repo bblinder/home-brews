@@ -31,9 +31,6 @@ def homebrew_upgrade():
             run(['brew', 'cleanup', '-s', '--prune=all'])
         else:
             pass
-    else:
-        print(red("::: Not on a mac, skipping homebrew"))
-        sys.exit()
 
 
 def python_upgrade():

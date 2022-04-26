@@ -35,3 +35,15 @@ def check_valid_url(url):
         print("Please install validators module")
         return False
     return validators.url(url)
+
+
+def deal_with_it():
+    from time import sleep
+    
+    print('( •_•) ')
+    sleep(0.75)
+    print('\r( •_•)>⌐■-■')
+    sleep(.75)
+    print('\r               ')
+    print('\r(⌐■_■)')
+    sleep(0.5)
