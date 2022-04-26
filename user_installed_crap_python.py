@@ -34,17 +34,27 @@ def homebrew_upgrade():
 
 
 def python_upgrade():
+    """ Providing a couple of ways to update Python/pip packages.
+    The new method uses the pip-review tool, which is a wrapper around pip.
+    The old method uses pip directly."""
+
+    def pip_upgrade_old():
+        pip_packages = []
+        for line in run(['pip3', 'list', '--outdated'], capture_output=True).stdout.decode('utf-8').split('\n'):
+            # output only the pip package names and not the versions
+            if re.search(r'\s\d+\.', line):
+                pip_packages.append(line.split(' ')[0])
+                run(['pip3', 'install', '--upgrade'] + pip_packages)
+
     user_choice = input(blue("Upgrade Python? [y/N] --> ", ['italic']))
     if user_choice.lower() == 'y':
         print(green("::: Updating Python packages"))
         if which('pip-review'):
+            print("::: trying with pip-review... ")
             run(['pip-review', '--auto'])
         else:
-            pip_packages = []
-            for line in run(['pip3', 'list', '--outdated'], capture_output=True).stdout.decode('utf-8').split('\n'):  # output only the pip package names and not the versions
-                if re.search(r'\s\d+\.', line):
-                    pip_packages.append(line.split(' ')[0])
-                    run(['pip3', 'install', '--upgrade'] + pip_packages)
+            print("::: pip-review not found, trying the old-fashioned way... ")
+            pip_upgrade_old()
 
 
 def apt_upgrade():
