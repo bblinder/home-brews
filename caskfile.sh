@@ -31,7 +31,7 @@ fi
 # Or via ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 # *nix utilities
-brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff \
+brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff python-tk \
 	irssi httpie lynx mplayer mtr osxfuse p7zip pstree sshfs tcpdump musikcube \
 	speedtest_cli pv rtmpdump tldr wget youtube-dl zsh git m-cli pwgen glow detox \
 	gnu-units lnav ranger watch iftop ffmpeg ssh-copy-id spoof-mac fzf difftastic \
