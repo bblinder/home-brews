@@ -2,8 +2,8 @@
 
 from shutil import which
 import os
-import argparse
 import subprocess
+from halo import Halo
 
 cmds = {
     "convert": "ImageMagick", 
@@ -17,10 +17,12 @@ for cmd in cmds:
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 
-argparser = argparse.ArgumentParser(description="Scan a PDF file and convert it to a series of images")
-argparser.add_argument("pdf", help="PDF file to scan")
-argparser.add_argument("-o", "--output", help="Output directory", default=os.path.join(script_dir, "SCANNED.pdf"))
-args = argparser.parse_args()
+
+def get_downloads_folder():
+    if os.name == 'nt':
+        return os.path.join(os.environ['USERPROFILE'], 'Downloads')
+    else:
+        return os.path.join(os.path.expanduser('~'), 'Downloads')
 
 
 def imageMagick_convert(pdf):
@@ -50,7 +52,17 @@ def ghostScript_convert(imageMagick_output_pdf):
         os.remove(imageMagick_output_pdf)
 
 
-if __name__ == "__main__":
+@Halo(text="Scanning PDF... please wait... ", spinner="dots")
+def main():
     IM_PDF = imageMagick_convert(args.pdf)
     ghostScript_convert(IM_PDF)
 
+
+if __name__ == "__main__":
+    import argparse
+    argparser = argparse.ArgumentParser(description="Make your PDF look manually scanned")
+    argparser.add_argument("pdf", help="PDF file to scan")
+    argparser.add_argument("-o", "--output", help="Output location (optional)", default=os.path.join(get_downloads_folder(), "SCANNED.pdf"))
+    args = argparser.parse_args()
+
+    main()
