@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
 
 from shutil import which
-import os, sys
+import os
 import argparse
 import subprocess
 
-cmds = {"convert": "ImageMagick", "gs": "GhostScript"}
+cmds = {
+    "convert": "ImageMagick", 
+    "gs": "GhostScript"
+}
 
 for cmd in cmds:
     if not which(cmd):
         # print dict values
         print("{} is not installed".format(cmds[cmd]))
-        #print(f"{cmds.values()} is not installed")
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 
