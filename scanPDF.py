@@ -5,13 +5,13 @@ import os, sys
 import argparse
 import subprocess
 
-cmds = ["convert", "gs"]
+cmds = {"convert": "ImageMagick", "gs": "GhostScript"}
 
-# checking if imagemagick and ghostscript are installed
 for cmd in cmds:
     if not which(cmd):
-        print(f"{cmd} is not installed")
-        sys.exit(1)
+        # print dict values
+        print("{} is not installed".format(cmds[cmd]))
+        #print(f"{cmds.values()} is not installed")
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 
