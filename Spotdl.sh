@@ -13,19 +13,8 @@ for cmd in $COMMANDS; do
     fi
 done
 
-: '
-if [[ ! "$(command -v spotdl)" ]]  ; then
-    echo "::: spot-dl not installed. Exiting."
-    exit 1
-fi
 
-if [[ ! "$(command -v yt-dlp)" ]] ; then
-    echo "::: YT-dlp not installed. Exiting."
-    exit 1
-fi
-'
-
-spotdl "$@" --path-template '{playlist}/{artist} - {title}.{ext}'
+spotdl "$@" --path-template '{artist} - {title}.{ext}'
 
 ## TODO
 ## use getops to provide options
