@@ -2,6 +2,7 @@
 
 from shutil import which
 import os
+import sys
 import subprocess
 from halo import Halo
 
@@ -14,6 +15,7 @@ for cmd in cmds:
     if not which(cmd):
         # print dict values
         print("{} is not installed".format(cmds[cmd]))
+        sys.exit(1)
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 
