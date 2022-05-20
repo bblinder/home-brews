@@ -11,7 +11,10 @@ except ImportError:
 # Follow URL redirect, print any hops along the way
 def follow_redirect():
     # By default, whatever's currently in the clipboard gets pasted.
-    input = pc.paste()
+    if args.url:
+        input = args.url
+    else:
+        input = pc.paste()
     r = requests.get(input, allow_redirects=True)
     
     if r.history:
