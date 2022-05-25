@@ -52,6 +52,9 @@ def python_upgrade():
         if which('pip-review'):
             print("::: trying with pip-review... ")
             run(['pip-review', '--auto'])
+        elif which('pip-review') is None:
+            # attempting to run it directly in case it's not in $PATH
+            run(["python3", "-m", "pip_review", "--auto"])
         else:
             print("::: pip-review not found, trying the old-fashioned way... ")
             pip_upgrade_old()
