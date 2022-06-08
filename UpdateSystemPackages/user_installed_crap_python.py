@@ -7,6 +7,7 @@ from subprocess import run
 import random
 from simple_colors import *
 import re
+import platform
 
 script_directory = os.path.dirname(os.path.realpath(__file__))
 github_directory = os.path.join(os.environ['HOME'], 'Github')
@@ -54,9 +55,10 @@ def python_upgrade():
             run(['pip-review', '--auto'])
         elif which('pip-review') is None:
             # attempting to run it directly in case it's not in $PATH
+            print("pip-review not found in $PATH, trying to run it directly...")
             run(["python3", "-m", "pip_review", "--auto"])
         else:
-            print("::: pip-review not found, trying the old-fashioned way... ")
+            print("::: pip-review not found on system, trying the old-fashioned way... ")
             pip_upgrade_old()
 
 
@@ -105,7 +107,8 @@ def main():
                 elif cmd == 'git':
                     bulk_git_update()
 
-    if sys.platform == 'linux':
+    # Running apt update if we're on Ubuntu or Debian
+    if "Ubuntu" or "Debian" in platform.version():
         user_choice = input(blue("Update apt? [y/N] --> ", ['italic']))
         if user_choice.lower() == 'y':
             apt_upgrade()
