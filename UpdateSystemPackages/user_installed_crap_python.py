@@ -108,7 +108,7 @@ def main():
                     bulk_git_update()
 
     # Running apt update if we're on Ubuntu or Debian
-    if "Ubuntu" or "Debian" in platform.version():
+    if "Ubuntu" in platform.version() or "Debian" in platform.version():
         user_choice = input(blue("Update apt? [y/N] --> ", ['italic']))
         if user_choice.lower() == 'y':
             apt_upgrade()
