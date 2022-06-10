@@ -108,10 +108,13 @@ def main():
                     bulk_git_update()
 
    # platform.version() doesn't work properly if using Ubuntu via WSL, so putting in an extra check.
+
     if "Ubuntu" in platform.version() or run(['lsb_release', '-a'], capture_output=True).stdout.decode('utf-8').split('\n')[0].split(':')[1].strip() == 'Ubuntu':
-        linux_os = 'Ubuntu'
+        linux_os = "Ubuntu"
+    elif "Debian" in platform.version():
+        linux_os = "Debian"
      # Running apt update if we're on Ubuntu or Debian
-    if "Debian" in platform.version() or linux_os == 'Ubuntu':
+    if linux_os == "Ubuntu" or linux_os == "Debian":
         user_choice = input(blue("Update apt? [y/N] --> ", ['italic']))
         if user_choice.lower() == 'y':
             apt_upgrade()
