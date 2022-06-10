@@ -41,9 +41,7 @@ general_packages(){
 }
 
 pip3_upgrade(){
-	while read -r package; do
-		python3 -m pip install "$package" --upgrade --user
-	done < "$LIST" || return 1
+  python3 -m pip -r --upgrade "$LIST" || return 1
 }
 
 if [[ -z "$LIST" ]] ; then
