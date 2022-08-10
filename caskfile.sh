@@ -42,7 +42,7 @@ brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff p
 
 #brew taps
 tap_array=(federico-terzi/espanso hashicorp/tap homebrew/cask homebrew/cask-fonts \
-	homebrew/cask-versions homebrew/core nextdns/tap brew clangen/musikcube \
+	homebrew/cask-versions homebrew/core brew clangen/musikcube \
 	apparition47/tap)
 
 # Casks/GUI stuff
@@ -75,8 +75,6 @@ app_store_array=(
     #Cardhop
 	1290358394 \
     #Craft
-	1487937127 \
-    #Dark Reader for Safari
 	1438243180 \
     #PDFScanner
 	410968114 \
@@ -97,7 +95,13 @@ app_store_array=(
      #Boop
 	1518425043 \
     #Parcel
-	639968404
+	639968404 \
+	#NextDNS
+	1464122853 \
+	#IAWriter
+	775737590 \
+	#BetterSnapTool
+	417375580
 )
 
 INSTALL_STUFF(){
