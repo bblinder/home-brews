@@ -22,7 +22,7 @@ def homebrew_upgrade():
         print(green("::: Updating Homebrew"))
         run(['brew', 'update'])
         run(['brew', 'upgrade'])
-        run(['brew', 'upgrade', '--cask'])
+        run(['brew', 'upgrade', '--cask', '--greedy'])
 
         # Running brew cleanup
         cleanup_choice = input(blue("Cleanup Homebrew? [y/N] --> ", ['italic']))
