@@ -19,7 +19,7 @@ if os.path.isfile('.env'):  # Checking if .env file exists
 
 parser = argparse.ArgumentParser(description='Send a PDF to my Kindle.')
 parser.add_argument('file', help='The file to be sent.')
-parser.add_argument('subject', default='Convert', help='The subject of the email.')
+parser.add_argument('-s', '--subject', default='Convert', help='The subject of the email.')
 args = parser.parse_args()
 
 
