@@ -15,6 +15,13 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('-e', '--endpoint', help='Get thesaurus results', default='entries', required=False)
 parser.add_argument('word', help='The word you want to look up')
+parser.usage = """
+thesaurus.py [-h] [-e ENDPOINT] word
+
+The endpoint can be one of the following:
+    - entries
+    - thesaurus
+"""
 
 args = parser.parse_args()
 
