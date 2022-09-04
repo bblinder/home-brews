@@ -3,6 +3,7 @@
 # A dirty script to send PDFs to my personal Kindle.
 # Credentials (email password, email addresses, etc, should be kept in a `.env` file.)
 
+from distutils.command.build import build
 import os
 import sys
 import argparse
@@ -20,19 +21,22 @@ args = parser.parse_args()
 if os.path.isfile(args.config):
     load_dotenv(args.config)
 
-# Building the email
-email = EmailSender(
-    host='smtp.office365.com',
-    port=587,
-    username=os.getenv('EMAIL_ADDRESS'),
-    password=os.getenv('EMAIL_PASSWORD')
-)
 
-filename = os.path.basename(args.file)
+def build_email():
+# Building the email
+    email = EmailSender(
+        host='smtp.office365.com',
+        port=587,
+        username=os.getenv('EMAIL_ADDRESS'),
+        password=os.getenv('EMAIL_PASSWORD')
+    )
+
+    filename = os.path.basename(args.file)
+    return email, filename
 
 # Sending the email
 @Halo(text='Sending email...', spinner='dots')
-def send_email():
+def send_email(email, filename):
     email.send(
         sender=os.getenv('EMAIL_ADDRESS'),
         receivers=[os.getenv('KINDLE_ADDRESS')],
@@ -43,7 +47,8 @@ def send_email():
     )
 
 try:
-    send_email()
+    email, filename = build_email()
+    send_email(email, filename)
     print(f"::: Sent {filename} to {os.getenv('KINDLE_ADDRESS')}")
 except Exception as e:
     print(e)
