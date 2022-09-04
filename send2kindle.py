@@ -3,7 +3,6 @@
 # A dirty script to send PDFs to my personal Kindle.
 # Credentials (email password, email addresses, etc, should be kept in a `.env` file.)
 
-from distutils.command.build import build
 import os
 import sys
 import argparse
