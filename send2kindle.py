@@ -11,14 +11,14 @@ from dotenv import load_dotenv
 from redmail import EmailSender
 from pathlib import Path
 
-if os.path.isfile('.env'):  # Checking if .env file exists
-    load_dotenv('.env')  # importing .env file as a environment variable(s)
-
 parser = argparse.ArgumentParser(description='Send a PDF to my Kindle.')
 parser.add_argument('file', help='The file to be sent.')
-parser.add_argument('-s', '--subject', default='Convert', help='The subject of the email.')
+parser.add_argument('-s', '--subject', default='Convert', help='The subject of the email.', type=str)
+parser.add_argument('-c', '--config', default='.env', help='The .env file to use.', required=False)
 args = parser.parse_args()
 
+if os.path.isfile(args.config):
+    load_dotenv(args.config)
 
 # Building the email
 email = EmailSender(
