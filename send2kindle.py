@@ -11,11 +11,8 @@ from dotenv import load_dotenv
 from redmail import EmailSender
 from pathlib import Path
 
-
 if os.path.isfile('.env'):  # Checking if .env file exists
-    from dotenv import load_dotenv
     load_dotenv('.env')  # importing .env file as a environment variable(s)
-
 
 parser = argparse.ArgumentParser(description='Send a PDF to my Kindle.')
 parser.add_argument('file', help='The file to be sent.')
@@ -32,7 +29,6 @@ email = EmailSender(
 )
 
 filename = os.path.basename(args.file)
-attachment = open(os.path.abspath(args.file), "rb")
 
 # Sending the email
 @Halo(text='Sending email...', spinner='dots')
