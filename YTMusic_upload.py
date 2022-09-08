@@ -3,8 +3,18 @@
 # derived from: https://ytmusicapi.readthedocs.io/
 # See "Setup" on how to get auth headers.
 
+# TODO: check if upload already exists
+
 import sys, os
 from pprint import pprint
+import argparse
+
+parser = argparse.ArgumentParser(
+    description="This script uploads a music track or directory of tracks to YouTube Music")
+parser.add_argument("track", help="The path to the track or directory to upload")
+parser.add_argument("-c", "--config", help="The path to the config file", default="headers_auth.json")
+args = parser.parse_args()
+
 
 try:
     from ytmusicapi import YTMusic
@@ -21,7 +31,7 @@ except ImportError:
     print("::: Exiting... ")
     sys.exit(1)
 
-authFile = 'headers_auth.json'  # You need to create this ahead of time.
+authFile = args.config # You need to create this ahead of time.
 
 if os.path.isfile(authFile):
     ytmusic = YTMusic(authFile)
@@ -29,8 +39,6 @@ else:
     print("::: " + authFile + " does not exist...")
     sys.exit(1)
 
-
-# d = sys.argv[1] # track or music directory
 
 def convert_bytes(bytes_number):
     tags = ["Bytes", "KB", "MB", "GB", "TB"]
@@ -47,34 +55,24 @@ def convert_bytes(bytes_number):
 
 
 @Halo(text="Uploading...", spinner='dots')
-def upload(track):
-    print(track)
-    filesize = os.path.getsize(track)
-    print('Size of track: ' + convert_bytes(filesize) + ' ')
-    ytmusic.upload_song(track)
-
-
 def main(track):
+    music_formats = ['.mp3', '.m4a', '.flac', '.wma', '.ogg']
     if os.path.isfile(track):
         filesize = os.path.getsize(track)
-        upload(track)
+        print(f"{track}: {convert_bytes(filesize)}")
+        ytmusic.upload_song(track)
     elif os.path.isdir(track):
-        for path in os.listdir(track):
-            full_path = os.path.join(track, path)
-            track = full_path
-            upload(track)
+        for root, dirs, files in os.walk(track):
+            # ignore jpgs and other non-audio files
+            for track in files:
+                if track.endswith(tuple(music_formats)):
+                    filesize = os.path.getsize(os.path.join(root, track))
+                    print(f"{track}: {convert_bytes(filesize)}")
+                    ytmusic.upload_song(os.path.join(root, track))
     else:
         print("No track or music folder specificed")
         sys.exit(1)
 
 
 if __name__ == '__main__':
-    import argparse
-
-    parser = argparse.ArgumentParser(
-        description="This script uploads a music track or directory of tracks to YouTube Music")
-    parser.add_argument("track", help="The path to the track or directory to upload")
-
-    args = parser.parse_args()
-    track = args.track
-    main(track)
+    main(args.track)
