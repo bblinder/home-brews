@@ -45,7 +45,7 @@ def main():
     endpoint = args.endpoint
     word = args.word.lower()
     results = get_word(endpoint, word)
-    print(results)
+    print(json.dumps(json.loads(results), indent=4, sort_keys=True))
 
 
 if __name__ == '__main__':

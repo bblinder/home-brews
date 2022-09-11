@@ -5,16 +5,15 @@
 
 # TODO: check if upload already exists
 
-import sys, os
-from pprint import pprint
 import argparse
+import os
+import sys
 
 parser = argparse.ArgumentParser(
     description="This script uploads a music track or directory of tracks to YouTube Music")
 parser.add_argument("track", help="The path to the track or directory to upload")
 parser.add_argument("-c", "--config", help="The path to the config file", default="headers_auth.json")
 args = parser.parse_args()
-
 
 try:
     from ytmusicapi import YTMusic
@@ -31,12 +30,12 @@ except ImportError:
     print("::: Exiting... ")
     sys.exit(1)
 
-authFile = args.config # You need to create this ahead of time.
+authFile = args.config  # You need to create this ahead of time.
 
 if os.path.isfile(authFile):
     ytmusic = YTMusic(authFile)
 else:
-    print("::: " + authFile + " does not exist...")
+    print(f"::: {authFile} does not exist...")
     sys.exit(1)
 
 
