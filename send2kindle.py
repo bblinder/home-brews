@@ -22,7 +22,7 @@ if os.path.isfile(args.config):
 
 
 def build_email():
-# Building the email
+    # Building the email
     email = EmailSender(
         host='smtp.office365.com',
         port=587,
@@ -32,6 +32,7 @@ def build_email():
 
     filename = os.path.basename(args.file)
     return email, filename
+
 
 # Sending the email
 @Halo(text='Sending email...', spinner='dots')
@@ -44,6 +45,7 @@ def send_email(email, filename):
             filename: Path(args.file).read_bytes()
         }
     )
+
 
 try:
     email, filename = build_email()
