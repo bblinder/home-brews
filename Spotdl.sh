@@ -13,7 +13,6 @@ for cmd in $COMMANDS; do
     fi
 done
 
-
 spotdl "$@" --path-template '{artist} - {title}.{ext}'
 
 ## TODO

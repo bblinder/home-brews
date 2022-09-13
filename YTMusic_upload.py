@@ -9,12 +9,6 @@ import argparse
 import os
 import sys
 
-parser = argparse.ArgumentParser(
-    description="This script uploads a music track or directory of tracks to YouTube Music")
-parser.add_argument("track", help="The path to the track or directory to upload")
-parser.add_argument("-c", "--config", help="The path to the config file", default="headers_auth.json")
-args = parser.parse_args()
-
 try:
     from ytmusicapi import YTMusic
 except ImportError:
@@ -30,6 +24,13 @@ except ImportError:
     print("::: Exiting... ")
     sys.exit(1)
 
+parser = argparse.ArgumentParser(
+    description="This script uploads a music track or directory of tracks to YouTube Music")
+parser.add_argument("track", help="The path to the track or directory to upload")
+parser.add_argument("-c", "--config", help="The path to the config file", default="headers_auth.json")
+args = parser.parse_args()
+
+# https://ytmusicapi.readthedocs.io/en/latest/setup.html#using-the-headers-in-your-project
 authFile = args.config  # You need to create this ahead of time.
 
 if os.path.isfile(authFile):
@@ -37,6 +38,20 @@ if os.path.isfile(authFile):
 else:
     print(f"::: {authFile} does not exist...")
     sys.exit(1)
+
+
+def check_for_upload(track):
+    """Check if the track already exists in YT Music library"""
+    spinner = Halo(text="Checking for existing upload...", spinner="dots")
+    spinner.start()
+    track_name = os.path.splitext(os.path.basename(track))[0]
+    search_results = ytmusic.search(track_name, scope="uploads")
+    spinner.stop()
+    if search_results:
+        print(f"::: Track already exists on YT Music: {search_results[0]['title']}")
+        return True
+    else:
+        pass
 
 
 def convert_bytes(bytes_number):
@@ -74,4 +89,7 @@ def main(track):
 
 
 if __name__ == '__main__':
-    main(args.track)
+    if check_for_upload(args.track):
+        sys.exit(0)
+    else:
+        main(args.track)
