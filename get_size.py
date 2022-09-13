@@ -45,5 +45,6 @@ def main():
     elif os.path.isdir(args.path):
         print(convert_bytes(get_dir_size(args.path)))
 
+
 if __name__ == '__main__':
     main()
