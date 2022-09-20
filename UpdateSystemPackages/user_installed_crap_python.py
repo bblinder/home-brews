@@ -35,7 +35,7 @@ def homebrew_upgrade():
 
 
 def python_upgrade():
-    """ Providing a couple of ways to update Python/pip packages.
+    """ Providing a couple of ways to update python/pip packages.
     The new method uses the pip-review tool, which is a wrapper around pip.
     The old method uses pip directly."""
 
@@ -47,9 +47,9 @@ def python_upgrade():
                 pip_packages.append(line.split(' ')[0])
                 run(['pip3', 'install', '--upgrade'] + pip_packages)
 
-    user_choice = input(blue("Upgrade Python? [y/N] --> ", ['italic']))
+    user_choice = input(blue("Upgrade python? [y/N] --> ", ['italic']))
     if user_choice.lower() == 'y':
-        print(green("::: Updating Python packages"))
+        print(green("::: Updating python packages"))
         if which('pip-review'):
             print("::: trying with pip-review... ")
             run(['pip-review', '--auto'])
