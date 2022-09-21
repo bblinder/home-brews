@@ -1,18 +1,22 @@
 #!/usr/bin/env python3
 
-import os
+"""
+A quick method for getting the size of a file or directory.
+"""
+
 import argparse
+import os
 
 
 def get_filesize(file):
     return os.path.getsize(file)
 
 
-def get_dir_size(path='.'):
+def get_dir_size(path="."):
     total_size = 0
     with os.scandir(path) as it:
         for entry in it:
-            if entry.is_file() and entry.name.startswith('.'):
+            if entry.is_file() and entry.name.startswith("."):
                 total_size += entry.stat().st_size
             elif entry.is_file():
                 total_size += entry.stat().st_size
@@ -36,8 +40,8 @@ def convert_bytes(bytes_number):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Get the size of a file or directory')
-    parser.add_argument('path', help='The file or directory to get the size of')
+    parser = argparse.ArgumentParser(description="Get the size of a file or directory")
+    parser.add_argument("path", help="The file or directory to get the size of")
     args = parser.parse_args()
 
     if os.path.isfile(args.path):
@@ -46,5 +50,5 @@ def main():
         print(convert_bytes(get_dir_size(args.path)))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
