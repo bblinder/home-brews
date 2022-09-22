@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-import random
 import os
+import random
 
 logo = """
 .------.            _     _            _    _            _    
