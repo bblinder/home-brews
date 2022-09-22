@@ -8,9 +8,9 @@ import sys
 
 import yaml
 
-args = argparse.ArgumentParser(description="Query SmartyStreets API")
-args.add_argument("file_name", help="CSV file with zip codes")
-args.parse_args()
+argparser = argparse.ArgumentParser(description="Query SmartyStreets API")
+argparser.add_argument("file_name", help="CSV file with zip codes")
+args = argparser.parse_args()
 
 with open("config.yaml", "r") as config_file:
     config = yaml.safe_load(config_file)
@@ -34,7 +34,7 @@ def zip_request():
             value_from_csv = row[0]
             # headers = {"content-type": "application/json"}
             url = f"https://us-zipcode.api.smartystreets.com/lookup?auth-id={auth_id}&auth-token={auth_token}&zipcode={value_from_csv}"
-            r = requests.get(url, timeout=5)
+            r = requests.get(url, timeout=10)
             print(r.json())
 
 
