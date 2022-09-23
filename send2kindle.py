@@ -57,6 +57,7 @@ try:
     email, filename = build_email()
     send_email(email, filename)
     print(f"::: Sent {filename} to {os.getenv('KINDLE_ADDRESS')}")
+# pylint: disable=broad-except
 except Exception as e:
     print(e)
     sys.exit(1)
