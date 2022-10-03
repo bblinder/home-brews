@@ -12,7 +12,7 @@ import sys
 from shutil import which
 from subprocess import run
 
-from simple_colors import *
+from simple_colors import green, yellow, blue
 
 script_directory = os.path.dirname(os.path.realpath(__file__))
 github_directory = os.path.join(os.environ["HOME"], "Github")
@@ -21,7 +21,7 @@ github_directory = os.path.join(os.environ["HOME"], "Github")
 def homebrew_upgrade():
     """A 'greedy' upgrade of homebrew packages."""
     if sys.platform in ["linux", "darwin"]:
-    # if sys.platform == "darwin" or sys.platform == "linux":
+        # if sys.platform == "darwin" or sys.platform == "linux":
         if random.randint(0, 3) == 1:  # running brew doctor at random
             print(yellow("::: Running random brew doctor"))
             run(["brew", "doctor"], check=False)
@@ -117,15 +117,15 @@ def main():
             user_choice = input(blue(f"Update {cmd}? [y/N] --> ", ["italic"]))
             if user_choice.lower() != "y":
                 continue
-            else:
-                if cmd == "brew":
-                    homebrew_upgrade()
-                elif cmd == "flatpak":
-                    flatpak_upgrade()
-                elif cmd == "gem":
-                    ruby_update()
-                elif cmd == "git":
-                    bulk_git_update()
+
+            if cmd == "brew":
+                homebrew_upgrade()
+            elif cmd == "flatpak":
+                flatpak_upgrade()
+            elif cmd == "gem":
+                ruby_update()
+            elif cmd == "git":
+                bulk_git_update()
 
     if sys.platform == "linux":
         user_choice = input(blue("Update apt? [y/N] --> ", ["italic"]))

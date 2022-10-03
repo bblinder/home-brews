@@ -38,8 +38,10 @@ BASE_URL = "https://od-api.oxforddictionaries.com/api/v2"
 
 
 def get_word(endpoint, word):
+    """Making the API request, returning the results"""
+
     url = f"{BASE_URL}/{endpoint}/{LANGUAGE}/{word}"
-    r = requests.get(url, headers={"app_id": app_id, "app_key": app_key})
+    r = requests.get(url, headers={"app_id": app_id, "app_key": app_key}, timeout=5)
     results = json.dumps(r.json())
     return results
 
@@ -52,6 +54,8 @@ def get_word(endpoint, word):
 
 
 def main():
+    """Taking the returned API result and printing it in a table with Rich"""
+
     endpoint = args.endpoint
     word = args.word.lower()
     results = get_word(endpoint, word)
@@ -62,7 +66,7 @@ def main():
         table.add_column("Word", style="dim", width=12)
         table.add_column("Definition", style="dim", width=12)
         table.add_column("Example", style="dim", width=12)
-        table.add_column("Synonyms", style="dim", width=12)
+        table.add_column("Synonyms", style="dim", width=20)
 
         for result in json.loads(results)["results"]:
             for lexical_entry in result["lexicalEntries"]:
@@ -80,7 +84,7 @@ def main():
 
     elif endpoint == "thesaurus":
         table.add_column("Word", style="dim", width=12)
-        table.add_column("Synonym", style="dim", width=12)
+        table.add_column("Synonym", style="dim", width=20)
 
         for result in json.loads(results)["results"]:
             for lexical_entry in result["lexicalEntries"]:
