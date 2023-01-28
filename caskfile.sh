@@ -38,7 +38,7 @@ brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff p
 	parallel pdfgrep dtrx lepton sslh jq woof coreutils goaccess exa wifi-password angle-grinder \
 	zsh-syntax-highlighting mediainfo pandoc rtv cheat figlet rig fortune httrack \
 	akamai bat prettyping magic-wormhole python3 heroku streamlink imagemagick aria2 \
-	restic ncdu minikube lazydocker dive plantuml rkhunter switchaudio-osx rga mas jo)
+	restic ncdu minikube rm-improved lazydocker dive plantuml rkhunter switchaudio-osx rga mas jo)
 
 #brew taps
 tap_array=(federico-terzi/espanso hashicorp/tap homebrew/cask homebrew/cask-fonts \
