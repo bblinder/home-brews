@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Uses imagemagick and ghostscript to make a PDF 'look scanned', and crappily at that.
+A pythonic wrapper around imagemagick and ghostscript to make a PDF 'look scanned', and crappily at that.
 """
 
 import os
