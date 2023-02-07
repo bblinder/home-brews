@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Uses imagemagick and ghostscript to make a PDF 'look scanned'.
+Uses imagemagick and ghostscript to make a PDF 'look scanned', and crappily at that.
 """
 
 import os
@@ -23,13 +23,19 @@ script_dir = os.path.dirname(os.path.realpath(__file__))
 
 
 def get_downloads_folder():
+    """
+    Returns the path to the user's Downloads folder
+    """
     if os.name == "nt":
         return os.path.join(os.environ["USERPROFILE"], "Downloads")
     else:
         return os.path.join(os.path.expanduser("~"), "Downloads")
 
 
-def imageMagick_convert(pdf):
+def imagemagick_convert(pdf):
+    """
+    Uses ImageMagick to convert the PDF to a crappy looking scanned PDF
+    """
     imagemagick_commands = [
         "convert",
         "-density",
@@ -57,7 +63,10 @@ def imageMagick_convert(pdf):
     return temp_file
 
 
-def ghostScript_convert(imageMagick_output_pdf):
+def ghostscript_convert(imagemagick_output_pdf):
+    """
+    Uses GhostScript to manage size and put on the finishing touches"
+    """
     ghostscript_commands = [
         "gs",
         "-dSAFER",
@@ -72,17 +81,17 @@ def ghostScript_convert(imageMagick_output_pdf):
         "-dDownsampleMonoImages=true",
         "-dDownsampleGrayImages=true",
         "-dDownsampleColorImages=true",
-        imageMagick_output_pdf,
+        imagemagick_output_pdf,
     ]
 
     if subprocess.run(ghostscript_commands, cwd=script_dir, check=True):
-        os.remove(imageMagick_output_pdf)
+        os.remove(imagemagick_output_pdf)
 
 
 @Halo(text="Scanning PDF... please wait... ", spinner="dots")
 def main():
-    IM_PDF = imageMagick_convert(args.pdf)
-    ghostScript_convert(IM_PDF)
+    im_pdf = imagemagick_convert(args.pdf)
+    ghostscript_convert(im_pdf)
 
 
 if __name__ == "__main__":
