@@ -12,7 +12,7 @@ import sys
 from shutil import which
 from subprocess import run
 
-from simple_colors import green, yellow, blue
+from simple_colors import blue, green, yellow
 
 script_directory = os.path.dirname(os.path.realpath(__file__))
 github_directory = os.path.join(os.environ["HOME"], "Github")
@@ -43,36 +43,42 @@ def homebrew_upgrade():
 
 def python_upgrade():
     """Providing a couple of ways to update python/pip packages.
-    The new method uses the pip-review tool, which is a wrapper around pip.
+    The new method uses the pip-review tool, which is an abstraction around pip.
     The old method uses pip directly."""
+
+    def pip_upgrade_new():
+        run(["python3", "-m", "pip_review", "--auto"], check=False)
 
     def pip_upgrade_old():
         pip_packages = []
         for line in (
-            run(["pip3", "list", "--outdated"], capture_output=True, check=False)
+            run(
+                ["python3", "-m", "pip", "list", "--outdated"],
+                capture_output=True,
+                check=False,
+            )
             .stdout.decode("utf-8")
             .split("\n")
         ):
             # output only the pip package names and not the versions
             if re.search(r"\s\d+\.", line):
                 pip_packages.append(line.split(" ")[0])
-                run(["pip3", "install", "--upgrade"], check=False + pip_packages)
+                run(
+                    ["python3", "-m", "pip", "install", "--upgrade"],
+                    check=False + pip_packages,
+                )
 
     user_choice = input(blue("Upgrade python? [y/N] --> ", ["italic"]))
     if user_choice.lower() == "y":
         print(green("::: Updating python packages"))
-        if which("pip-review"):
-            print("::: trying with pip-review... ")
-            run(["pip-review", "--auto"], check=False)
-        elif which("pip-review") is None:
-            # attempting to run it directly in case it's not in $PATH
-            print("pip-review not found in $PATH, trying to run it directly...")
-            run(["python3", "-m", "pip_review", "--auto"], check=False)
-        else:
-            print(
-                "::: pip-review not found on system, trying the old-fashioned way... "
-            )
+        try:
+            pip_upgrade_new()
+        except Exception as e:
+            print(e)
+            print("::: trying the old method...")
             pip_upgrade_old()
+    else:
+        pass
 
 
 def apt_upgrade():
