@@ -1,0 +1,7 @@
+requests
+bs4
+dotenv
+halo
+redmail
+rich
+simple_colors
