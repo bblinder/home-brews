@@ -35,7 +35,7 @@ brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff p
 	irssi httpie lynx mplayer mtr osxfuse p7zip pstree sshfs tcpdump musikcube \
 	speedtest_cli pv rtmpdump tldr wget youtube-dl zsh git m-cli pwgen glow detox \
 	gnu-units lnav ranger watch iftop ffmpeg ssh-copy-id spoof-mac fzf difftastic \
-	parallel pdfgrep dtrx lepton sslh jq woof coreutils goaccess exa wifi-password angle-grinder \
+	parallel pdfgrep dtrx sslh jq woof coreutils goaccess exa wifi-password angle-grinder \
 	zsh-syntax-highlighting mediainfo pandoc rtv cheat figlet rig fortune httrack \
 	akamai bat prettyping magic-wormhole python3 heroku streamlink imagemagick aria2 \
 	restic ncdu minikube rm-improved lazydocker dive plantuml rkhunter switchaudio-osx rga mas jo)
