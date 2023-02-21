@@ -1,6 +1,6 @@
 requests
 bs4
-dotenv
+python-dotenv
 halo
 redmail
 rich
