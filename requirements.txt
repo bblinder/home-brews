@@ -5,3 +5,6 @@ halo
 redmail
 rich
 simple_colors
+gspread
+oauth2client
+beautifulsoup4
