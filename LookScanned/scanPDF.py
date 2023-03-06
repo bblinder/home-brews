@@ -90,6 +90,19 @@ def ghostscript_convert(imagemagick_output_pdf):
 
 @Halo(text="Scanning PDF... please wait... ", spinner="dots")
 def main():
+    """
+    Main function.
+    """
+    output_file = os.path.splitext(args.pdf)[0] + "_SCANNED.pdf"
+
+    # if no output arg is given, ensure it has the same name as the input file
+    if args.output is None:
+        args.output = os.path.join(get_downloads_folder(), output_file)
+
+    # if the output arg is given, ensure it has the correct extension
+    if os.path.splitext(args.output)[1] != ".pdf":
+        args.output = args.output + ".pdf"
+
     im_pdf = imagemagick_convert(args.pdf)
     ghostscript_convert(im_pdf)
 
@@ -104,8 +117,7 @@ if __name__ == "__main__":
     argparser.add_argument(
         "-o",
         "--output",
-        help="Output location (optional)",
-        default=os.path.join(get_downloads_folder(), "SCANNED.pdf"),
+        help="Output location + file name (optional)",
     )
     args = argparser.parse_args()
 

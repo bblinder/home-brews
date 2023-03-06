@@ -3,13 +3,15 @@
 set -Eeuo pipefail
 #trap cleanup SIGINT SIGTERM ERR EXIT
 
-script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
-DOCUMENT="$1"
-
-if [[ -z "$DOCUMENT" ]] ; then
+# if no arguments supplied, display usage
+if [ $# -eq 0 ]; then
     echo -e "Usage: ./scanmypdf.sh <PDF_FILE>"
     exit 1
 fi
+
+script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
+DOCUMENT="$1"
+
 
 die() {
   local msg=$1
