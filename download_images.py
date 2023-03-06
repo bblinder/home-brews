@@ -4,13 +4,14 @@
 # Downloads all images on a given web page.
 # To merely see/print the image URLs, see the `list_image_Urls.py` script.
 
-#To Do: account for pages that lazy load.
+# TODO: account for pages that lazy load.
+
+import os
+from urllib.parse import urljoin, urlparse
 
 import requests
-import os
-from tqdm import tqdm
 from bs4 import BeautifulSoup as bs
-from urllib.parse import urljoin, urlparse
+from tqdm import tqdm
 
 
 def is_valid(url):
@@ -63,7 +64,14 @@ def download(url, pathname):
     filename = os.path.join(pathname, url.split("/")[-1])
 
     # progress bar, changing the unit to bytes instead of iteration (default by tqdm)
-    progress = tqdm(response.iter_content(1024), f"Downloading {filename}", total=file_size, unit="B", unit_scale=True, unit_divisor=1024)
+    progress = tqdm(
+        response.iter_content(1024),
+        f"Downloading {filename}",
+        total=file_size,
+        unit="B",
+        unit_scale=True,
+        unit_divisor=1024,
+    )
     with open(filename, "wb") as f:
         for data in progress:
             # write data read to the file
@@ -71,20 +79,31 @@ def download(url, pathname):
             # update the progress bar manually
             progress.update(len(data))
 
+
 def download_images(url, path):
     # get all images
     imgs = get_all_images(url)
     for img in imgs:
         # for each img, download it
         download(img, path)
-    
+
+
 # Now onto the actual work
 if __name__ == "__main__":
     import argparse
-    parser = argparse.ArgumentParser(description="This script downloads all images from a web page")
-    parser.add_argument("url", help="The URL of the web page you want to download images")
-    parser.add_argument("-p", "--path", help="The Directory you want to store your images, default is the domain of URL passed")
-    
+
+    parser = argparse.ArgumentParser(
+        description="This script downloads all images from a web page"
+    )
+    parser.add_argument(
+        "url", help="The URL of the web page you want to download images"
+    )
+    parser.add_argument(
+        "-p",
+        "--path",
+        help="The Directory you want to store your images, default is the domain of URL passed",
+    )
+
     args = parser.parse_args()
     url = args.url
     path = args.path
@@ -92,5 +111,5 @@ if __name__ == "__main__":
     if not path:
         # if path isn't specified, use the domain name of that url as the folder name
         path = urlparse(url).netloc
-    
+
     download_images(url, path)

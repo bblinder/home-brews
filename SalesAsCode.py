@@ -6,6 +6,7 @@ Sales As Code: randomly selects a sales-y buzzword from a google sheet.
 
 import os
 import random
+import sys
 
 import gspread
 from dotenv import load_dotenv
@@ -14,6 +15,10 @@ from oauth2client.service_account import ServiceAccountCredentials
 load_dotenv()
 
 CREDS = os.getenv("SALES_AS_CODE_CREDS")
+
+if not CREDS:
+    print("::: No credentials found. Exiting... ")
+    sys.exit(1)
 
 credential = ServiceAccountCredentials.from_json_keyfile_name(
     CREDS,
