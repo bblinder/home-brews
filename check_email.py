@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+"""Check email address for validity and suggest changes if invalid"""
+
 from email_validator import EmailNotValidError, validate_email
 from rich.console import Console
 
@@ -7,6 +9,8 @@ console = Console()
 
 
 def suggest_changes(email):
+    """Suggest syntax changes to email address"""
+
     suggestions = []
     if "@" not in email:
         suggestions.append("::: add @")
@@ -23,21 +27,28 @@ def suggest_changes(email):
             return suggestions
     else:
         console.print("::: No suggestions", style="bold")
+        return suggestions
 
 
-def validate_email_address(email):
+def validate_address(email):
+    """Uses the email-validator package to screen email address"""
+
     try:
         email = validate_email(email, check_deliverability=True).email
         console.print(f"{email} is valid", style="bold green")
         return email
     except EmailNotValidError as e:
         console.print(f"{email} is invalid", style="bold red")
-        suggest_changes(email)
+        console.print(e, style="bold red")
+        return None
 
 
 def main():
-    email = args.email
-    validate_email_address(email)
+    """Checks email address and suggests changes if invalid"""
+
+    email = args.email.strip()
+    if validate_address(email) is None:
+        suggest_changes(email)
 
 
 if __name__ == "__main__":
