@@ -8,3 +8,4 @@ simple_colors
 gspread
 oauth2client
 beautifulsoup4
+email-validator
