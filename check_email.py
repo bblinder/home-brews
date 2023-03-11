@@ -26,8 +26,7 @@ def suggest_changes(email):
             console.print(f"  {suggestion}", style="bold")
             return suggestions
     else:
-        console.print("::: No suggestions", style="bold")
-        return suggestions
+        return None
 
 
 def validate_address(email):
@@ -37,9 +36,9 @@ def validate_address(email):
         email = validate_email(email, check_deliverability=True).email
         console.print(f"{email} is valid", style="bold green")
         return email
-    except EmailNotValidError as e:
+    except EmailNotValidError as err:
         console.print(f"{email} is invalid", style="bold red")
-        console.print(e, style="bold red")
+        console.print(err, style="bold red")
         return None
 
 
