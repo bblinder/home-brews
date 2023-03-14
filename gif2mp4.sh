@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-# This script converts a GIF file to an MP4 file using ffmpeg.
+# An opinionated script I use to convert a gif to an mp4 using ffmpeg.
+
 #
 # Usage: ./gif2mp4.sh input.gif output.mp4
 #
@@ -43,7 +44,7 @@ usage() {
 }
 
 convert() {
-    ffmpeg -i "$1" -movflags +faststart -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" "$2"
+    ffmpeg -i "$input_file" -movflags +faststart -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" "$output_file"
 }
 
 ffmpeg_check
