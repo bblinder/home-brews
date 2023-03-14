@@ -35,6 +35,16 @@ def check_valid_url(url):
     return validators.url(url)
 
 
+def spongecase(term):
+    output = ""
+    for char in term:
+        if random.randint(0, 1) == 1:
+            output += char.upper()
+        else:
+            output += char.lower()
+    return output
+
+
 def deal_with_it():
     from time import sleep
 

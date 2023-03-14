@@ -8,25 +8,25 @@ from rich.console import Console
 console = Console()
 
 
-def suggest_changes(email):
-    """Suggest syntax changes to email address"""
+# def suggest_changes(email):
+#     """Suggest syntax changes to email address"""
 
-    suggestions = []
-    if "@" not in email:
-        suggestions.append("::: add @")
-    if "." not in email:
-        suggestions.append("::: add .")
-    if " " in email:
-        suggestions.append("::: remove spaces")
-    if ".co" in email:
-        suggestions.append("::: Try changing .co to .com")
-    if suggestions:
-        console.print("Suggestions:", style="bold")
-        for suggestion in suggestions:
-            console.print(f"  {suggestion}", style="bold")
-            return suggestions
-    else:
-        return None
+#     suggestions = []
+#     if "@" not in email:
+#         suggestions.append("::: add @")
+#     if "." not in email:
+#         suggestions.append("::: add .")
+#     if " " in email:
+#         suggestions.append("::: remove spaces")
+#     if ".co" in email:
+#         suggestions.append("::: Try changing .co to .com")
+#     if suggestions:
+#         console.print("Suggestions:", style="bold")
+#         for suggestion in suggestions:
+#             console.print(f"  {suggestion}", style="bold")
+#             return suggestions
+#     else:
+#         return None
 
 
 def validate_address(email):
@@ -46,8 +46,9 @@ def main():
     """Checks email address and suggests changes if invalid"""
 
     email = args.email.strip()
-    if validate_address(email) is None:
-        suggest_changes(email)
+    validate_address(email)
+    # if validate_address(email) is None:
+    #     suggest_changes(email)
 
 
 if __name__ == "__main__":
