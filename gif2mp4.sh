@@ -1,45 +1,51 @@
 #!/usr/bin/env bash
 
-# convert a gif to an mp4
-
-# usage: gif2mp4.sh input.gif output.mp4
-
-# requires: ffmpeg
+# This script converts a GIF file to an MP4 file using ffmpeg.
+#
+# Usage: ./gif2mp4.sh input.gif output.mp4
+#
+# Arguments:
+#   input.gif: The input GIF file to convert.
+#   output.mp4: The output MP4 file. The file extension will be forced to .mp4.
+#
+# Requirements:
+#   - ffmpeg must be installed and available on the system PATH.
 
 set -euo pipefail
+set -o errexit
+set -o nounset
+set +u
+
+input_file="$1"
+output_file="${2%.*}.mp4"
 
 # suppress ffmpeg warnings
 export FFREPORT="file=/dev/null:level=24"
 
-# suppress non-usage errors
-#exec 2>/dev/null
-
-
 input_file="$1"
-output_file="$2"
+output_file="${2%.*}.mp4"
 
-usage () {
-    echo "usage: gif2mp4.sh input.gif output.mp4"
-    exit 1
+ffmpeg_check() {
+    # Check if ffmpeg is installed and available on the system PATH
+    if ! command -v ffmpeg &> /dev/null; then
+        echo "Error: ffmpeg is not installed or not available on the system PATH."
+        exit 1
+    fi
 }
 
-convert () {
-    ffmpeg -i "$input_file" -movflags +faststart -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" "$output_file"
+usage() {
+    if [[ "${1-}" =~ ^-*h(elp)?$ ]]; then
+        echo '::: Usage: ./gif2mp4.sh input-file output-file'
+    elif [[ $# -eq 0 ]]; then
+        echo "::: Usage: ./gif2mp4.sh input-file output-file"
+        exit 1
+    fi
 }
 
-# if no arguments are given, print usage
-if [ $# = 0 ]; then
-    usage
-fi
+convert() {
+    ffmpeg -i "$1" -movflags +faststart -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" "$2"
+}
 
-# if the first argument is -h, print usage
-if [ "$1" = "-h" ]; then
-    usage
-fi
-
-# if the first argument is --help, print usage
-if [ "$1" = "--help" ]; then
-    usage
-fi
-
-convert
+ffmpeg_check
+usage "$@"
+convert "$input_file" "$output_file"
