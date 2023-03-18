@@ -47,7 +47,9 @@ def python_upgrade():
     The old method uses pip directly."""
 
     def pip_upgrade_new():
-        run(["python3", "-m", "pip_review", "--auto", "--continue-on-fail"], check=False)
+        run(
+            ["python3", "-m", "pip_review", "--auto", "--continue-on-fail"], check=False
+        )
 
     def pip_upgrade_old():
         pip_packages = []
@@ -73,8 +75,8 @@ def python_upgrade():
         print(green("::: Updating python packages"))
         try:
             pip_upgrade_new()
-        except Exception as e:
-            print(e)
+        except Exception as pip_failure:
+            print(pip_failure)
             print("::: trying the old method...")
             pip_upgrade_old()
     else:
@@ -115,23 +117,28 @@ def ruby_update():
         run(["sudo", "gem", "update", "--system"], check=False)
 
 
+def handle_cmd_update(cmd):
+    """Handling the update for each respective command."""
+    if which(cmd):
+        user_choice = input(blue(f"Update {cmd}? [y/N] --> ", ["italic"]))
+        if user_choice.lower() == "y":
+            update_function = {
+                "brew": homebrew_upgrade,
+                "flatpak": flatpak_upgrade,
+                "gem": ruby_update,
+                "git": bulk_git_update,
+            }.get(cmd)
+            if update_function:
+                update_function()
+            else:
+                print(f"::: Not updating {cmd}")
+
+
 def main():
     """Main function for running all the other functions."""
     cmds = ["brew", "flatpak", "gem", "git"]
     for cmd in cmds:
-        if which(cmd):
-            user_choice = input(blue(f"Update {cmd}? [y/N] --> ", ["italic"]))
-            if user_choice.lower() != "y":
-                continue
-
-            if cmd == "brew":
-                homebrew_upgrade()
-            elif cmd == "flatpak":
-                flatpak_upgrade()
-            elif cmd == "gem":
-                ruby_update()
-            elif cmd == "git":
-                bulk_git_update()
+        handle_cmd_update(cmd)
 
     if sys.platform == "linux":
         user_choice = input(blue("Update apt? [y/N] --> ", ["italic"]))
