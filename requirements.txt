@@ -10,3 +10,4 @@ oauth2client
 beautifulsoup4
 email-validator
 pyperclip
+cachetools

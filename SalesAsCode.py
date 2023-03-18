@@ -121,6 +121,12 @@ if __name__ == "__main__":
         required=False,
         help="Path to credentials file",
     )
+    argparser.add_argument(
+        "--cachebust",
+        required=False,
+        action="store_true",
+        help="Bust the cache",
+    )
     args = argparser.parse_args()
 
     if not authenticate():
