@@ -47,7 +47,7 @@ def python_upgrade():
     The old method uses pip directly."""
 
     def pip_upgrade_new():
-        run(["python3", "-m", "pip_review", "--auto"], check=False)
+        run(["python3", "-m", "pip_review", "--auto", "--continue-on-fail"], check=False)
 
     def pip_upgrade_old():
         pip_packages = []
