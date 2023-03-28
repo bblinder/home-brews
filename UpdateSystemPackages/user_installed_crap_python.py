@@ -137,7 +137,6 @@ def handle_cmd_update(cmd):
 def main():
     """Main function for running all the other functions."""
     try:
-
         cmds = ["brew", "flatpak", "gem", "git"]
         for cmd in cmds:
             handle_cmd_update(cmd)
