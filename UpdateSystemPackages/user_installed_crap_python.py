@@ -136,30 +136,34 @@ def handle_cmd_update(cmd):
 
 def main():
     """Main function for running all the other functions."""
-    cmds = ["brew", "flatpak", "gem", "git"]
-    for cmd in cmds:
-        handle_cmd_update(cmd)
+    try:
 
-    if sys.platform == "linux":
-        user_choice = input(blue("Update apt? [y/N] --> ", ["italic"]))
-        if user_choice.lower() == "y":
-            apt_upgrade()
+        cmds = ["brew", "flatpak", "gem", "git"]
+        for cmd in cmds:
+            handle_cmd_update(cmd)
 
-    python_upgrade()
+        if sys.platform == "linux":
+            user_choice = input(blue("Update apt? [y/N] --> ", ["italic"]))
+            if user_choice.lower() == "y":
+                apt_upgrade()
 
-    if sys.platform == "darwin":
-        macos_upgrade_choice = input(
-            blue("Check for Apple updates? [y/N] --> ", ["italic"])
-        )
-        if macos_upgrade_choice.lower() == "y":
-            run(["softwareupdate", "--list"], check=False)
+        python_upgrade()
 
-        appstore_choice = input(
-            blue("Check for App Store updates? [y/N] --> ", ["italic"])
-        )
-        if appstore_choice.lower() == "y":
-            run(["mas", "outdated"], check=False)
-            run(["mas", "upgrade"], check=False)
+        if sys.platform == "darwin":
+            macos_upgrade_choice = input(
+                blue("Check for Apple updates? [y/N] --> ", ["italic"])
+            )
+            if macos_upgrade_choice.lower() == "y":
+                run(["softwareupdate", "--list"], check=False)
+
+            appstore_choice = input(
+                blue("Check for App Store updates? [y/N] --> ", ["italic"])
+            )
+            if appstore_choice.lower() == "y":
+                run(["mas", "outdated"], check=False)
+                run(["mas", "upgrade"], check=False)
+    except KeyboardInterrupt:
+        print("::: Exiting...")
 
 
 if __name__ == "__main__":
