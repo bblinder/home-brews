@@ -1,4 +1,5 @@
 import os
+import sys
 
 # Lambda function to "Clear" the terminal
 clear = lambda: os.system("cls" if os.name == "nt" else "clear")
@@ -36,6 +37,7 @@ def check_valid_url(url):
 
 
 def spongecase(term):
+    import random
     output = ""
     for char in term:
         if random.randint(0, 1) == 1:
@@ -70,3 +72,46 @@ def generate_mac():
         random.randint(0x00, 0xFF),
     ]
     return ":".join(map(lambda x: "%02x" % x, mac))
+
+
+def generate_qr_code(data):
+    """Generate a QR code image from the provided data and save it to the output file."""
+    try:
+        import qrcode
+    except ImportError:
+        print("qrcode not installed")
+        sys.exit(1)
+
+    try:
+        import urllib.parse
+    except ImportError:
+        print("urllib.parse not installed")
+        sys.exit(1)
+
+    def name_the_output_file(data):
+        """Create a sanitized output file name based on the provided data."""
+
+        # Parse the input data as a URL
+        parsed_data = urllib.parse.urlparse(data)
+
+        # Use the path component of the URL
+        path = parsed_data.path if parsed_data.path else data
+
+        # Use the basename of the path as the output file name
+        output = os.path.basename(path)
+
+        # Set a default file name if the output is empty
+        if not output:
+            output = "output"
+
+        return output
+
+    qr = qrcode.QRCode(version=1, box_size=10, border=5)
+    qr.add_data(data)
+
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+
+    output = f"{name_the_output_file(data)}.png"
+
+    img.save(output)
