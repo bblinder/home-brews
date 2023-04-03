@@ -6,7 +6,7 @@ CLI utility to convert text to uppercase and/or add spaces, a la "Strange World"
 Accepts input text from stdin or as a positional argument.
 
 Usage:
-    your_script.py [-u] [-s] [text]
+    strange_world_spaces.py [-u] [-s] [text]
 
 Arguments:
     text            The text to be processed. If not provided, the script reads from stdin.
@@ -14,7 +14,7 @@ Arguments:
     -s, --spaces    Add spaces between characters in the text.
 
 Example:
-    echo "example text" | ./your_script.py -u -s
+    echo "example text" | ./strange_world_spaces.py -u -s
     Output: "E X A M P L E   T E X T"
 """
 
