@@ -46,7 +46,7 @@ tap_array=(federico-terzi/espanso hashicorp/tap homebrew/cask homebrew/cask-font
 	apparition47/tap)
 
 # Casks/GUI stuff
-cask_array=(alfred firefox krisp nightowl docker lulu obsidian onedrive dozer keybase \
+cask_array=(alfred firefox krisp docker lulu obsidian onedrive dozer keybase \
 	iterm2 xquartz caprine calibre ransomwhere microsoft-edge telegram espanso latest \
 	spotify beardedspice the-unarchiver gpgtools iina visual-studio-code font-jetbrains-mono \
 	numi handbrake carbon-copy-cloner font-terminus yippy etrecheckpro rectangle beekeeper-studio \
