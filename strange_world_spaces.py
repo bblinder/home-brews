@@ -26,14 +26,40 @@ import sys
 
 def add_spaces(text):
     """Add spaces between characters in a string."""
-    spaced_text = " ".join(text)
-    return spaced_text
+    return " ".join(text)
 
 
 def convert_to_uppercase(text):
     """Convert a string to uppercase."""
-    upper_text = text.upper()
-    return upper_text
+    return text.upper()
+
+
+def read_input(args, parser):
+    """Read input from stdin or a positional argument."""
+    if args.text == sys.stdin:
+        # check if stdin is empty
+        stdin_ready, _, _ = select.select([sys.stdin], [], [], 0)
+        if stdin_ready:
+            return sys.stdin.read().strip()
+
+        parser.print_help()
+        sys.exit(1)
+
+    return args.text
+
+
+def process_text(text, args):
+    """Process the text according to the arguments."""
+    if args.uppercase:
+        text = convert_to_uppercase(text)
+
+    if args.spaces:
+        text = add_spaces(text)
+
+    if not args.uppercase and not args.spaces:
+        text = add_spaces(text)
+
+    return text
 
 
 def main():
@@ -54,27 +80,9 @@ def main():
     )
     args = parser.parse_args()
 
-    if args.text == sys.stdin:
-        # check if stdin is empty
-        stdin_ready, _, _ = select.select([sys.stdin], [], [], 0)
-        if stdin_ready:
-            text = sys.stdin.read().strip()
-        else:
-            parser.print_help()
-            sys.exit(1)
-    else:
-        text = args.text
-
-    if args.uppercase:
-        text = convert_to_uppercase(text)
-
-    if args.spaces:
-        text = add_spaces(text)
-
-    if not args.uppercase and not args.spaces:
-        text = add_spaces(text)
-
-    print(text)
+    text = read_input(args, parser)
+    processed_text = process_text(text, args)
+    print(processed_text)
 
 
 if __name__ == "__main__":
