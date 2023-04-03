@@ -20,6 +20,7 @@ Example:
 
 
 import argparse
+import select
 import sys
 
 
@@ -39,25 +40,38 @@ def main():
     """Deciding whether to use stdin or a positional argument,
     and then passing the text to the appropriate functions."""
     parser = argparse.ArgumentParser()
-    parser.add_argument("text", help="text to convert", nargs="?", default=sys.stdin)
+    parser.add_argument(
+        "text",
+        help="text to convert (default: read from stdin)",
+        nargs="?",
+        default=sys.stdin,
+    )
     parser.add_argument(
         "-u", "--uppercase", help="convert to uppercase", action="store_true"
     )
-    parser.add_argument("-s", "--spaces", help="add spaces", action="store_true")
+    parser.add_argument(
+        "-s", "--spaces", help="add spaces between characters", action="store_true"
+    )
     args = parser.parse_args()
 
     if args.text == sys.stdin:
-        text = sys.stdin.read().strip()
+        # check if stdin is empty
+        stdin_ready, _, _ = select.select([sys.stdin], [], [], 0)
+        if stdin_ready:
+            text = sys.stdin.read().strip()
+        else:
+            parser.print_help()
+            sys.exit(1)
     else:
         text = args.text
-
-    if not args.uppercase and not args.spaces:
-        text = add_spaces(text)
 
     if args.uppercase:
         text = convert_to_uppercase(text)
 
     if args.spaces:
+        text = add_spaces(text)
+
+    if not args.uppercase and not args.spaces:
         text = add_spaces(text)
 
     print(text)
