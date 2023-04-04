@@ -5,25 +5,26 @@ A general purpose script for updating various things on my system.
 Mainly a pythonic wrapper around various shell commands.
 """
 
+import argparse
+import getpass
 import os
 import random
 import re
 import sys
 from shutil import which
 from subprocess import run
-import argparse
-import pexpect
-import getpass
 
+import pexpect
 from simple_colors import blue, green, yellow
 
 script_directory = os.path.dirname(os.path.realpath(__file__))
 github_directory = os.path.join(os.environ["HOME"], "Github")
 
-operating_system = sys.platform
+OS = sys.platform
 
 
 def homebrew_upgrade(args):
+    """Updating homebrew packages."""
     if sys.platform in ["linux", "darwin"]:
         if random.randint(0, 3) == 1:
             print(yellow("::: Running random brew doctor"))
@@ -34,7 +35,10 @@ def homebrew_upgrade(args):
         run(["brew", "upgrade"], check=False)
         run(["brew", "upgrade", "--cask", "--greedy"], check=False)
 
-        if args.no_input or input(blue("Cleanup Homebrew? [y/N] --> ", ["italic"])).lower() == "y":
+        if (
+            args.no_input
+            or input(blue("Cleanup Homebrew? [y/N] --> ", ["italic"])).lower() == "y"
+        ):
             print(green("::: Running brew cleanup"))
             run(["brew", "cleanup"], check=False)
             run(["brew", "cleanup", "-s", "--prune=all"], check=False)
@@ -69,7 +73,10 @@ def python_upgrade(args):
                     check=False + pip_packages,
                 )
 
-    if args.no_input or input(blue("Upgrade python? [y/N] --> ", ["italic"])).lower() == "y":
+    if (
+        args.no_input
+        or input(blue("Upgrade python? [y/N] --> ", ["italic"])).lower() == "y"
+    ):
         print(green("::: Updating python packages"))
         try:
             pip_upgrade_new()
@@ -79,7 +86,7 @@ def python_upgrade(args):
             pip_upgrade_old()
 
 
-def apt_upgrade():
+def apt_upgrade(password):
     """Updating apt packages for ubuntu/debian distros."""
     apt_cmds = ["update", "upgrade", "dist-upgrade", "autoremove", "autoclean"]
     for cmd in apt_cmds:
@@ -88,7 +95,7 @@ def apt_upgrade():
 
 def flatpak_upgrade():
     """Updating flatpak packages, if they exist"""
-    if operating_system == "linux" and which("flatpak"):
+    if OS == "linux" and which("flatpak"):
         print(green("::: Updating flatpak packages"))
         run(["flatpak", "update", "--appstream"], check=False)
 
@@ -107,7 +114,7 @@ def bulk_git_update():
 
 def ruby_update(password):
     """Updating ruby gems. For some reason, MacOS doesn't like it if you don't use sudo."""
-    if operating_system == "darwin":
+    if OS == "darwin":
         print(green("::: Updating ruby gems"))
         run_with_sudo(["gem", "update", "-n", "/usr/local/bin/"], password)
         run_with_sudo(["gem", "update", "-n", "/usr/local/bin/", "--system"], password)
@@ -131,16 +138,20 @@ def handle_cmd_update(cmd):
             else:
                 print(f"::: Not updating {cmd}")
 
+
 def run_with_sudo(command, password):
     """Storing a sudo password and automatically providing it to a command."""
     sudo_command = ["sudo", "-S"] + command
     child = pexpect.spawn(" ".join(sudo_command), encoding="utf-8")
-    child.expect("Password:") # this probably only works on MacOS. Need to test on Linux.
+    child.expect(
+        "Password:"
+    )  # this probably only works on MacOS. Need to test on Linux.
     child.sendline(password)
     child.expect(pexpect.EOF)
 
 
 def parse_args():
+    """ Parsing command line arguments """
     parser = argparse.ArgumentParser(description="Update various system packages.")
     parser.add_argument(
         "--no-input",
@@ -149,7 +160,9 @@ def parse_args():
     )
     return parser.parse_args()
 
+
 def main():
+    """Iterating through the commands and updating them."""
     args = parse_args()
 
     if args.no_input:
@@ -170,22 +183,41 @@ def main():
             else:
                 handle_cmd_update(cmd)
 
-        if operating_system == "linux":
-            if args.no_input or input(blue("Update apt? [y/N] --> ", ["italic"])).lower() == "y":
-                apt_upgrade()
+        if OS == "linux":
+            if (
+                args.no_input
+                or input(blue("Update apt? [y/N] --> ", ["italic"])).lower() == "y"
+            ):
+                apt_upgrade(password)
 
-        if args.no_input or input(blue("Upgrade python? [y/N] --> ", ["italic"])).lower() == "y":
+        if (
+            args.no_input
+            or input(blue("Upgrade python? [y/N] --> ", ["italic"])).lower() == "y"
+        ):
             python_upgrade(args)
 
-        if operating_system == "darwin":
-            if args.no_input or input(blue("Check for Apple updates? [y/N] --> ", ["italic"])).lower() == "y":
+        if OS == "darwin":
+            if (
+                args.no_input
+                or input(
+                    blue("Check for Apple updates? [y/N] --> ", ["italic"])
+                ).lower()
+                == "y"
+            ):
                 run(["softwareupdate", "--list"], check=False)
 
-            if args.no_input or input(blue("Check for App Store updates? [y/N] --> ", ["italic"])).lower() == "y":
+            if (
+                args.no_input
+                or input(
+                    blue("Check for App Store updates? [y/N] --> ", ["italic"])
+                ).lower()
+                == "y"
+            ):
                 run(["mas", "outdated"], check=False)
                 run(["mas", "upgrade"], check=False)
     except KeyboardInterrupt:
         print("::: Exiting...")
+
 
 if __name__ == "__main__":
     main()
