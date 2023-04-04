@@ -6,16 +6,18 @@ Mainly a pythonic wrapper around various shell commands.
 """
 
 import argparse
+import asyncio
 import getpass
 import os
 import random
 import re
 import sys
+from functools import partial
 from shutil import which
 from subprocess import run
 
 import pexpect
-from simple_colors import blue, green, yellow
+from simple_colors import blue, green, red, yellow
 
 script_directory = os.path.dirname(os.path.realpath(__file__))
 github_directory = os.path.join(os.environ["HOME"], "Github")
@@ -73,17 +75,12 @@ def python_upgrade(args):
                     check=False + pip_packages,
                 )
 
-    if (
-        args.no_input
-        or input(blue("Upgrade python? [y/N] --> ", ["italic"])).lower() == "y"
-    ):
-        print(green("::: Updating python packages"))
-        try:
-            pip_upgrade_new()
-        except Exception as pip_failure:
-            print(pip_failure)
-            print("::: trying the old method...")
-            pip_upgrade_old()
+    try:
+        pip_upgrade_new()
+    except Exception as pip_failure:
+        print(pip_failure)
+        print("::: trying the old method...")
+        pip_upgrade_old()
 
 
 def apt_upgrade(password):
@@ -139,19 +136,68 @@ def handle_cmd_update(cmd):
                 print(f"::: Not updating {cmd}")
 
 
+def is_sudo_correct(password):
+    try:
+        sudo_command = ["sudo", "-S", "echo", "correct"]
+        child = pexpect.spawn(" ".join(sudo_command), encoding="utf-8")
+        child.expect(".*[Pp]assword.*:")
+        child.sendline(password)
+        child.expect(pexpect.EOF, timeout=10)
+        return True
+    except pexpect.EOF:
+        return False
+    except pexpect.exceptions.TIMEOUT:
+        return False
+
+
 def run_with_sudo(command, password):
     """Storing a sudo password and automatically providing it to a command."""
     sudo_command = ["sudo", "-S"] + command
     child = pexpect.spawn(" ".join(sudo_command), encoding="utf-8")
     child.expect(
-        "Password:"
+        ".*[Pp]assword.*:"
     )  # this probably only works on MacOS. Need to test on Linux.
     child.sendline(password)
-    child.expect(pexpect.EOF)
+    child.expect(pexpect.EOF, timeout=180)
+
+
+async def run_with_sudo_async(command, password):
+    loop = asyncio.get_event_loop()
+    await loop.run_in_executor(None, partial(run_with_sudo, command, password))
+
+
+async def homebrew_upgrade_async(args):
+    loop = asyncio.get_event_loop()
+    await loop.run_in_executor(None, partial(homebrew_upgrade, args))
+
+
+async def python_upgrade_async(args):
+    loop = asyncio.get_event_loop()
+    await loop.run_in_executor(None, partial(python_upgrade, args))
+
+
+async def apt_upgrade_async(password):
+    loop = asyncio.get_event_loop()
+    await loop.run_in_executor(None, partial(apt_upgrade, password))
+
+
+async def flatpak_upgrade_async():
+    loop = asyncio.get_event_loop()
+    await loop.run_in_executor(None, flatpak_upgrade)
+
+
+async def bulk_git_update_async():
+    loop = asyncio.get_event_loop()
+    await loop.run_in_executor(None, bulk_git_update)
+
+
+async def ruby_update_async(password):
+    loop = asyncio.get_event_loop()
+    await loop.run_in_executor(None, partial(ruby_update, password))
 
 
 def parse_args():
-    """ Parsing command line arguments """
+    """Parsing command line arguments"""
     parser = argparse.ArgumentParser(description="Update various system packages.")
     parser.add_argument(
         "--no-input",
@@ -161,63 +207,66 @@ def parse_args():
     return parser.parse_args()
 
 
-def main():
-    """Iterating through the commands and updating them."""
+async def main():
     args = parse_args()
-
     if args.no_input:
         password = getpass.getpass("Enter sudo password: ")
 
+        if not is_sudo_correct(password):
+            print(red("Incorrect sudo password. Exiting..."))
+            sys.exit(1)
+
     try:
         cmds = ["brew", "flatpak", "gem", "git"]
-        for cmd in cmds:
-            if args.no_input:
-                update_function = {
-                    "brew": lambda: homebrew_upgrade(args),
-                    "flatpak": flatpak_upgrade,
-                    "gem": lambda: ruby_update(password),
-                    "git": bulk_git_update,
-                }.get(cmd)
-                if update_function:
-                    update_function()
-            else:
+
+        if args.no_input:
+            tasks = [
+                homebrew_upgrade_async(args),
+                flatpak_upgrade_async(),
+                ruby_update_async(password),
+                bulk_git_update_async(),
+            ]
+
+            if OS == "linux":
+                tasks.append(apt_upgrade_async(password))
+
+            tasks.append(python_upgrade_async(args))
+
+            await asyncio.gather(*tasks)
+
+        else:
+            for cmd in cmds:
                 handle_cmd_update(cmd)
 
-        if OS == "linux":
-            if (
-                args.no_input
-                or input(blue("Update apt? [y/N] --> ", ["italic"])).lower() == "y"
-            ):
-                apt_upgrade(password)
+            if OS == "linux":
+                if input(blue("Update apt? [y/N] --> ", ["italic"])).lower() == "y":
+                    apt_upgrade(password)
 
-        if (
-            args.no_input
-            or input(blue("Upgrade python? [y/N] --> ", ["italic"])).lower() == "y"
-        ):
-            python_upgrade(args)
+            if input(blue("Upgrade python? [y/N] --> ", ["italic"])).lower() == "y":
+                print(green("::: Updating python packages"))
+                python_upgrade(args)
 
-        if OS == "darwin":
-            if (
-                args.no_input
-                or input(
-                    blue("Check for Apple updates? [y/N] --> ", ["italic"])
-                ).lower()
-                == "y"
-            ):
-                run(["softwareupdate", "--list"], check=False)
+            if OS == "darwin":
+                if (
+                    input(
+                        blue("Check for Apple updates? [y/N] --> ", ["italic"])
+                    ).lower()
+                    == "y"
+                ):
+                    run(["softwareupdate", "--list"], check=False)
 
-            if (
-                args.no_input
-                or input(
-                    blue("Check for App Store updates? [y/N] --> ", ["italic"])
-                ).lower()
-                == "y"
-            ):
-                run(["mas", "outdated"], check=False)
-                run(["mas", "upgrade"], check=False)
+                if (
+                    input(
+                        blue("Check for App Store updates? [y/N] --> ", ["italic"])
+                    ).lower()
+                    == "y"
+                ):
+                    run(["mas", "outdated"], check=False)
+                    run(["mas", "upgrade"], check=False)
+
     except KeyboardInterrupt:
         print("::: Exiting...")
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
