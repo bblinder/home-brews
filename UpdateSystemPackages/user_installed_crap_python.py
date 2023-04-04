@@ -11,18 +11,21 @@ import re
 import sys
 from shutil import which
 from subprocess import run
+import argparse
+import pexpect
+import getpass
 
 from simple_colors import blue, green, yellow
 
 script_directory = os.path.dirname(os.path.realpath(__file__))
 github_directory = os.path.join(os.environ["HOME"], "Github")
 
+operating_system = sys.platform
 
-def homebrew_upgrade():
-    """A 'greedy' upgrade of homebrew packages."""
+
+def homebrew_upgrade(args):
     if sys.platform in ["linux", "darwin"]:
-        # if sys.platform == "darwin" or sys.platform == "linux":
-        if random.randint(0, 3) == 1:  # running brew doctor at random
+        if random.randint(0, 3) == 1:
             print(yellow("::: Running random brew doctor"))
             run(["brew", "doctor"], check=False)
 
@@ -31,17 +34,13 @@ def homebrew_upgrade():
         run(["brew", "upgrade"], check=False)
         run(["brew", "upgrade", "--cask", "--greedy"], check=False)
 
-        # Running brew cleanup
-        cleanup_choice = input(blue("Cleanup Homebrew? [y/N] --> ", ["italic"]))
-        if cleanup_choice.lower() == "y":
+        if args.no_input or input(blue("Cleanup Homebrew? [y/N] --> ", ["italic"])).lower() == "y":
             print(green("::: Running brew cleanup"))
             run(["brew", "cleanup"], check=False)
             run(["brew", "cleanup", "-s", "--prune=all"], check=False)
-        else:
-            pass
 
 
-def python_upgrade():
+def python_upgrade(args):
     """Providing a couple of ways to update python/pip packages.
     The new method uses the pip-review tool, which is an abstraction around pip.
     The old method uses pip directly."""
@@ -70,8 +69,7 @@ def python_upgrade():
                     check=False + pip_packages,
                 )
 
-    user_choice = input(blue("Upgrade python? [y/N] --> ", ["italic"]))
-    if user_choice.lower() == "y":
+    if args.no_input or input(blue("Upgrade python? [y/N] --> ", ["italic"])).lower() == "y":
         print(green("::: Updating python packages"))
         try:
             pip_upgrade_new()
@@ -79,20 +77,20 @@ def python_upgrade():
             print(pip_failure)
             print("::: trying the old method...")
             pip_upgrade_old()
-    else:
-        pass
 
 
 def apt_upgrade():
     """Updating apt packages for ubuntu/debian distros."""
     apt_cmds = ["update", "upgrade", "dist-upgrade", "autoremove", "autoclean"]
     for cmd in apt_cmds:
-        run(["sudo", "apt-get", cmd], check=False)
+        run_with_sudo(["apt-get, cmd"], password)
 
 
 def flatpak_upgrade():
     """Updating flatpak packages, if they exist"""
-    run(["flatpak", "update"], check=False)
+    if operating_system == "linux" and which("flatpak"):
+        print(green("::: Updating flatpak packages"))
+        run(["flatpak", "update", "--appstream"], check=False)
 
 
 def bulk_git_update():
@@ -107,14 +105,14 @@ def bulk_git_update():
             run(["git", "gc", "--auto"], cwd=repo_path, check=False)
 
 
-def ruby_update():
+def ruby_update(password):
     """Updating ruby gems. For some reason, MacOS doesn't like it if you don't use sudo."""
-
-    if sys.platform == "darwin":
-        run(["sudo", "gem", "update", "-n", "/usr/local/bin/"], check=False)
-        run(["sudo", "gem", "update", "-n", "/usr/local/bin/", "--system"], check=False)
-        run(["sudo", "gem", "update"], check=False)
-        run(["sudo", "gem", "update", "--system"], check=False)
+    if operating_system == "darwin":
+        print(green("::: Updating ruby gems"))
+        run_with_sudo(["gem", "update", "-n", "/usr/local/bin/"], password)
+        run_with_sudo(["gem", "update", "-n", "/usr/local/bin/", "--system"], password)
+        run_with_sudo(["gem", "update"], password)
+        run_with_sudo(["gem", "update", "--system"], password)
 
 
 def handle_cmd_update(cmd):
@@ -133,37 +131,61 @@ def handle_cmd_update(cmd):
             else:
                 print(f"::: Not updating {cmd}")
 
+def run_with_sudo(command, password):
+    """Storing a sudo password and automatically providing it to a command."""
+    sudo_command = ["sudo", "-S"] + command
+    child = pexpect.spawn(" ".join(sudo_command), encoding="utf-8")
+    child.expect("Password:") # this probably only works on MacOS. Need to test on Linux.
+    child.sendline(password)
+    child.expect(pexpect.EOF)
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Update various system packages.")
+    parser.add_argument(
+        "--no-input",
+        action="store_true",
+        help="Run the script without user input (automatically update all available packages)",
+    )
+    return parser.parse_args()
 
 def main():
-    """Main function for running all the other functions."""
+    args = parse_args()
+
+    if args.no_input:
+        password = getpass.getpass("Enter sudo password: ")
+
     try:
         cmds = ["brew", "flatpak", "gem", "git"]
         for cmd in cmds:
-            handle_cmd_update(cmd)
+            if args.no_input:
+                update_function = {
+                    "brew": lambda: homebrew_upgrade(args),
+                    "flatpak": flatpak_upgrade,
+                    "gem": lambda: ruby_update(password),
+                    "git": bulk_git_update,
+                }.get(cmd)
+                if update_function:
+                    update_function()
+            else:
+                handle_cmd_update(cmd)
 
-        if sys.platform == "linux":
-            user_choice = input(blue("Update apt? [y/N] --> ", ["italic"]))
-            if user_choice.lower() == "y":
+        if operating_system == "linux":
+            if args.no_input or input(blue("Update apt? [y/N] --> ", ["italic"])).lower() == "y":
                 apt_upgrade()
 
-        python_upgrade()
+        if args.no_input or input(blue("Upgrade python? [y/N] --> ", ["italic"])).lower() == "y":
+            python_upgrade(args)
 
-        if sys.platform == "darwin":
-            macos_upgrade_choice = input(
-                blue("Check for Apple updates? [y/N] --> ", ["italic"])
-            )
-            if macos_upgrade_choice.lower() == "y":
+        if operating_system == "darwin":
+            if args.no_input or input(blue("Check for Apple updates? [y/N] --> ", ["italic"])).lower() == "y":
                 run(["softwareupdate", "--list"], check=False)
 
-            appstore_choice = input(
-                blue("Check for App Store updates? [y/N] --> ", ["italic"])
-            )
-            if appstore_choice.lower() == "y":
+            if args.no_input or input(blue("Check for App Store updates? [y/N] --> ", ["italic"])).lower() == "y":
                 run(["mas", "outdated"], check=False)
                 run(["mas", "upgrade"], check=False)
     except KeyboardInterrupt:
         print("::: Exiting...")
-
 
 if __name__ == "__main__":
     main()
