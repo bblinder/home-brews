@@ -15,6 +15,7 @@ import sys
 from functools import partial
 from shutil import which
 from subprocess import run
+import subprocess
 
 import pexpect
 from simple_colors import blue, green, red, yellow
@@ -27,7 +28,7 @@ OS = sys.platform
 
 def homebrew_upgrade(args):
     """Updating homebrew packages."""
-    if sys.platform in ["linux", "darwin"]:
+    if sys.platform in ["linux", "darwin"] and which("brew"):
         if random.randint(0, 3) == 1:
             print(yellow("::: Running random brew doctor"))
             run(["brew", "doctor"], check=False)
@@ -87,7 +88,7 @@ def apt_upgrade(password):
     """Updating apt packages for ubuntu/debian distros."""
     apt_cmds = ["update", "upgrade", "dist-upgrade", "autoremove", "autoclean"]
     for cmd in apt_cmds:
-        run_with_sudo(["apt-get, cmd"], password)
+        run_with_sudo(["apt-get", "-y", cmd], password)
 
 
 def flatpak_upgrade():
@@ -150,15 +151,31 @@ def is_sudo_correct(password):
         return False
 
 
+# def run_with_sudo(command, password):
+#     """Storing a sudo password and automatically providing it to a command."""
+#     sudo_command = ["sudo", "-S"] + command
+#     child = pexpect.spawn(" ".join(sudo_command), encoding="utf-8", env=os.environ.copy())
+#     child.expect(
+#         ".*[Pp]assword.*:"
+#     )  # this probably only works on MacOS. Need to test on Linux.
+#     child.sendline(password)
+#     child.expect(pexpect.EOF, timeout=180)
+
+
 def run_with_sudo(command, password):
-    """Storing a sudo password and automatically providing it to a command."""
     sudo_command = ["sudo", "-S"] + command
-    child = pexpect.spawn(" ".join(sudo_command), encoding="utf-8")
-    child.expect(
-        ".*[Pp]assword.*:"
-    )  # this probably only works on MacOS. Need to test on Linux.
-    child.sendline(password)
-    child.expect(pexpect.EOF, timeout=180)
+    process = subprocess.Popen(
+        sudo_command,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        env=os.environ.copy(),
+    )
+    stdout, stderr = process.communicate(password + "\n")
+    print(stdout)
+    if stderr:
+        print(stderr)
 
 
 async def run_with_sudo_async(command, password):
@@ -240,7 +257,14 @@ async def main():
 
             if OS == "linux":
                 if input(blue("Update apt? [y/N] --> ", ["italic"])).lower() == "y":
+                    if not args.no_input:
+                        password = getpass.getpass("Enter sudo password: ")
+
+                        if not is_sudo_correct(password):
+                            print(red("Incorrect sudo password. Exiting..."))
+                            sys.exit(1)
                     apt_upgrade(password)
+
 
             if input(blue("Upgrade python? [y/N] --> ", ["italic"])).lower() == "y":
                 print(green("::: Updating python packages"))
