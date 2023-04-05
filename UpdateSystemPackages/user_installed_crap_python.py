@@ -120,7 +120,7 @@ def ruby_update(password):
         run_with_sudo(["gem", "update", "--system"], password)
 
 
-def handle_cmd_update(cmd):
+def handle_cmd_update(cmd, args=None):
     """Handling the update for each respective command."""
     if which(cmd):
         user_choice = input(blue(f"Update {cmd}? [y/N] --> ", ["italic"]))
@@ -132,7 +132,10 @@ def handle_cmd_update(cmd):
                 "git": bulk_git_update,
             }.get(cmd)
             if update_function:
-                update_function()
+                if cmd == "brew":
+                    update_function(args)
+                else:
+                    update_function()
             else:
                 print(f"::: Not updating {cmd}")
 
@@ -253,7 +256,7 @@ async def main():
 
         else:
             for cmd in cmds:
-                handle_cmd_update(cmd)
+                handle_cmd_update(cmd, args)
 
             if OS == "linux":
                 if input(blue("Update apt? [y/N] --> ", ["italic"])).lower() == "y":
