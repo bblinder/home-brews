@@ -135,7 +135,7 @@ def handle_cmd_update(cmd, args=None):
                 if cmd == "brew":
                     update_function(args)
                 else:
-                    update_function()
+                    update_function(password=getpass.getpass())
             else:
                 print(f"::: Not updating {cmd}")
 
@@ -154,17 +154,6 @@ def is_sudo_correct(password):
         return False
 
 
-# def run_with_sudo(command, password):
-#     """Storing a sudo password and automatically providing it to a command."""
-#     sudo_command = ["sudo", "-S"] + command
-#     child = pexpect.spawn(" ".join(sudo_command), encoding="utf-8", env=os.environ.copy())
-#     child.expect(
-#         ".*[Pp]assword.*:"
-#     )  # this probably only works on MacOS. Need to test on Linux.
-#     child.sendline(password)
-#     child.expect(pexpect.EOF, timeout=180)
-
-
 def run_with_sudo(command, password):
     sudo_command = ["sudo", "-S"] + command
     process = subprocess.Popen(
@@ -176,7 +165,7 @@ def run_with_sudo(command, password):
         env=os.environ.copy(),
     )
     stdout, stderr = process.communicate(password + "\n")
-    print(stdout)
+    #print(stdout)
     if stderr:
         print(stderr)
 
