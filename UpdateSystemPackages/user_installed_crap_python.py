@@ -11,11 +11,11 @@ import getpass
 import os
 import random
 import re
+import subprocess
 import sys
 from functools import partial
 from shutil import which
 from subprocess import run
-import subprocess
 
 import pexpect
 from simple_colors import blue, green, red, yellow
@@ -98,16 +98,46 @@ def flatpak_upgrade():
         run(["flatpak", "update", "--appstream"], check=False)
 
 
-def bulk_git_update():
-    """Updating all git repos in a directory.
-    I'm hardcoding it as 'Github', but directory can be called anything."""
-    for repo in os.listdir(github_directory):
-        repo_path = os.path.join(github_directory, repo)
-        if os.path.isdir(repo_path) and not repo.startswith("."):
-            print(green(f"Updating {repo}"))
-            run(["git", "remote", "update"], cwd=repo_path, check=False)
-            run(["git", "pull", "--rebase"], cwd=repo_path, check=False)
-            run(["git", "gc", "--auto"], cwd=repo_path, check=False)
+# def bulk_git_update():
+#     """Updating all git repos in a directory.
+#     I'm hardcoding it as 'Github', but directory can be called anything."""
+#     for repo in os.listdir(github_directory):
+#         repo_path = os.path.join(github_directory, repo)
+#         if os.path.isdir(repo_path) and not repo.startswith("."):
+#             print(green(f"Updating {repo}"))
+#             run(["git", "remote", "update"], cwd=repo_path, check=False)
+#             run(["git", "pull", "--rebase"], cwd=repo_path, check=False)
+#             run(["git", "gc", "--auto"], cwd=repo_path, check=False)
+
+def bulk_git_update() -> None:
+    """Updating all git repos in a directory."""
+    if GITHUB_DIR.exists():
+        print(green("::: Updating git repos in", GITHUB_DIR))
+        for repo in GITHUB_DIR.iterdir():
+            if repo.is_dir() and (repo / ".git").exists():
+                print(blue(f"::: Updating {repo.name}"))
+                result = subprocess.run(["git", "remote", "update"], cwd=repo, check=False, text=True, capture_output=True)
+                if result.returncode == 0:
+                    print(green(f"  [Remote Update] Success"))
+                else:
+                    print(red(f"  [Remote Update] Error: {result.stderr.strip()}"))
+                # Pull and rebase
+                result = subprocess.run(["git", "pull", "--rebase"], cwd=repo, check=False, text=True, capture_output=True)
+                if result.returncode == 0:
+                    print(green(f"  [Pull & Rebase] Success"))
+                else:
+                    print(red(f"  [Pull & Rebase] Error: {result.stderr.strip()}"))
+                # Git garbage collection
+                result = subprocess.run(["git", "gc", "--auto"], cwd=repo, check=False, text=True, capture_output=True)
+                if result.returncode == 0:
+                    print(green(f"  [Garbage Collection] Success"))
+                else:
+                    print(red(f"  [Garbage Collection] Error: {result.stderr.strip()}"))
+
+            else:
+                print(yellow(f"::: {repo.name} is not a git repo"))
+    else:
+        print(red(f"::: {GITHUB_DIR} does not exist, skipping git updates"))
 
 
 def ruby_update(password):
@@ -165,7 +195,7 @@ def run_with_sudo(command, password):
         env=os.environ.copy(),
     )
     stdout, stderr = process.communicate(password + "\n")
-    #print(stdout)
+    # print(stdout)
     if stderr:
         print(stderr)
 
@@ -209,9 +239,10 @@ def parse_args():
     """Parsing command line arguments"""
     parser = argparse.ArgumentParser(description="Update various system packages.")
     parser.add_argument(
+        "-y",
         "--no-input",
         action="store_true",
-        help="Run the script without user input (automatically update all available packages)",
+        help="Run the script without user confirmation (automatically update all available packages)",
     )
     return parser.parse_args()
 
@@ -241,7 +272,11 @@ async def main():
 
             tasks.append(python_upgrade_async(args))
 
-            await asyncio.gather(*tasks)
+            # await asyncio.gather(*tasks) # debating whether to use this or the one below
+            await asyncio.wait(
+                [asyncio.shield(task) for task in tasks],
+                return_when=asyncio.ALL_COMPLETED,
+            )
 
         else:
             for cmd in cmds:
@@ -256,7 +291,6 @@ async def main():
                             print(red("Incorrect sudo password. Exiting..."))
                             sys.exit(1)
                     apt_upgrade(password)
-
 
             if input(blue("Upgrade python? [y/N] --> ", ["italic"])).lower() == "y":
                 print(green("::: Updating python packages"))
