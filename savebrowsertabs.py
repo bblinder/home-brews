@@ -93,6 +93,7 @@ def main():
         parser.add_argument("--safari", action="store_true")
         parser.add_argument("--firefox", action="store_true")
         parser.add_argument("--brave", action="store_true")
+        parser.add_help = True
         args = parser.parse_args()
 
         browser_mapping = {
@@ -109,6 +110,7 @@ def main():
 
         if not browser:
             print("No browser selected")
+            parser.print_help()
             sys.exit(1)
 
         tabs_file = save_browser_tabs(browser)
