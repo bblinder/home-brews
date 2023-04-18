@@ -2,7 +2,7 @@
 
 """
 Description: A macOS-specific Python utility to save all 
-open browser tabs from Safari, Firefox, or Brave Browser
+open browser tabs from Safari, Firefox, Edge or Brave
 to a text file on the desktop.
 
 Usage: 
@@ -93,6 +93,8 @@ def main():
         parser.add_argument("--safari", action="store_true")
         parser.add_argument("--firefox", action="store_true")
         parser.add_argument("--brave", action="store_true")
+        parser.add_argument("--edge", action="store_true")
+        parser.add_argument("--tabs-file", type=str, help="Path to an existing text file with URLs to open")
         parser.add_help = True
         args = parser.parse_args()
 
@@ -100,6 +102,7 @@ def main():
             "safari": "Safari",
             "firefox": "Firefox",
             "brave": "Brave Browser",
+            "edge": "Microsoft Edge",
         }
         browser = None
 
@@ -108,19 +111,22 @@ def main():
                 browser = value
                 break
 
-        if not browser:
-            print("No browser selected")
+        if not browser and not args.tabs_file:
+            print("No browser selected or tabs file provided")
             parser.print_help()
             sys.exit(1)
 
-        tabs_file = save_browser_tabs(browser)
-        # prompt user to open tabs
-        print(f"{browser} tabs saved to {tabs_file}")
-        answer = input("Open tabs? (y/n) > ")
-        if answer.lower() == "y":
-            browsers = list(browser_mapping.values())
-            selected_browser = select_browser(browsers)
-            open_browser_tabs(tabs_file, selected_browser)
+        if args.tabs_file:
+            selected_browser = select_browser(list(browser_mapping.values()))
+            open_browser_tabs(args.tabs_file, selected_browser)
+        else:
+            tabs_file = save_browser_tabs(browser)
+            # prompt user to open tabs
+            print(f"{browser} tabs saved to {tabs_file}")
+            answer = input("Open tabs? (y/n) > ")
+            if answer.lower() == "y":
+                selected_browser = select_browser(list(browser_mapping.values()))
+                open_browser_tabs(tabs_file, selected_browser)
     except KeyboardInterrupt:
         print("\nExiting...")
         sys.exit(0)
