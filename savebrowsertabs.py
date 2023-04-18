@@ -94,7 +94,11 @@ def main():
         parser.add_argument("--firefox", action="store_true")
         parser.add_argument("--brave", action="store_true")
         parser.add_argument("--edge", action="store_true")
-        parser.add_argument("--tabs-file", type=str, help="Path to an existing text file with URLs to open")
+        parser.add_argument(
+            "--tabs-file",
+            type=str,
+            help="Path to an existing text file with URLs to open",
+        )
         parser.add_help = True
         args = parser.parse_args()
 
