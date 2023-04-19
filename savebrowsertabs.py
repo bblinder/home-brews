@@ -41,13 +41,39 @@ def save_browser_tabs(browser):
     set desktopPath to (path to desktop as text)
     set filePath to desktopPath & fileName
     set fileReference to open for access filePath with write permission
-    write tabURLs to fileReference starting at eof
+    write tabURLs to fileReference
     close access fileReference
     """
     run(["osascript", "-e", script])
 
     # return the path to the file
     return os.path.join(os.path.expanduser("~/Desktop"), file_name)
+
+
+def validate_tabs_file(file_path):
+    """
+    Validates if the tabs file was correctly created.
+
+    :param file_path: str, path to the saved file
+    :return: bool, True if the file is valid, False otherwise
+    """
+    if not os.path.exists(file_path):
+        print(f"File {file_path} does not exist")
+        return False
+
+    with open(file_path, "r", encoding="utf-8") as file:
+        content = file.read()
+
+    if not content.strip():
+        print(f"File {file_path} is empty")
+        return False
+
+    for line in content.splitlines():
+        if not line.startswith("http://") and not line.startswith("https://"):
+            print(f"Invalid URL in {file_path}: {line}")
+            return False
+
+    return True
 
 
 def select_browser(browsers):
@@ -125,6 +151,10 @@ def main():
             open_browser_tabs(args.tabs_file, selected_browser)
         else:
             tabs_file = save_browser_tabs(browser)
+            is_valid = validate_tabs_file(tabs_file)
+            if not is_valid:
+                print("Tabs file is not valid. Exiting...")
+                sys.exit(1)
             # prompt user to open tabs
             print(f"{browser} tabs saved to {tabs_file}")
             answer = input("Open tabs? (y/n) > ")
