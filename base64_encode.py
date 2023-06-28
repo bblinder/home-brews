@@ -33,30 +33,44 @@ image_formats = {
 # if the image is a URL, validate and download it to a temporary file
 def download_image(image):
     """Download the image to a temporary file."""
-    if urlparse(image).scheme in ["http", "https"]:
+    # Parse the URL and remove trailing slashes
+    url = urlparse(image)
+    url = url._replace(path=url.path.rstrip("/"))
+
+    # Recreate the URL string from the parsed URL object
+    image = url.geturl()
+
+    if url.scheme in ["http", "https"]:
         response = requests.get(image, stream=True, timeout=5)
         response.raise_for_status()
 
-        # create a temporary file and write the image to the temporary file
+        # Extract image format from the URL
+        image_format = get_image_format(image)
+        if image_format not in image_formats:
+            print(f"Error: The format '{image_format}' is not supported.")
+            return None, None
+
+        # Create a temporary file and write the image to the temporary file
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             for chunk in response.iter_content(chunk_size=8192):
-                if chunk:  # filter out keep-alive new chunks
+                if chunk:  # Filter out keep-alive new chunks
                     temp_file.write(chunk)
-            temp_file_path = temp_file.name  # get the path of the temporary file
-
-        # extract image format from the URL
-        image_format = get_image_format(image)
+            temp_file_path = temp_file.name  # Get the path of the temporary file
 
         return temp_file_path, image_format
 
-    # if not an image return the original path and the format
-    return image, get_image_format(image)
+    # If not an image, return the original path and the format
+    image_format = get_image_format(image)
+    if image_format not in image_formats:
+        print(f"Error: The format '{image_format}' is not supported.")
+        return None, None
+    return image, image_format
 
 
 def get_image_format(path):
     """Get the image format from the file extension."""
-    path = urlparse(path).path  # extract the path from the URL
-    filename = path.split("/")[-1]  # get the filename from the URL path
+    path = urlparse(path).path  # Extract the path from the URL
+    filename = path.split("/")[-1]  # Get the filename from the URL path
     return filename.split(".")[-1].lower()
 
 
