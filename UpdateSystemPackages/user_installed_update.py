@@ -137,7 +137,7 @@ class Updater:
         """Updating apt packages for ubuntu/debian distros."""
         apt_cmds = ["update", "upgrade", "dist-upgrade", "autoremove", "autoclean"]
         for cmd in apt_cmds:
-            run_with_sudo(["apt-get", "-y", cmd], password)
+            self.run_with_sudo(["apt-get", "-y", cmd], password)
 
     def flatpak_upgrade(self) -> None:
         """Updating flatpak packages, if they exist"""
@@ -401,7 +401,8 @@ async def main() -> None:
                         if not updater.is_sudo_correct(password):
                             print(red("Incorrect sudo password. Exiting..."))
                             sys.exit(1)
-                    asyncio.run(updater.apt_upgrade_async(password))
+                    #asyncio.run(updater.apt_upgrade_async(password))
+                    await updater.apt_upgrade_async(password)
 
             if input(blue("Upgrade python? [y/N] --> ", ["italic"])).lower() == "y":
                 print(green("::: Updating python packages"))
