@@ -73,7 +73,6 @@ class Updater:
     def __init__(self, github_dir: Path):
         self.github_dir = github_dir
 
-    # Type hints
     def homebrew_upgrade(self, args: argparse.Namespace) -> None:
         """Updating homebrew packages."""
         if OS in ["linux", "darwin"] and shutil.which("brew"):
