@@ -40,11 +40,11 @@ def name_the_output_file(data):
         output = "output"
 
     return output
-    
+
 
 def main():
     parser = argparse.ArgumentParser(description="Generate a QR code")
-    parser.add_argument("data", help="The data to encode in the QR code")
+    parser.add_argument("data", help="The data to encode in the QR code", nargs="?")
     parser.add_argument(
         "-o",
         "--output",
@@ -55,6 +55,14 @@ def main():
 
     data = args.data
     output = args.output
+
+    if data is None:
+        data = sys.stdin.read()
+
+    if not data and sys.stdin.isatty():
+        sys.stderr.write("Error: No data provided\n")
+        parser.print_help()
+        sys.exit(1)
 
     if output is None:
         output = f"{name_the_output_file(data)}.png"
