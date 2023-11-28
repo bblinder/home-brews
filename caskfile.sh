@@ -33,9 +33,9 @@ fi
 # *nix utilities
 brew_array=(ccat neofetch ack axel curl cmus exiftool csshx cowsay htop icdiff python-tk \
 	irssi httpie lynx mplayer mtr osxfuse p7zip pstree sshfs tcpdump musikcube \
-	speedtest_cli pv rtmpdump tldr wget youtube-dl zsh git m-cli pwgen glow detox \
+	speedtest_cli pv rtmpdump tldr wget yt-dlp zsh git m-cli pwgen glow detox \
 	gnu-units lnav ranger watch iftop ffmpeg ssh-copy-id spoof-mac fzf difftastic \
-	parallel pdfgrep dtrx sslh jq woof coreutils goaccess exa wifi-password angle-grinder \
+	parallel pdfgrep dtrx sslh jq woof coreutils goaccess eza wifi-password angle-grinder \
 	zsh-syntax-highlighting mediainfo pandoc rtv cheat figlet rig fortune httrack \
 	akamai bat prettyping magic-wormhole python3 heroku streamlink imagemagick aria2 \
 	restic ncdu minikube rm-improved lazydocker dive plantuml rkhunter switchaudio-osx rga mas jo)
@@ -46,62 +46,71 @@ tap_array=(federico-terzi/espanso hashicorp/tap homebrew/cask homebrew/cask-font
 	apparition47/tap)
 
 # Casks/GUI stuff
-cask_array=(alfred firefox krisp docker lulu obsidian onedrive dozer keybase \
-	iterm2 xquartz caprine calibre ransomwhere microsoft-edge telegram espanso latest \
+cask_array=(alfred firefox krisp docker dangerzone lulu obsidian onedrive dozer keybase \
+	iterm2 xquartz calibre ransomwhere microsoft-edge microsoft-auto-update telegram espanso latest \
 	spotify beardedspice the-unarchiver gpgtools iina visual-studio-code font-jetbrains-mono \
 	numi handbrake carbon-copy-cloner font-terminus yippy etrecheckpro rectangle beekeeper-studio \
 	charles visual-studio-code malwarebytes postman anki appcleaner font-juliamono skim monitorcontrol \
-	oversight font-input grandperspective bunch signal android-platform-tools coteditor keka \
-	imageoptim deckset lastpass backblaze do-not-disturb reikey gas-mask appcleaner raycast alt-tab)
+	oversight font-input bunch signal android-platform-tools coteditor keka dropbox 1password-cli \
+	imageoptim deckset backblaze do-not-disturb reikey gas-mask appcleaner raycast \
+	)
 
-# App Store stuff (list acquired by `mas list | awk '{print $1, "#"$2}')`
+# App Store stuff (list acquired by `mas list | awk '{print "#" $2 "\n" $1}')`
 app_store_array=(
-	#Reeder
-    1529448980 \
-    #Things
+	#Things
 	904280696 \
-    #Simplenote
+	#Simplenote
 	692867256 \
-	#Keynote
-    409183694 \
-	#Notion Web Clipper
-    1559269364 \
-	#Reader
-    1179373118 \
-	#DaisyDisk
-    411643860 \
-    #Wipr
-	1320666476 \
-    #Cardhop
-	1290358394 \
-    #Craft
-	1438243180 \
-    #PDFScanner
-	410968114 \
-    #TextSniper
-	1528890965 \
-    #WhatsApp
-	1147396723 \
-    #Bear
-	1091189122 \
-    #Pages
-	409201541 \
-    #Numbers
-	409203825 \
-    #Spark
-	1176895641 \
-    #Save to Pocket
-	1477385213 \
-     #Boop
-	1518425043 \
-    #Parcel
-	639968404 \
-	#NextDNS
-	1464122853 \
-	#IAWriter
-	775737590 \
 	#BetterSnapTool
-	417375580
+	417375580 \
+	#Keynote
+	409183694 \
+	#iA Writer
+	775737590 \
+	#WhatsApp
+	310633997 \
+	#Hush
+	1544743900 \
+	#Notion
+	1559269364 \
+	#Reader
+	1179373118 \
+	#DaisyDisk
+	411643860 \
+	#Wipr
+	1320666476 \
+	#Cardhop
+	1290358394 \
+	#Craft
+	1487937127 \
+	#Dark Reader for Safari
+	1438243180 \
+	#PDFScanner
+	410968114 \
+	#TextSniper
+	1528890965 \
+	#Pages
+	409201541 \
+	#Reeder
+	1529448980 \
+	#Numbers
+	409203825 \
+	#Flighty
+	1358823008 \
+	#Bear
+	1091189122 \
+	#Save to Pocket
+	1477385213 \
+	#Yoink
+	457622435 \
+	#Boop
+	1518425043 \
+	#Ulysses
+	1225570693 \
+	#TestFlight
+	899247664 \
+	#NextDNS
+	1464122853
 )
 
 INSTALL_STUFF(){
