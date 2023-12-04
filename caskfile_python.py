@@ -27,19 +27,26 @@ def run_command(command):
         sys.exit(1)
 
 
-def install_stuff():
+def install_homebrew():
     """
-    Installs Homebrew, taps, utilities/formulae, casks, and App Store apps as listed in respective arrays.
-    It first installs Homebrew, then proceeds with taps, utilities, casks, and finally App Store apps.
+    Installs Homebrew.
     """
     logging.info("Installing HomeBrew...")
     run_command(
         [
             "/bin/bash",
             "-c",
-            "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)",
+            "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh) | bash",
         ]
     )
+
+def install_stuff():
+    """
+    Installs taps, utilities/formulae, casks, and App Store apps as listed in respective arrays.
+    It first installs Homebrew, then proceeds with taps, utilities, casks, and finally App Store apps.
+    """
+
+    install_homebrew()
 
     logging.info("Installing taps...")
     for item in tap_array:
