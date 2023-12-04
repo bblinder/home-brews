@@ -36,7 +36,7 @@ def install_homebrew():
         [
             "/bin/bash",
             "-c",
-            "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh) | bash",
+            "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh) | bash"
         ]
     )
 
@@ -48,44 +48,57 @@ def install_stuff():
 
     install_homebrew()
 
-    logging.info("Installing taps...")
+    print("Installing taps: ", end="")
     for item in tap_array:
         run_command(["brew", "tap", item])
+        print("#", end="", flush=True)
+    print(" Done!")
 
-    logging.info("Installing utilities/formulae...")
+    print("Installing utilities/formulae: ", end="")
     for item in brew_array:
         run_command(["brew", "install", item])
+        print("#", end="", flush=True)
+    print(" Done!")
 
-    logging.info("Installing casks...")
+    print("Installing casks: ", end="")
     for item in cask_array:
         run_command(["brew", "install", "--cask", item])
+        print("#", end="", flush=True)
+    print(" Done!")
+
+    print("Installing App Store apps: ", end="")
+    for item in app_store_array:
+        run_command(["mas", "install", item])
+        print("#", end="", flush=True)
+    print(" Done!")
 
     logging.info("Cleaning up...")
     run_command(["brew", "cleanup"])
-
-    logging.info("Installing App Store apps...")
-    for item in app_store_array:
-        run_command(["mas", "install", item])
-
 
 def uninstall_stuff():
     """
     Uninstalls Homebrew utilities/formulae, casks, and App Store apps listed in respective arrays.
     It performs a cleanup after uninstalling to ensure no residual files are left.
     """
-    logging.info("Uninstalling App Store apps...")
+    print("Uninstalling App Store apps: ", end="")
     for item in app_store_array:
         run_command(["mas", "uninstall", item])
+        print("#", end="", flush=True)
+    print(" Done!")
 
-    logging.info("Uninstalling utilities/formulae...")
+    print("Uninstalling utilities/formulae: ", end="")
     for item in brew_array:
         run_command(["brew", "uninstall", item])
+        print("#", end="", flush=True)
+    print(" Done!")
 
-    logging.info("Uninstalling casks...")
+    print("Uninstalling casks: ", end="")
     for item in cask_array:
         run_command(
             ["brew", "uninstall", "--cask", "--zap", "--ignore-dependencies", item]
         )
+        print("#", end="", flush=True)
+    print(" Done!")
 
     logging.info("Cleaning up...")
     run_command(["brew", "cleanup", "-s"])
@@ -105,7 +118,7 @@ def purge_homebrew():
             [
                 "/bin/bash",
                 "-c",
-                "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall.sh)",
+                "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall.sh) | bash",
             ]
         )
 
