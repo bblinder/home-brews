@@ -220,7 +220,6 @@ tap_array = [
     "homebrew/cask-fonts",
     "homebrew/cask-versions",
     "homebrew/core",
-    "brew",
     "clangen/musikcube",
     "apparition47/tap",
 ]
