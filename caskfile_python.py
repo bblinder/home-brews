@@ -11,7 +11,7 @@ import logging
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 
 
-def run_command(command):
+def run_command(command, continue_on_error=False):
     try:
         result = subprocess.run(
             command,
@@ -24,7 +24,8 @@ def run_command(command):
     except subprocess.CalledProcessError as e:
         logging.error(f"An error occurred while executing {' '.join(command)}: {e}")
         logging.error(f"Error output: {e.stderr}")
-        sys.exit(1)
+        if not continue_on_error:
+            sys.exit(1)
 
 
 def install_homebrew():
@@ -50,30 +51,30 @@ def install_stuff():
 
     print("Installing taps: ", end="")
     for item in tap_array:
-        run_command(["brew", "tap", item])
+        run_command(["brew", "tap", item], continue_on_error=True)
         print("#", end="", flush=True)
     print(" Done!")
 
     print("Installing utilities/formulae: ", end="")
     for item in brew_array:
-        run_command(["brew", "install", item])
+        run_command(["brew", "install", item], continue_on_error=True)
         print("#", end="", flush=True)
     print(" Done!")
 
     print("Installing casks: ", end="")
     for item in cask_array:
-        run_command(["brew", "install", "--cask", item])
+        run_command(["brew", "install", "--cask", item], continue_on_error=True)
         print("#", end="", flush=True)
     print(" Done!")
 
     print("Installing App Store apps: ", end="")
     for item in app_store_array:
-        run_command(["mas", "install", item])
+        run_command(["mas", "install", item], continue_on_error=True)
         print("#", end="", flush=True)
     print(" Done!")
 
     logging.info("Cleaning up...")
-    run_command(["brew", "cleanup"])
+    run_command(["brew", "cleanup"], continue_on_error=True)
 
 def uninstall_stuff():
     """
@@ -82,29 +83,30 @@ def uninstall_stuff():
     """
     print("Uninstalling App Store apps: ", end="")
     for item in app_store_array:
-        run_command(["mas", "uninstall", item])
+        run_command(["mas", "uninstall", item], continue_on_error=True)
         print("#", end="", flush=True)
     print(" Done!")
 
     print("Uninstalling utilities/formulae: ", end="")
     for item in brew_array:
-        run_command(["brew", "uninstall", item])
+        run_command(["brew", "uninstall", item], continue_on_error=True)
         print("#", end="", flush=True)
     print(" Done!")
 
     print("Uninstalling casks: ", end="")
     for item in cask_array:
         run_command(
-            ["brew", "uninstall", "--cask", "--zap", "--ignore-dependencies", item]
+            ["brew", "uninstall", "--cask", "--zap", "--ignore-dependencies", item],
+            continue_on_error=True,
         )
         print("#", end="", flush=True)
     print(" Done!")
 
     logging.info("Cleaning up...")
-    run_command(["brew", "cleanup", "-s"])
+    run_command(["brew", "cleanup", "-s"], continue_on_error=True)
 
     logging.info("Uninstalling Homebrew...")
-    run_command(["brew", "uninstall", "caskroom/cask/brew-cask"])
+    run_command(["brew", "uninstall", "caskroom/cask/brew-cask"], continue_on_error=True)
 
 
 def purge_homebrew():
