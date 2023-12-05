@@ -287,6 +287,7 @@ cask_array = [
     "gas-mask",
     "appcleaner",
     "raycast",
+    "istat-menus",
 ]
 
 # App Store stuff (list acquired by `mas list | awk '{print "#" $2 "\n" $1}')`
