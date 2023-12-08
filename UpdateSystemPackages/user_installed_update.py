@@ -29,17 +29,19 @@ GITHUB_DIR = Path(os.environ["HOME"]) / "Github"
 OS = sys.platform
 
 console = Console()
+
+
 def render_table(status_dict):
     table = Table("Asynchronous Package Manager")
     table.add_column("Task", style="cyan", no_wrap=True)
 
     for task, status in status_dict.items():
-        status_str = ''.join(status)
+        status_str = "".join(status)
         table.add_row(task, status_str)
-    
+
     console.clear()
     console.print(table)
-    
+
 
 status_dict = {
     "Homebrew": ("Not Started", ""),
@@ -50,6 +52,7 @@ status_dict = {
     "Git": ("Not Started", ""),
     "Apple Updates": ("Not Started", ""),
 }
+
 
 class PasswordManager:
     """A class for managing sudo passwords."""
@@ -155,7 +158,6 @@ class Updater:
             self.run_with_sudo(["gem", "update"], password)
             self.run_with_sudo(["gem", "update", "--system"], password)
 
-
     def apple_upgrade(self) -> None:
         """Updating MacOS software."""
         if OS == "darwin":
@@ -165,7 +167,6 @@ class Updater:
             subprocess.run(["mas", "outdated"], check=False)
             subprocess.run(["mas", "upgrade"], check=False)
 
-        
     def bulk_git_update(self) -> None:
         """Updating all git repos in a directory."""
         if GITHUB_DIR.exists():
@@ -329,14 +330,17 @@ class Updater:
         render_table(status_dict)
 
     async def run_async(self, command, check=False):
-        process = await asyncio.create_subprocess_exec(*command, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
+        process = await asyncio.create_subprocess_exec(
+            *command, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+        )
         stdout, stderr = await process.communicate()
 
         if check and process.returncode != 0:
-            raise RuntimeError(f'Command {command} failed with {process.returncode} and error: {stderr.decode().strip()}')
+            raise RuntimeError(
+                f"Command {command} failed with {process.returncode} and error: {stderr.decode().strip()}"
+            )
 
         return stdout.decode().strip()
-
 
     def parse_args(self) -> argparse.Namespace:
         """Parsing command line arguments"""
@@ -400,7 +404,7 @@ async def main() -> None:
                         if not updater.is_sudo_correct(password):
                             print(red("Incorrect sudo password. Exiting..."))
                             sys.exit(1)
-                    #asyncio.run(updater.apt_upgrade_async(password))
+                    # asyncio.run(updater.apt_upgrade_async(password))
                     await updater.apt_upgrade_async(password)
 
             if input(blue("Upgrade python? [y/N] --> ", ["italic"])).lower() == "y":
@@ -426,8 +430,9 @@ async def main() -> None:
                     await updater.run_async(["mas", "upgrade"], check=False)
 
     except KeyboardInterrupt:
-        print("::: Exiting...")
+        print("\n::: Program interrupted by user. Exiting gracefully...")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     render_table(status_dict)
