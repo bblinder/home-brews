@@ -50,7 +50,7 @@ fi
 
 # Summarize the text from the URL
 (
-  echo '[INST]Summarize the following text:'
+  echo '[INST]Summarize the following text and generate a title at the top:'
   links -codepage utf-8 \
     -force-html \
     -width 500 \
