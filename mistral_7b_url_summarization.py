@@ -1,13 +1,20 @@
 #!/usr/bin/env python3
 
+"""
+Derived from Justine Tunney's and Mozilla's llamafile project. See: https://justine.lol/oneliners/
+This script is used to summarize the text from a given URL 
+using the mistral-7b llamafile and the 'links' browser.
+https://github.com/Mozilla-Ocho/llamafile
+"""
+
 import argparse
 import re
 import shlex
 import subprocess
+from urllib.parse import quote
 from alive_progress import alive_bar
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import quote
 
 TIMEOUT_SECONDS = 5  # Global constant for timeout
 
