@@ -3,8 +3,7 @@
 """
 Derived from Justine Tunney's and Mozilla's llamafile project. See: https://justine.lol/oneliners/
 This script is used to summarize the text from a given URL 
-using the mistral-7b llamafile and the 'links' browser.
-https://github.com/Mozilla-Ocho/llamafile
+using the mistral-7b llamafile: https://github.com/Mozilla-Ocho/llamafile
 """
 
 import argparse
@@ -36,23 +35,36 @@ def is_valid_url(url):
 
 
 def get_text_from_url(url):
-    """Scrape and process text from URL."""
+    """Scrape and process text from URL. Use proxy if access is forbidden."""
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36"
     }
-    try:
-        response = requests.get(
-            url, allow_redirects=True, timeout=TIMEOUT_SECONDS, headers=headers
-        )
-        if response.status_code == 200:
-            soup = BeautifulSoup(response.content, "html.parser")
-            text = soup.get_text()
-            text = re.sub(r"[\s\xa0]+", " ", text).strip()
-            return text
-        else:
+
+    def fetch_url(fetch_url):
+        try:
+            response = requests.get(
+                fetch_url,
+                allow_redirects=True,
+                timeout=TIMEOUT_SECONDS,
+                headers=headers,
+            )
+            if response.status_code == 200:
+                soup = BeautifulSoup(response.content, "html.parser")
+                text = soup.get_text()
+                return re.sub(r"[\s\xa0]+", " ", text).strip()
             return None
-    except requests.RequestException:
-        return None
+        except requests.RequestException:
+            return None
+
+    # Try fetching the URL directly
+    text = fetch_url(url)
+
+    # If direct access is forbidden (403), try using the proxy
+    if text is None:
+        proxy_url = f"https://1ft.io/{url}"
+        text = fetch_url(proxy_url)
+
+    return text
 
 
 def summarize_text(text, llamafile_path):
