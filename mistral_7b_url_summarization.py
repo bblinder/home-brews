@@ -16,6 +16,12 @@ import requests
 from bs4 import BeautifulSoup
 
 TIMEOUT_SECONDS = 5  # Global constant for timeout
+DEFAULT_SUMMARIZATION_PROMPT = "[INST]Summarize the following text:"
+
+# Default arguments for llamafile. DO NOT CHANGE these unless you know what you're doing.
+CHAR_COUNT = 6700 # We don't want to exceed Mistral's 7,000 token context size.
+TEMPERATURE = 0 # keeping it nice and deterministic.
+NUM_TOKENS = 500
 
 
 def is_valid_url(url):
@@ -67,10 +73,12 @@ def get_text_from_url(url):
     return text
 
 
-def summarize_text(text, llamafile_path):
+def summarize_text(
+    text, llamafile_path, summarization_prompt=DEFAULT_SUMMARIZATION_PROMPT
+):
     """Summarize the text using llamafile."""
-    escaped_text = shlex.quote(f"[INST]Summarize the following text: {text} [/INST]")
-    cmd = f"echo {escaped_text} | {llamafile_path} -c 6700 -f /dev/stdin --temp 0 -n 500 --silent-prompt"
+    escaped_text = shlex.quote(f"{summarization_prompt} {text} [/INST]")
+    cmd = f"echo {escaped_text} | {llamafile_path} -c {CHAR_COUNT} -f /dev/stdin --temp {TEMPERATURE} -n {NUM_TOKENS} --silent-prompt"
     try:
         result = subprocess.run(
             cmd,
@@ -86,13 +94,15 @@ def summarize_text(text, llamafile_path):
         return ""
 
 
-def fallback_summarize_text(url, llamafile_path):
+def fallback_summarize_text(
+    url, llamafile_path, summarization_prompt=DEFAULT_SUMMARIZATION_PROMPT
+):
     """Fallback method to summarize text using the original Bash script logic."""
     cmd = (
-        f"echo '[INST]Summarize the following text:' | "
+        f"echo '{summarization_prompt}' | "
         f"links -codepage utf-8 -force-html -width 500 -dump '{url}' | "
         f"sed 's/   */ /' | "
-        f"{llamafile_path} -c 6700 -f /dev/stdin --temp 0 -n 500 --silent-prompt"
+        f"{llamafile_path} -c {CHAR_COUNT} -f /dev/stdin --temp {TEMPERATURE} -n {NUM_TOKENS} --silent-prompt"
     )
     try:
         result = subprocess.run(
