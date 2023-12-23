@@ -11,16 +11,16 @@ import configparser
 
 # Read configuration from a file or set default values
 config = configparser.ConfigParser()
-config.read('config.ini')
+config.read("config.ini")
 
 PROMPT = """[INST]Generate a very short one-stanza poem based on the following time, in a style similar to this example:
 'In cozy shelves, I do reside, /
 Its nearly noon, the clock confides.'
 Be imaginative and profound, incorporating the time: """
 
-CHAR_COUNT = config.get('Settings', 'CHAR_COUNT', fallback='6700')
-TEMPERATURE = config.getfloat('Settings', 'TEMPERATURE', fallback=1.7)
-NUM_TOKENS = config.getint('Settings', 'NUM_TOKENS', fallback=500)
+CHAR_COUNT = config.get("Settings", "CHAR_COUNT", fallback="6700")
+TEMPERATURE = config.getfloat("Settings", "TEMPERATURE", fallback=1.9)
+NUM_TOKENS = config.getint("Settings", "NUM_TOKENS", fallback=500)
 
 # Setting up logging
 logging.basicConfig(level=logging.INFO)
@@ -66,13 +66,15 @@ def generate_poem(plain_text, formatted_text, model_path):
 
 def main():
     """Main function to generate and print a poem based on the current time."""
-    parser = argparse.ArgumentParser(description="Generate a poem based on the current time.")
+    parser = argparse.ArgumentParser(
+        description="Generate a poem based on the current time."
+    )
     parser.add_argument("model_path", help="Path to the LLM model binary")
 
     args = parser.parse_args()
     plain_time, formatted_time = get_current_time()
     poem = generate_poem(plain_time, formatted_time, args.model_path)
-    #print(f"The current time is {formatted_time}.\nHere is your poem:\n{poem}")
+    # print(f"The current time is {formatted_time}.\nHere is your poem:\n{poem}")
     print(f"{poem}")
 
 
