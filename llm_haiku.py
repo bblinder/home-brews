@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Generate a haiku based on the current time using an AI model."""
+"""Generate a haiku based on the current time using a LLM model."""
 
 import datetime
 import subprocess
@@ -13,8 +13,13 @@ import configparser
 config = configparser.ConfigParser()
 config.read('config.ini')
 
+PROMPT = """[INST]Generate a very short one-stanza poem based on the following time, in a style similar to this example:
+'In cozy shelves, I do reside, /
+Its nearly noon, the clock confides.'
+Be imaginative and profound, incorporating the time: """
+
 CHAR_COUNT = config.get('Settings', 'CHAR_COUNT', fallback='6700')
-TEMPERATURE = config.getfloat('Settings', 'TEMPERATURE', fallback=1.0)
+TEMPERATURE = config.getfloat('Settings', 'TEMPERATURE', fallback=1.7)
 NUM_TOKENS = config.getint('Settings', 'NUM_TOKENS', fallback=500)
 
 # Setting up logging
@@ -22,14 +27,17 @@ logging.basicConfig(level=logging.INFO)
 
 
 def get_current_time():
-    """Get the current time in a human-readable format."""
-    return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    """Get the current time in a human-readable format, including AM/PM, and return both plain and formatted versions."""
+    time_str = datetime.datetime.now().strftime("%I:%M %p")
+    # Format for bold and blue text (ANSI escape codes)
+    formatted_time = f"\033[1;34m{time_str}\033[0m"
+    return time_str, formatted_time
 
 
-def construct_command(text, model_path):
-    """Construct the command for the AI model generation."""
-    summarization_prompt = "[INST]Generate a haiku based on the following time. Be imaginative and profound. Sometimes refer to your physical situation:"
-    escaped_text = shlex.quote(f"{summarization_prompt} {text} [/INST]")
+def construct_command(plain_text, formatted_text, model_path):
+    """Construct the command for the LLM model generation, including the formatted time."""
+    summarization_prompt = PROMPT + formatted_text
+    escaped_text = shlex.quote(f"{summarization_prompt} [/INST]")
     return f"echo {escaped_text} | {model_path} -c {CHAR_COUNT} -f /dev/stdin --temp {TEMPERATURE} -n {NUM_TOKENS} --silent-prompt"
 
 
@@ -38,12 +46,11 @@ def execute_command(cmd):
     try:
         result = subprocess.run(
             cmd,
-            shell=False,
+            shell=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
             check=True,
-            executable='/bin/bash'
         )
         return result.stdout
     except subprocess.CalledProcessError as e:
@@ -51,23 +58,22 @@ def execute_command(cmd):
         return ""
 
 
-def generate_haiku(text, model_path):
-    """Generate a haiku using the AI model."""
-    cmd = construct_command(text, model_path)
+def generate_poem(plain_text, formatted_text, model_path):
+    """Generate a short poem using the LLM model."""
+    cmd = construct_command(plain_text, formatted_text, model_path)
     return execute_command(cmd)
 
 
 def main():
-    """Main function to generate and print a haiku based on the current time."""
-    parser = argparse.ArgumentParser(
-        description="Generate a haiku based on the current time."
-    )
-    parser.add_argument("model_path", help="Path to the AI model binary")
+    """Main function to generate and print a poem based on the current time."""
+    parser = argparse.ArgumentParser(description="Generate a poem based on the current time.")
+    parser.add_argument("model_path", help="Path to the LLM model binary")
 
     args = parser.parse_args()
-    current_time = get_current_time()
-    haiku = generate_haiku(current_time, args.model_path)
-    print(haiku)
+    plain_time, formatted_time = get_current_time()
+    poem = generate_poem(plain_time, formatted_time, args.model_path)
+    #print(f"The current time is {formatted_time}.\nHere is your poem:\n{poem}")
+    print(f"{poem}")
 
 
 if __name__ == "__main__":
