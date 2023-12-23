@@ -1,57 +1,72 @@
 #!/usr/bin/env python3
 
-"""Generate a haiku based on the current time."""
+"""Generate a haiku based on the current time using an AI model."""
 
 import datetime
 import subprocess
-import shlex
 import argparse
+import logging
+import shlex
+import configparser
 
+# Read configuration from a file or set default values
+config = configparser.ConfigParser()
+config.read('config.ini')
 
-DEFAULT_SUMMARIZATION_PROMPT = "[INST]Generate a haiku based on the following time:"
-CHAR_COUNT = 6700  # We don't want to exceed Mistral's 7,000 token context size.
-TEMPERATURE = 1
-NUM_TOKENS = 500
+CHAR_COUNT = config.get('Settings', 'CHAR_COUNT', fallback='6700')
+TEMPERATURE = config.getfloat('Settings', 'TEMPERATURE', fallback=1.0)
+NUM_TOKENS = config.getint('Settings', 'NUM_TOKENS', fallback=500)
+
+# Setting up logging
+logging.basicConfig(level=logging.INFO)
 
 
 def get_current_time():
-    """Get the current time."""
-    current_time = datetime.datetime.now().time()
-    return current_time
+    """Get the current time in a human-readable format."""
+    return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 
-def generate_haiku(
-    text, llamafile_path, summarization_prompt=DEFAULT_SUMMARIZATION_PROMPT
-):
-    """Invoking the llamafile"""
+def construct_command(text, model_path):
+    """Construct the command for the AI model generation."""
+    summarization_prompt = "[INST]Generate a haiku based on the following time. Be imaginative and profound. Sometimes refer to your physical situation:"
     escaped_text = shlex.quote(f"{summarization_prompt} {text} [/INST]")
-    cmd = f"echo {escaped_text} | {llamafile_path} -c {CHAR_COUNT} -f /dev/stdin --temp {TEMPERATURE} -n {NUM_TOKENS} --silent-prompt"
+    return f"echo {escaped_text} | {model_path} -c {CHAR_COUNT} -f /dev/stdin --temp {TEMPERATURE} -n {NUM_TOKENS} --silent-prompt"
+
+
+def execute_command(cmd):
+    """Execute the command and return the output or error."""
     try:
         result = subprocess.run(
             cmd,
-            shell=True,
+            shell=False,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
             check=True,
+            executable='/bin/bash'
         )
         return result.stdout
     except subprocess.CalledProcessError as e:
-        print(f"Error in llamafile execution: {e}")
+        logging.error(f"Error in model execution: {e}")
         return ""
 
 
+def generate_haiku(text, model_path):
+    """Generate a haiku using the AI model."""
+    cmd = construct_command(text, model_path)
+    return execute_command(cmd)
+
+
 def main():
-    """Main function."""
+    """Main function to generate and print a haiku based on the current time."""
     parser = argparse.ArgumentParser(
         description="Generate a haiku based on the current time."
     )
-    parser.add_argument("llamafile_path", help="Path to llamafile binary")
+    parser.add_argument("model_path", help="Path to the AI model binary")
 
     args = parser.parse_args()
-    llamafile_path = args.llamafile_path
     current_time = get_current_time()
-    haiku = generate_haiku(current_time, llamafile_path)
+    haiku = generate_haiku(current_time, args.model_path)
     print(haiku)
 
 
