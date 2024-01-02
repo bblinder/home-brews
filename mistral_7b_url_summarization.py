@@ -2,10 +2,17 @@
 
 """
 Derived from Justine Tunney's and Mozilla's llamafile project. See: https://justine.lol/oneliners/
-This script is used to summarize the text from a given URL 
+This script is used to summarize the text from a given URL or text file
 using the mistral-7b llamafile: https://github.com/Mozilla-Ocho/llamafile
+
+
+TODO:
+- [ ] Add support for multiple URLs
+- [x] Add support for text files
+- [ ] Add support for chunking based on token count
 """
 
+import os
 import argparse
 import re
 import shlex
@@ -19,8 +26,8 @@ TIMEOUT_SECONDS = 5  # Global constant for timeout
 DEFAULT_SUMMARIZATION_PROMPT = "[INST]Summarize the following text:"
 
 # Default arguments for llamafile. DO NOT CHANGE these unless you know what you're doing.
-CHAR_COUNT = 6700 # We don't want to exceed Mistral's 7,000 token context size.
-TEMPERATURE = 0 # keeping it nice and deterministic.
+CHAR_COUNT = 6700  # We don't want to exceed Mistral's 7,000 token context size.
+TEMPERATURE = 0  # keeping it nice and deterministic.
 NUM_TOKENS = 500
 
 
@@ -72,6 +79,27 @@ def get_text_from_url(url):
 
     return text
 
+# def split_into_chunks(text, max_tokens=CHAR_COUNT):
+#     """Splits text into chunks of max_tokens."""
+#     words = text.split()
+#     chunks = []
+
+#     current_chunk = []
+#     current_count = 0
+
+#     for word in words:
+#         current_chunk.append(word)
+#         current_count += 1
+
+#         if current_count >= max_tokens:
+#             chunks.append(" ".join(current_chunk))
+#             current_chunk = []
+#             current_count = 0
+
+#     if current_chunk:
+#         chunks.append(" ".join(current_chunk))
+
+#     return chunks
 
 def summarize_text(
     text, llamafile_path, summarization_prompt=DEFAULT_SUMMARIZATION_PROMPT
@@ -119,10 +147,24 @@ def fallback_summarize_text(
         return ""
 
 
+def read_text_from_file(file_path):
+    """Read and return text from a file."""
+    with open(file_path, "r", encoding="utf-8") as file:
+        return file.read()
+
+
+def is_file_path(input_str):
+    """Check if the input string is a valid file path."""
+    return os.path.isfile(input_str)
+
+
 def main():
     """Main function to parse arguments and summarize text from URLs."""
     parser = argparse.ArgumentParser(description="Summarize text from multiple URLs.")
-    parser.add_argument("urls", nargs="+", help="The URLs to summarize text from.")
+    parser.add_argument(
+        "inputs", nargs="+", help="The URLs or file paths to summarize from."
+    )
+    # parser.add_argument("urls", nargs="+", help="The URLs to summarize text from.")
     parser.add_argument("llamafile_path", help="The path to the llamafile executable.")
     parser.add_argument(
         "-o",
@@ -134,26 +176,54 @@ def main():
 
     summaries = []
 
-    for url in args.urls:
+    for input_str in args.inputs:
         with alive_bar(3, bar="bubbles", spinner="dots") as bar:
-            bar.text("-> Attempting to scrape text from URL...")
-            text = get_text_from_url(url)
+            bar.text("-> Processing input...")
+
+            if is_file_path(input_str):
+                text = read_text_from_file(input_str)
+            elif is_valid_url(input_str):
+                text = get_text_from_url(input_str)
+            else:
+                print(f"Invalid input: {input_str}")
+                continue
+
             bar()  # Increment the progress bar
 
             if text:
                 bar.text("-> Summarizing text...")
                 summary = summarize_text(text, args.llamafile_path)
-                bar()  # Increment the progress bar after summarizing
+                bar()
             else:
-                bar.text("-> Falling back to Bash logic for summarizing...")
-                summary = fallback_summarize_text(url, args.llamafile_path)
-                bar()  # Increment the progress bar after fallback
+                bar.text("-> Failed to retrieve text.")
+                continue
 
             if summary.strip():
                 bar.text("-> Done!")
-                summaries.append(f"URL: {url}\nSummary:\n{summary}\n")
+                summaries.append(f"Input: {input_str}\nSummary:\n{summary}\n")
             else:
                 bar.text("-> Failed to retrieve summary.")
+
+    # for url in args.urls:
+    #     with alive_bar(3, bar="bubbles", spinner="dots") as bar:
+    #         bar.text("-> Attempting to scrape text from URL...")
+    #         text = get_text_from_url(url)
+    #         bar()  # Increment the progress bar
+
+    #         if text:
+    #             bar.text("-> Summarizing text...")
+    #             summary = summarize_text(text, args.llamafile_path)
+    #             bar()  # Increment the progress bar after summarizing
+    #         else:
+    #             bar.text("-> Falling back to Bash logic for summarizing...")
+    #             summary = fallback_summarize_text(url, args.llamafile_path)
+    #             bar()  # Increment the progress bar after fallback
+
+    #         if summary.strip():
+    #             bar.text("-> Done!")
+    #             summaries.append(f"URL: {url}\nSummary:\n{summary}\n")
+    #         else:
+    #             bar.text("-> Failed to retrieve summary.")
 
     combined_summaries = "\n".join(summaries)
 
