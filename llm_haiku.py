@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Generate a haiku based on the current time using a LLM model."""
+"""Generate a haiku based on the current time using a local LLM model."""
 
 import datetime
 import subprocess
