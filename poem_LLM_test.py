@@ -6,6 +6,10 @@ import datetime
 from openai import OpenAI
 client = OpenAI()
 
+# check for OpenAI API key
+if not client.api_key:
+  raise Exception("Please set your OpenAI API key as an environment variable named OPENAI_API_KEY.")
+
 def get_time():
   """Get the current time in a human-readable format and return formatted version."""
   time_str = datetime.datetime.now().strftime("%I:%M")
