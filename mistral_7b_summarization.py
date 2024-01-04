@@ -12,6 +12,7 @@ TODO:
 - [ ] Add support for chunking based on token count
 """
 
+import sys
 import os
 import argparse
 import re
@@ -162,10 +163,10 @@ def main():
     """Main function to parse arguments and summarize text from URLs."""
     parser = argparse.ArgumentParser(description="Summarize text from multiple URLs.")
     parser.add_argument(
-        "inputs", nargs="+", help="The URLs or file paths to summarize from."
+        "inputs", nargs="*", help="The URLs or file paths to summarize from."
     )
     # parser.add_argument("urls", nargs="+", help="The URLs to summarize text from.")
-    parser.add_argument("llamafile_path", help="The path to the llamafile executable.")
+    parser.add_argument("-lf","--llamafile_path", help="The path to the llamafile executable.")
     parser.add_argument(
         "-o",
         "--output",
@@ -175,8 +176,13 @@ def main():
     args = parser.parse_args()
 
     summaries = []
+    input_sources = args.inputs
 
-    for input_str in args.inputs:
+    if not input_sources:
+        input_text = sys.stdin.read()
+        input_sources = [input_text]
+
+    for input_str in input_sources:
         with alive_bar(3, bar="bubbles", spinner="dots") as bar:
             bar.text("-> Processing input...")
 
