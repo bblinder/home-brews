@@ -10,7 +10,7 @@ client = OpenAI()
 if not client.api_key:
   raise Exception("Please set your OpenAI API key as an environment variable named OPENAI_API_KEY.")
 
-def get_time():
+def get_formatted_time():
   """Get the current time in a human-readable format and return formatted version."""
   time_str = datetime.datetime.now().strftime("%I:%M")
   # Format for bold and blue text (ANSI escape codes)
@@ -19,7 +19,7 @@ def get_time():
 
 def generate_poem():
   """Generate a short poem using the LLM model."""
-  time = get_time()
+  time = get_formatted_time()
   completion = client.chat.completions.create(
     model="gpt-3.5-turbo",
     messages=[
