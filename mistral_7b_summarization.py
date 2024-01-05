@@ -80,27 +80,6 @@ def get_text_from_url(url):
 
     return text
 
-# def split_into_chunks(text, max_tokens=CHAR_COUNT):
-#     """Splits text into chunks of max_tokens."""
-#     words = text.split()
-#     chunks = []
-
-#     current_chunk = []
-#     current_count = 0
-
-#     for word in words:
-#         current_chunk.append(word)
-#         current_count += 1
-
-#         if current_count >= max_tokens:
-#             chunks.append(" ".join(current_chunk))
-#             current_chunk = []
-#             current_count = 0
-
-#     if current_chunk:
-#         chunks.append(" ".join(current_chunk))
-
-#     return chunks
 
 def summarize_text(
     text, llamafile_path, summarization_prompt=DEFAULT_SUMMARIZATION_PROMPT
@@ -165,9 +144,14 @@ def main():
     parser.add_argument(
         "inputs", nargs="*", help="The URLs or file paths to summarize from."
     )
-    parser.add_argument("-lf", "--llamafile_path", help="The path to the llamafile executable.")
     parser.add_argument(
-        "-o", "--output", help="Optional output file to save the summaries.", default=None
+        "-lf", "--llamafile_path", help="The path to the llamafile executable."
+    )
+    parser.add_argument(
+        "-o",
+        "--output",
+        help="Optional output file to save the summaries.",
+        default=None,
     )
     args = parser.parse_args()
 
@@ -214,6 +198,7 @@ def main():
         print(f"Summaries saved to {args.output}")
     else:
         print(combined_summaries)
+
 
 if __name__ == "__main__":
     main()
