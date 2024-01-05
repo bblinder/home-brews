@@ -160,26 +160,23 @@ def is_file_path(input_str):
 
 
 def main():
-    """Main function to parse arguments and summarize text from URLs."""
+    """Main function to parse arguments and summarize text from URLs or text files."""
     parser = argparse.ArgumentParser(description="Summarize text from multiple URLs.")
     parser.add_argument(
         "inputs", nargs="*", help="The URLs or file paths to summarize from."
     )
-    # parser.add_argument("urls", nargs="+", help="The URLs to summarize text from.")
-    parser.add_argument("-lf","--llamafile_path", help="The path to the llamafile executable.")
+    parser.add_argument("-lf", "--llamafile_path", help="The path to the llamafile executable.")
     parser.add_argument(
-        "-o",
-        "--output",
-        help="Optional output file to save the summaries.",
-        default=None,
+        "-o", "--output", help="Optional output file to save the summaries.", default=None
     )
     args = parser.parse_args()
 
     summaries = []
     input_sources = args.inputs
 
+    # Check if inputs are provided, if not, read from stdin
     if not input_sources:
-        input_text = sys.stdin.read()
+        input_text = sys.stdin.read().strip()
         input_sources = [input_text]
 
     for input_str in input_sources:
@@ -191,8 +188,7 @@ def main():
             elif is_valid_url(input_str):
                 text = get_text_from_url(input_str)
             else:
-                print(f"Invalid input: {input_str}")
-                continue
+                text = input_str  # Directly use the input string as text
 
             bar()  # Increment the progress bar
 
@@ -210,27 +206,6 @@ def main():
             else:
                 bar.text("-> Failed to retrieve summary.")
 
-    # for url in args.urls:
-    #     with alive_bar(3, bar="bubbles", spinner="dots") as bar:
-    #         bar.text("-> Attempting to scrape text from URL...")
-    #         text = get_text_from_url(url)
-    #         bar()  # Increment the progress bar
-
-    #         if text:
-    #             bar.text("-> Summarizing text...")
-    #             summary = summarize_text(text, args.llamafile_path)
-    #             bar()  # Increment the progress bar after summarizing
-    #         else:
-    #             bar.text("-> Falling back to Bash logic for summarizing...")
-    #             summary = fallback_summarize_text(url, args.llamafile_path)
-    #             bar()  # Increment the progress bar after fallback
-
-    #         if summary.strip():
-    #             bar.text("-> Done!")
-    #             summaries.append(f"URL: {url}\nSummary:\n{summary}\n")
-    #         else:
-    #             bar.text("-> Failed to retrieve summary.")
-
     combined_summaries = "\n".join(summaries)
 
     if args.output:
@@ -239,7 +214,6 @@ def main():
         print(f"Summaries saved to {args.output}")
     else:
         print(combined_summaries)
-
 
 if __name__ == "__main__":
     main()
