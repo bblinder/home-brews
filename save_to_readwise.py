@@ -21,7 +21,7 @@ args = args.parse_args()
 def check_env_vars():
     """Check if the environment variables are set."""
     if not READWISE_TOKEN:
-        raise Exception("READWISE_TOKEN environment variable not set.")
+        raise EnvironmentError("READWISE_TOKEN environment variable not set.")
     if not API_ENDPOINT:
         raise Exception("API_ENDPOINT environment variable not set.")
     return True
