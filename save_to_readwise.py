@@ -25,7 +25,8 @@ def check_env_vars():
     if not API_ENDPOINT:
         raise Exception("API_ENDPOINT environment variable not set.")
     return True
-    
+
+
 def add_article(url, tags):
     """Add an article to Readwise.
 
