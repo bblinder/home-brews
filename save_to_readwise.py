@@ -6,16 +6,24 @@ Adds an article to Readwise Reader.
 
 import os
 import argparse
+import json
 import requests
 
-# Readwise Auth Token
-READWISE_TOKEN = os.environ.get("READWISE_TOKEN")
 API_ENDPOINT = "https://readwise.io/api/v3/save/"
 
 args = argparse.ArgumentParser()
 args.add_argument("URL", help="URL of the article")
 args.add_argument("--tags", nargs="*", help="Tags to add to the article")
+args.add_argument("--config", help="Path to config file", required=False)
 args = args.parse_args()
+
+
+if args.config:
+    with open(args.config, "r") as file:
+        config = json.load(file)
+        READWISE_TOKEN = config["READWISE_TOKEN"]
+else:
+    READWISE_TOKEN = os.environ.get("READWISE_TOKEN")
 
 
 def check_env_vars():
