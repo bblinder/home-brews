@@ -19,7 +19,7 @@ args = args.parse_args()
 
 
 if args.config:
-    with open(args.config, "r") as file:
+    with open(args.config, "r", encoding="utf-8") as file:
         config = json.load(file)
         READWISE_TOKEN = config["READWISE_TOKEN"]
 else:
@@ -29,7 +29,9 @@ else:
 def check_env_vars():
     """Check if the environment variables are set."""
     if not READWISE_TOKEN:
-        raise EnvironmentError("READWISE_TOKEN environment variable not set.")
+        raise EnvironmentError(
+            "READWISE_TOKEN environment variable not set. Either export it or pass it as an argument with `--config`."
+        )
     if not API_ENDPOINT:
         raise Exception("API_ENDPOINT environment variable not set.")
     return True
