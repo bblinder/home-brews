@@ -62,7 +62,7 @@ def generate_response(prompt):
         str: The generated response.
     """
     response = ollama.chat(
-        # model="llama2:13b",
+        #model="llama2:13b",
         model="mistral",
         messages=[
             {
