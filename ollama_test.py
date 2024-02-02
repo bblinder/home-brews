@@ -62,7 +62,7 @@ def generate_response(prompt):
         str: The generated response.
     """
     response = ollama.chat(
-        #model="llama2:13b",
+        # model="llama2:13b",
         model="mistral",
         messages=[
             {
@@ -73,6 +73,7 @@ def generate_response(prompt):
     )
 
     return response["message"]["content"]
+
 
 def write_output(output_file, content):
     """
@@ -108,6 +109,7 @@ def main():
 
     response = generate_response(prompt)
     write_output(args.output, response)
+
 
 if __name__ == "__main__":
     main()
