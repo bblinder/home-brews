@@ -3,9 +3,9 @@
 """
 Using the Ollama python lib to chat with supported models.
 
-
 TODO:
 - [] Add URL summarization
+- [] Replace print statements with logging
 """
 
 import os
@@ -52,18 +52,12 @@ def read_input(input_file):
             return f.read()
 
 
-def generate_response(prompt):
+def generate_response(prompt, model):
     """
     Generate a response using the selected model.
-
-    Args:
-        prompt (str): The user's prompt.
-    Returns:
-        str: The generated response.
     """
     response = ollama.chat(
-        #model="llama2:13b",
-        model="mistral",
+        model=model,
         messages=[
             {
                 "role": "user",
@@ -71,24 +65,21 @@ def generate_response(prompt):
             },
         ],
     )
-
     return response["message"]["content"]
 
 
 def write_output(output_file, content):
     """
     Write the content to the output file.
-
-    Args:
-        output_file (str): The path to the output file.
-        content (str): The content to write to the output file.
     """
-
     if output_file:
         with open(output_file, "w", encoding="utf-8") as f:
             f.write(content)
     else:
         print(content)
+
+
+SUPPORTED_MODELS = ["mistral", "llama2:13b"]
 
 
 def main():
@@ -97,17 +88,26 @@ def main():
     args = argparse.ArgumentParser()
     args.add_argument("-p", "--prompt", help="Prompt to pass to Ollama", required=True)
     args.add_argument("-i", "--input_file", help="Input file", default=None)
+    args.add_argument(
+        "-m",
+        "--model",
+        choices=SUPPORTED_MODELS,
+        help="Model to use",
+        default="mistral",
+    )
     args.add_argument("-o", "--output", help="Output file", default=None)
     args = args.parse_args()
 
     prompt = args.prompt
+    model = args.model
 
     if args.input_file:
         file_content = read_input(args.input_file)
         if file_content is not None:
             prompt = file_content
 
-    response = generate_response(prompt)
+    print("Using model:", model)
+    response = generate_response(prompt, model)
     write_output(args.output, response)
 
 
