@@ -17,7 +17,7 @@ from tqdm import tqdm
 
 cache = {}
 SUPPORTED_MODELS = ["mistral", "llama2:13b"]
-
+DEFAULT_TEMP = 0.0
 
 def cache_key(prompt):
     """Generate a unique key for the cache."""
@@ -59,7 +59,7 @@ def generate_response(prompt, model):
 
     response = ollama.chat(
         model=model,
-        options={"temperature": 0.0},
+        options={"temperature": DEFAULT_TEMP},
         messages=[{"role": "user", "content": prompt}],
     )
     # response = ollama.generate(model=model, prompt=prompt)
@@ -104,6 +104,7 @@ def main():
         default="mistral",
     )
     args.add_argument("-o", "--output", help="Output file", default=None)
+    args.add_argument("-t", "--temperature", help="Temperature", default=DEFAULT_TEMP)
     args = args.parse_args()
 
     # prompt = args.prompt
