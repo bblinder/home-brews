@@ -20,48 +20,53 @@ DEFAULT_TEMP = 0.0
 
 def read_input(input_path):
     """Read the content of the input file, with support for PDFs."""
-    file_extension = os.path.splitext(input_path)[1].lower()
+    try:
+        file_extension = os.path.splitext(input_path)[1].lower()
+        if file_extension == ".pdf":
+            try:
+                import fitz  # PyMuPDF
 
-    if file_extension == ".pdf":
-        try:
-            import fitz  # PyMuPDF
-
-            doc = fitz.open(input_path)
-            text = ""
-            for page in doc:
-                text += page.get_text()
-            return text
-        except ImportError:
-            print("PyMuPDF (fitz) is required to read PDF files.")
-            sys.exit(1)
-    elif os.path.exists(input_path):
-        with open(input_path, "r", encoding="utf-8") as f:
-            return f.read()
-    else:
-        print(f"File {input_path} does not exist")
+                doc = fitz.open(input_path)
+                text = "".join([page.get_text() for page in doc])
+                return text
+            except ImportError as e:
+                raise SystemExit(
+                    "Error: PyMuPDF (fitz) is required to read PDF files. Install it via pip."
+                ) from e
+        elif os.path.exists(input_path):
+            with open(input_path, "r", encoding="utf-8") as f:
+                return f.read()
+        else:
+            raise FileNotFoundError(f"Error: File {input_path} does not exist.")
+    except Exception as e:
+        print(f"Failed to read input from {input_path}: {e}")
         sys.exit(1)
 
 
 def generate_response(prompt, model):
     """Generate a response using the selected model."""
-    response = ollama.chat(
-        model=model,
-        options={"temperature": DEFAULT_TEMP},
-        messages=[{"role": "user", "content": prompt}],
-    )
-    return response["message"]["content"]
+    try:
+        response = ollama.chat(
+            model=model,
+            options={"temperature": DEFAULT_TEMP},
+            messages=[{"role": "user", "content": prompt}],
+        )
+        return response["message"]["content"]
+    except Exception as e:
+        print(f"Failed to generate response: {e}")
+        sys.exit(1)
 
 
 def process_inputs(base_prompt, inputs, model):
     """Combine base prompt with content from inputs to generate responses."""
     responses = []
-    if inputs:  # Check if input files are provided
+    if inputs:
         for input_source in tqdm(inputs, desc="Processing inputs"):
             content = read_input(input_source)
             combined_prompt = f"{base_prompt} {content}".strip()
             response = generate_response(combined_prompt, model)
             responses.append(response)
-    else:  # If no input files, use just the base prompt
+    else:
         response = generate_response(base_prompt, model)
         responses.append(response)
     return responses
@@ -69,13 +74,17 @@ def process_inputs(base_prompt, inputs, model):
 
 def write_output(output_file, responses):
     """Write the responses to the output file or print to stdout."""
-    if output_file:
-        with open(output_file, "w", encoding="utf-8") as f:
+    try:
+        if output_file:
+            with open(output_file, "w", encoding="utf-8") as f:
+                for response in responses:
+                    f.write(response + "\n\n")
+        else:
             for response in responses:
-                f.write(response + "\n\n")
-    else:
-        for response in responses:
-            print(response + "\n")
+                print(response + "\n")
+    except Exception as e:
+        print(f"Failed to write output: {e}")
+        sys.exit(1)
 
 
 def main():
@@ -96,8 +105,12 @@ def main():
     args.add_argument("-t", "--temperature", help="Temperature", default=DEFAULT_TEMP)
     args = args.parse_args()
 
-    responses = process_inputs(args.prompt, args.inputs, args.model)
-    write_output(args.output, responses)
+    try:
+        responses = process_inputs(args.prompt, args.inputs, args.model)
+        write_output(args.output, responses)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
