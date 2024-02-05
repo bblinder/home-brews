@@ -11,24 +11,17 @@ TODO:
 import os
 import sys
 import argparse
-import hashlib
 import ollama
 from tqdm import tqdm
 
-cache = {}
 SUPPORTED_MODELS = ["mistral", "llama2:13b"]
 DEFAULT_TEMP = 0.0
-
-def cache_key(prompt):
-    """Generate a unique key for the cache."""
-    return hashlib.md5(prompt.encode("utf-8")).hexdigest()
 
 
 def read_input(input_path):
     """Read the content of the input file, with support for PDFs."""
     file_extension = os.path.splitext(input_path)[1].lower()
 
-    # Check for PDF files
     if file_extension == ".pdf":
         try:
             import fitz  # PyMuPDF
@@ -41,8 +34,6 @@ def read_input(input_path):
         except ImportError:
             print("PyMuPDF (fitz) is required to read PDF files.")
             sys.exit(1)
-
-    # Check for other file types
     elif os.path.exists(input_path):
         with open(input_path, "r", encoding="utf-8") as f:
             return f.read()
@@ -52,28 +43,26 @@ def read_input(input_path):
 
 
 def generate_response(prompt, model):
-    """Generate a response using the selected model with caching."""
-    key = cache_key(prompt)
-    if key in cache:
-        return cache[key]  # Retrieve from cache
-
+    """Generate a response using the selected model."""
     response = ollama.chat(
         model=model,
         options={"temperature": DEFAULT_TEMP},
         messages=[{"role": "user", "content": prompt}],
     )
-    # response = ollama.generate(model=model, prompt=prompt)
-    cache[key] = response["message"]["content"]  # Cache the response
     return response["message"]["content"]
 
 
 def process_inputs(base_prompt, inputs, model):
     """Combine base prompt with content from inputs to generate responses."""
     responses = []
-    for input_source in tqdm(inputs, desc="Processing inputs"):
-        content = read_input(input_source)
-        combined_prompt = f"{base_prompt} {content}".strip()
-        response = generate_response(combined_prompt, model)
+    if inputs:  # Check if input files are provided
+        for input_source in tqdm(inputs, desc="Processing inputs"):
+            content = read_input(input_source)
+            combined_prompt = f"{base_prompt} {content}".strip()
+            response = generate_response(combined_prompt, model)
+            responses.append(response)
+    else:  # If no input files, use just the base prompt
+        response = generate_response(base_prompt, model)
         responses.append(response)
     return responses
 
@@ -106,13 +95,6 @@ def main():
     args.add_argument("-o", "--output", help="Output file", default=None)
     args.add_argument("-t", "--temperature", help="Temperature", default=DEFAULT_TEMP)
     args = args.parse_args()
-
-    # prompt = args.prompt
-    # model = args.model
-
-    if not args.inputs:
-        print("No input files provided")
-        sys.exit(1)
 
     responses = process_inputs(args.prompt, args.inputs, args.model)
     write_output(args.output, responses)
