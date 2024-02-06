@@ -115,3 +115,13 @@ def generate_qr_code(data):
     output = f"{name_the_output_file(data)}.png"
 
     img.save(output)
+
+def restore_punctuation(text):
+    """Restore punctuation to a string/transcript"""
+    try:
+        from deepmultilingualpunctuation import PunctuationModel
+    except ImportError:
+        print("deepmultilingualpunctuation not installed")
+        sys.exit(1)
+    model = PunctuationModel()
+    return model.restore_punctuation(text)
