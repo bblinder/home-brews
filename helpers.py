@@ -38,6 +38,7 @@ def check_valid_url(url):
 
 def spongecase(term):
     import random
+
     output = ""
     for char in term:
         if random.randint(0, 1) == 1:
@@ -115,6 +116,7 @@ def generate_qr_code(data):
     output = f"{name_the_output_file(data)}.png"
 
     img.save(output)
+
 
 def restore_punctuation(text):
     """Restore punctuation to a string/transcript"""
