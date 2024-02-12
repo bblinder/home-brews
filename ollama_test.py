@@ -10,7 +10,10 @@ TODO:
 
 import os
 import sys
+import platform
 import argparse
+import subprocess
+from time import sleep
 import ollama
 from tqdm import tqdm
 
@@ -87,6 +90,20 @@ def write_output(output_file, responses):
         sys.exit(1)
 
 
+def is_application_open(app_name):
+    """Check if the dependent app is running."""
+    try:
+        # Windows
+        if platform.system() == "Windows":
+            output = subprocess.check_output(["tasklist"], text=True)
+        else:  # else assume Unix
+            output = subprocess.check_output(["ps", "aux"], text=True)
+        return any(app_name in line for line in output.splitlines())
+    except subprocess.CalledProcessError as e:
+        print(f"::: Error checking app status: {e}")
+        sys.exit(1)
+
+
 def main():
     """Making sense of the args."""
     args = argparse.ArgumentParser()
@@ -114,4 +131,11 @@ def main():
 
 
 if __name__ == "__main__":
+    app_name = "Ollama"
+    if not is_application_open(app_name):
+        print(f"::: {app_name} not running")
+        if platform.system() == "Darwin":
+            print(f"::: Opening {app_name}...")
+            subprocess.run(["open", "-a", app_name], check=True)
+            sleep(2)  # Giving it a little time to start
     main()
