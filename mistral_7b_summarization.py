@@ -16,6 +16,7 @@ import sys
 import os
 import argparse
 import re
+import random
 import shlex
 import subprocess
 from urllib.parse import quote
@@ -30,6 +31,16 @@ DEFAULT_SUMMARIZATION_PROMPT = "[INST]Summarize the following text:"
 CHAR_COUNT = 6700  # We don't want to exceed Mistral's 7,000 token context size.
 TEMPERATURE = 0  # keeping it nice and deterministic.
 NUM_TOKENS = 500
+
+USER_AGENTS = [
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36",
+]
+
+
+def get_user_agent():
+    """Get a random user agent from the list."""
+    return random.choice(USER_AGENTS)
 
 
 def is_valid_url(url):
@@ -51,7 +62,7 @@ def is_valid_url(url):
 def get_text_from_url(url):
     """Scrape and process text from URL. Use proxy if access is forbidden."""
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36"
+        "User-Agent": get_user_agent(),
     }
 
     def fetch_url(fetch_url):
