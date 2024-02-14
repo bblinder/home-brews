@@ -2,9 +2,8 @@
 
 """
 Derived from Justine Tunney's and Mozilla's llamafile project. See: https://justine.lol/oneliners/
-This script is used to summarize the text from a given URL or text file
+This script is used to summarize the text from a given URL or file
 using the mistral-7b llamafile: https://github.com/Mozilla-Ocho/llamafile
-
 
 TODO:
 - [ ] Add support for multiple URLs
@@ -138,10 +137,29 @@ def fallback_summarize_text(
         return ""
 
 
-def read_text_from_file(file_path):
-    """Read and return text from a file."""
-    with open(file_path, "r", encoding="utf-8") as file:
-        return file.read()
+def read_input(input_path):
+    """Read the content of the input file, with support for PDFs."""
+    try:
+        file_extension = os.path.splitext(input_path)[1].lower()
+        if file_extension == ".pdf":
+            try:
+                import fitz  # PyMuPDF
+
+                doc = fitz.open(input_path)
+                text = "".join([page.get_text() for page in doc])
+                return text
+            except ImportError as e:
+                raise SystemExit(
+                    "Error: PyMuPDF (fitz) is required to read PDF files. Install it via pip."
+                ) from e
+        elif os.path.exists(input_path):
+            with open(input_path, "r", encoding="utf-8") as f:
+                return f.read()
+        else:
+            raise FileNotFoundError(f"Error: File {input_path} does not exist.")
+    except Exception as e:
+        print(f"Failed to read input from {input_path}: {e}")
+        sys.exit(1)
 
 
 def is_file_path(input_str):
@@ -179,7 +197,7 @@ def main():
             bar.text("-> Processing input...")
 
             if is_file_path(input_str):
-                text = read_text_from_file(input_str)
+                text = read_input(input_str)
             elif is_valid_url(input_str):
                 text = get_text_from_url(input_str)
             else:
