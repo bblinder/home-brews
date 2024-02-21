@@ -105,7 +105,16 @@ def is_application_open(app_name):
 
 
 def main():
-    """Making sense of the args."""
+    """Main function."""
+    try:
+        responses = process_inputs(args.prompt, args.inputs, args.model)
+        write_output(args.output, responses)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
     args = argparse.ArgumentParser()
     args.add_argument("-p", "--prompt", help="Base prompt", required=True)
     args.add_argument(
@@ -122,15 +131,6 @@ def main():
     args.add_argument("-t", "--temperature", help="Temperature", default=DEFAULT_TEMP)
     args = args.parse_args()
 
-    try:
-        responses = process_inputs(args.prompt, args.inputs, args.model)
-        write_output(args.output, responses)
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        sys.exit(1)
-
-
-if __name__ == "__main__":
     app_name = "Ollama"
     if not is_application_open(app_name):
         print(f"::: {app_name} not running")
