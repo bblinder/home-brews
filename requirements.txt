@@ -13,3 +13,5 @@ pyperclip
 cachetools
 alive-progress
 pytz
+ollama
+tqdm
