@@ -5,18 +5,72 @@ A general purpose script for updating various things on my system.
 Mainly a pythonic wrapper around various shell commands.
 """
 
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+
+def bootstrap_venv():
+    """Bootstraps a python virtual environment (venv) for the script to run in."""
+    SCRIPT_DIR = os.path.abspath(os.path.dirname(__file__))
+    VENV_DIR = os.path.join(SCRIPT_DIR, "venv")
+    IS_WINDOWS = sys.platform.startswith("win")
+    VENV_BIN_DIR = os.path.join(VENV_DIR, "Scripts" if IS_WINDOWS else "bin")
+    VENV_ACTIVATE_BASH = os.path.join(VENV_BIN_DIR, "activate")
+    REQUIREMENTS_PATH = os.path.join(SCRIPT_DIR, "requirements.txt")
+    PYTHON_EXECUTABLE = os.path.join(
+        VENV_BIN_DIR, "python3.exe" if IS_WINDOWS else "python3"
+    )
+
+    if not os.path.exists(VENV_DIR):  # No venv found, creating one
+        print("No virtual environment found. Setting one up...")
+        subprocess.check_call([sys.executable, "-m", "venv", VENV_DIR])
+        print(f"Virtual environment created at {VENV_DIR}")
+
+    if (
+        "VIRTUAL_ENV" not in os.environ
+    ):  # Venv is not active, activate and re-run the script
+        if IS_WINDOWS:
+            command = (
+                f'"{VENV_ACTIVATE_BASH}" && "{PYTHON_EXECUTABLE}" "{__file__}" '
+                + " ".join(sys.argv[1:])
+            )
+            subprocess.check_call(command, shell=True)
+        else:
+            command = f"source \"{VENV_ACTIVATE_BASH}\" && \"{PYTHON_EXECUTABLE}\" \"{__file__}\" {' '.join(map(lambda x: '\"' + x + '\"', sys.argv[1:]))}"
+            os.execle("/bin/bash", "bash", "-c", command, os.environ)
+        sys.exit()
+    else:  # Venv is active, ensure dependencies are installed
+        if os.path.exists(REQUIREMENTS_PATH):
+            print("Installing dependencies from requirements.txt...")
+            subprocess.check_call(
+                [
+                    PYTHON_EXECUTABLE,
+                    "-m",
+                    "pip",
+                    "install",
+                    "-r",
+                    REQUIREMENTS_PATH,
+                    "--upgrade",
+                ],
+                cwd=SCRIPT_DIR,
+            )
+        else:
+            print("requirements.txt not found, skipping dependency installation.")
+
+
+bootstrap_venv()
+
+
 import argparse
 import asyncio
 import getpass
 import logging
-import os
 import random
 import re
 import shutil
-import subprocess
-import sys
 from functools import partial
-from pathlib import Path
 
 from rich.console import Console
 from rich.table import Table
