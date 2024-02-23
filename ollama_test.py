@@ -9,9 +9,7 @@ TODO:
 """
 
 # bootstrapping the virtual environment
-from venv_bootstrap import bootstrap_venv
-
-bootstrap_venv()
+from helpers import bootstrap_venv
 
 import os
 import sys
