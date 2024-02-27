@@ -65,7 +65,9 @@ def bootstrap_venv():
             print("requirements.txt not found, skipping dependency installation.")
 
 
-bootstrap_venv()
+if sys.version_info >= (3, 12):
+    bootstrap_venv()
+    os.system("cls" if os.name == "nt" else "clear")  # Clear the terminal screen
 
 import argparse
 import re
