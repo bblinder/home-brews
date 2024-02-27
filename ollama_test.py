@@ -8,9 +8,6 @@ TODO:
 - [] Replace print statements with logging
 """
 
-# bootstrapping the virtual environment
-from helpers import bootstrap_venv
-
 import os
 import sys
 import platform

@@ -11,11 +11,6 @@ TODO:
 - [ ] Add support for chunking based on token count
 """
 
-# bootstrapping the virtual environment
-from venv_bootstrap import bootstrap_venv
-
-bootstrap_venv()
-
 import sys
 import os
 import argparse
