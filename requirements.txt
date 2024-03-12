@@ -15,3 +15,5 @@ alive-progress
 pytz
 ollama
 tqdm
+fitz
+
