@@ -192,7 +192,6 @@ brew_array = [
     "rig",
     "fortune",
     "httrack",
-    "akamai",
     "bat",
     "prettyping",
     "magic-wormhole",
@@ -213,6 +212,7 @@ brew_array = [
     "rga",
     "mas",
     "jo",
+    "monolith",
 ]
 
 tap_array = [
