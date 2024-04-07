@@ -2,6 +2,11 @@
 
 """
 This script updates a Google Sheet with restaurant data from Google Maps.
+
+Future TODOs:
+- Add support for multiple sheets in the workbook
+- Add Flask web interface for user to input restaurant data
+- Add Flask endpoint to trigger the script
 """
 
 import gspread
