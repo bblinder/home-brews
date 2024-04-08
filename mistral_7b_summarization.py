@@ -140,7 +140,9 @@ def get_text_from_url(url):
 
     # If direct access is forbidden (403), try using the proxy
     if text is None:
+        print("Trying to access URL via proxy...")
         proxy_url = f"https://1ft.io/{url}"
+        print(f"Proxy URL: {proxy_url}")  # Debugging print
         text = fetch_url(proxy_url)
 
     return text
