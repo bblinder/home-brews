@@ -2,75 +2,100 @@
 
 """
 This script updates a Google Sheet with restaurant data from Google Maps.
-
-Future TODOs:
-- Add support for multiple sheets in the workbook
-- Add Flask web interface for user to input restaurant data
-- Add Flask endpoint to trigger the script
+It can run directly for updates or through a Flask interface for web interaction.
 """
 
-import gspread
-import googlemaps
-from oauth2client.service_account import ServiceAccountCredentials
 import os
+import argparse
 from datetime import datetime
+
+from flask import Flask, request, jsonify
+import googlemaps
+from google.oauth2.service_account import Credentials
+import gspread
 from dotenv import load_dotenv
-from tqdm import tqdm  # Import tqdm for progress bar support
+from tqdm import tqdm
 
-def load_env_variables():
+app = Flask(__name__)
+
+
+def load_environment_variables():
     """Load environment variables from a .env file."""
-    load_dotenv()  # This loads the environment variables from a .env file.
-    google_maps_api_key = os.getenv('GOOGLE_MAPS_API_KEY')
-    google_sheets_credential_path = os.path.expanduser(os.getenv('GOOGLE_SHEETS_CREDENTIAL_PATH'))
-    return google_maps_api_key, google_sheets_credential_path
+    load_dotenv()
+    return {
+        'google_maps_api_key': os.getenv('GOOGLE_MAPS_API_KEY'),
+        'google_sheets_credential_path': os.path.expanduser(os.getenv('GOOGLE_SHEETS_CREDENTIAL_PATH'))
+    }
 
-def init_clients(google_maps_api_key, google_sheets_credential_path):
+
+def initialize_clients(environment_variables):
     """Initialize and return Google Maps and Sheets clients."""
-    gmaps = googlemaps.Client(key=google_maps_api_key)
+    gmaps = googlemaps.Client(key=environment_variables['google_maps_api_key'])
     scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-    credentials = ServiceAccountCredentials.from_json_keyfile_name(google_sheets_credential_path, scope)
+    credentials = Credentials.from_service_account_file(
+        environment_variables['google_sheets_credential_path'], scopes=scope)
     client = gspread.authorize(credentials)
     return gmaps, client
 
+
 def update_google_sheet(sheet, gmaps):
     """Update Google Sheet with restaurant data from Google Maps."""
-    data = sheet.get_all_values()
     headers = ["Restaurant Name", "Address", "Google Maps URL", "Date Added", "Notes"]
+    data = sheet.get_all_values()
     if data[0] != headers:
         sheet.insert_row(headers, 1)
         data.insert(0, headers)
 
-    # Initialize progress bar with tqdm
-    progress = tqdm(enumerate(data[1:], start=2), total=len(data)-1, desc="Updating Restaurants Sheet")
+    row_indices = [index for index, row in enumerate(data) if not row[1] or not row[2]]
+    progress = tqdm(row_indices, desc="Updating Missing Data")
 
-    for i, row in progress:
-        restaurant, address, maps_url, date_added, _ = (row + [None]*5)[:5]
-        if not address or not maps_url:
-            place_result = gmaps.places(query=restaurant)
-            if place_result['results']:
-                first_result = place_result['results'][0]
-                new_address = first_result['formatted_address']
-                place_id = first_result['place_id']
-                new_google_maps_url = f"https://www.google.com/maps/place/?q=place_id:{place_id}"
-                if not address:
-                    sheet.update_cell(i, 2, new_address)
-                if not maps_url:
-                    sheet.update_cell(i, 3, new_google_maps_url)
-                if not date_added:
-                    sheet.update_cell(i, 4, datetime.now().strftime("%Y-%m-%d"))
-            else:
-                if not address:
-                    sheet.update_cell(i, 2, "No address found")
-                if not maps_url:
-                    sheet.update_cell(i, 3, "No Google Maps URL found")
+    for i in progress:
+        try:
+            restaurant, address, maps_url, date_added, _ = (data[i] + [None]*5)[:5]
+            if not address or not maps_url:
+                place_result = gmaps.places(query=restaurant)
+                first_result = place_result['results'][0] if place_result['results'] else None
+                if first_result:
+                    new_address = first_result.get('formatted_address', 'No address found')
+                    place_id = first_result.get('place_id', None)
+                    new_google_maps_url = f"https://www.google.com/maps/place/?q=place_id:{place_id}" \
+                        if place_id else "No Google Maps URL found"
+                    sheet.update(
+                        range_name=f'B{i+1}:D{i+1}',
+                        values=[[new_address, new_google_maps_url,
+                                 datetime.now().strftime("%Y-%m-%d") if not date_added else date_added]]
+                    )
+        except Exception as e:
+            print(f"Failed to update row {i}: {str(e)}")
 
-def main():
-    """Handling our workflow"""
-    google_maps_api_key, google_sheets_credential_path = load_env_variables()
-    gmaps, client = init_clients(google_maps_api_key, google_sheets_credential_path)
-    sheet = client.open('Maine Restaurants').sheet1
+
+@app.route('/update', methods=['POST'])
+def trigger_update():
+    """Endpoint to trigger sheet update via POST request."""
+    environment_variables = load_environment_variables()
+    gmaps, client = initialize_clients(environment_variables)
+    sheet_name = request.json.get('sheet_name', 'Maine Restaurants')
+    sheet = client.open(sheet_name).sheet1
     update_google_sheet(sheet, gmaps)
-    print("\nDone Updating Restaurants Sheet!")
+    return jsonify({"message": "Sheet updated successfully"}), 200
+
+
+def main(sheet_name='Maine Restaurants'):
+    """Main function to run updates directly from command line."""
+    environment_variables = load_environment_variables()
+    gmaps, client = initialize_clients(environment_variables)
+    sheet = client.open(sheet_name).sheet1
+    update_google_sheet(sheet, gmaps)
+    print("Done Updating Restaurants Sheet!")
+
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description='Update Google Sheet with restaurant data.')
+    parser.add_argument('--web', action='store_true', help='Run as a web app with Flask interface')
+    parser.add_argument('--sheet', default='Maine Restaurants', help='Specify the Google Sheet name to update')
+    args = parser.parse_args()
+
+    if args.web:
+        app.run(debug=True)
+    else:
+        main(args.sheet)
