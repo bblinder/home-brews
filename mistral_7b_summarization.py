@@ -151,7 +151,7 @@ def get_text_from_url(url):
 def summarize_text(
     text, llamafile_path, summarization_prompt=DEFAULT_SUMMARIZATION_PROMPT
 ):
-    """Summarize the text using llamafile."""
+    """Summarize the text using llamafile and trim output to content after [/INST]."""
     escaped_text = shlex.quote(f"{summarization_prompt} {text} [/INST]")
     cmd = f"echo {escaped_text} | {llamafile_path} -c {CHAR_COUNT} -f /dev/stdin --temp {TEMPERATURE} -n {NUM_TOKENS} --silent-prompt"
     try:
@@ -163,7 +163,10 @@ def summarize_text(
             text=True,
             check=True,
         )
-        return result.stdout
+        output = result.stdout
+        # Extract content after [/INST]
+        output_after_inst = output.split("[/INST]", 1)[1] if "[/INST]" in output else ""
+        return output_after_inst.strip()
     except subprocess.CalledProcessError as e:
         print(f"Error in llamafile execution: {e}")
         return ""
