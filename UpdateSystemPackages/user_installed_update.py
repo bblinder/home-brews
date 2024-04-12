@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-A general purpose script for updating various things on my system.
+A general purpose script for updating various things on a system.
 Mainly a pythonic wrapper around various shell commands.
 """
 
@@ -12,56 +12,35 @@ from pathlib import Path
 
 
 def bootstrap_venv():
-    """Bootstraps a python virtual environment (venv) for the script to run in."""
-    SCRIPT_DIR = os.path.abspath(os.path.dirname(__file__))
-    VENV_DIR = os.path.join(SCRIPT_DIR, "venv")
-    IS_WINDOWS = sys.platform.startswith("win")
-    VENV_BIN_DIR = os.path.join(VENV_DIR, "Scripts" if IS_WINDOWS else "bin")
-    VENV_ACTIVATE_BASH = os.path.join(VENV_BIN_DIR, "activate")
-    REQUIREMENTS_PATH = os.path.join(SCRIPT_DIR, "requirements.txt")
-    PYTHON_EXECUTABLE = os.path.join(
-        VENV_BIN_DIR, "python3.exe" if IS_WINDOWS else "python3"
-    )
+    script_dir = Path(__file__).resolve().parent
+    venv_dir = script_dir / "venv"
+    requirements_path = script_dir / "requirements.txt"
 
-    if not os.path.exists(VENV_DIR):  # No venv found, creating one
+    if not venv_dir.exists():
         print("No virtual environment found. Setting one up...")
-        subprocess.check_call([sys.executable, "-m", "venv", VENV_DIR])
-        print(f"Virtual environment created at {VENV_DIR}")
+        subprocess.run([sys.executable, "-m", "venv", str(venv_dir)], check=True)
+        print(f"Virtual environment created at {venv_dir}")
 
-    if (
-        "VIRTUAL_ENV" not in os.environ
-    ):  # Venv is not active, activate and re-run the script
-        if IS_WINDOWS:
-            command = (
-                f'"{VENV_ACTIVATE_BASH}" && "{PYTHON_EXECUTABLE}" "{__file__}" '
-                + " ".join(sys.argv[1:])
-            )
-            subprocess.check_call(command, shell=True)
+    if not Path(sys.prefix).samefile(venv_dir):
+        if sys.platform == "win32":
+            activate_script = venv_dir / "Scripts" / "activate.bat"
         else:
-            command = f"source \"{VENV_ACTIVATE_BASH}\" && \"{PYTHON_EXECUTABLE}\" \"{__file__}\" {' '.join(map(lambda x: '\"' + x + '\"', sys.argv[1:]))}"
-            os.execle("/bin/bash", "bash", "-c", command, os.environ)
-        sys.exit()
-    else:  # Venv is active, ensure dependencies are installed
-        if os.path.exists(REQUIREMENTS_PATH):
-            print("Installing dependencies from requirements.txt...")
-            subprocess.check_call(
-                [
-                    PYTHON_EXECUTABLE,
-                    "-m",
-                    "pip",
-                    "install",
-                    "-r",
-                    REQUIREMENTS_PATH,
-                    "--upgrade",
-                ],
-                cwd=SCRIPT_DIR,
-            )
-        else:
-            print("requirements.txt not found, skipping dependency installation.")
+            activate_script = venv_dir / "bin" / "activate"
+
+        print(f"Activating virtual environment at {venv_dir}")
+        subprocess.run(f"source {activate_script}", shell=True, check=True)
+
+    if requirements_path.exists():
+        print("Installing dependencies from requirements.txt...")
+        subprocess.run(
+            [sys.executable, "-m", "pip", "install", "-r", str(requirements_path)],
+            check=True,
+        )
+    else:
+        print("requirements.txt not found, skipping dependency installation.")
 
 
 bootstrap_venv()
-
 
 import argparse
 import asyncio
@@ -71,10 +50,10 @@ import random
 import re
 import shutil
 from functools import partial
+from typing import List
 
 from rich.console import Console
 from rich.table import Table
-
 from simple_colors import blue, green, red, yellow
 
 # Constants
@@ -85,7 +64,8 @@ OS = sys.platform
 console = Console()
 
 
-def render_table(status_dict):
+def render_table(status_dict: dict) -> None:
+    """Render a table with the status of each task."""
     table = Table("Asynchronous Package Manager")
     table.add_column("Task", style="cyan", no_wrap=True)
 
@@ -120,7 +100,7 @@ class PasswordManager:
     def __exit__(self, exc_type, exc_value, traceback):
         self.password = None
 
-    def get_password(self, prompt):
+    def get_password(self, prompt: str) -> str:
         if not self.password:
             self.password = getpass.getpass(prompt)
         return self.password
@@ -130,64 +110,72 @@ class Updater:
     def __init__(self, github_dir: Path):
         self.github_dir = github_dir
 
+    def run_brew_doctor(self) -> None:
+        print(yellow("::: Running random brew doctor"))
+        subprocess.run(["brew", "doctor"], check=False)
+
+    def update_homebrew(self) -> None:
+        print(green("::: Updating Homebrew"))
+        subprocess.run(["brew", "update"], check=False)
+        subprocess.run(["brew", "upgrade"], check=False)
+        subprocess.run(["brew", "upgrade", "--cask", "--greedy"], check=False)
+
+    def cleanup_homebrew(self) -> None:
+        print(green("::: Running brew cleanup"))
+        subprocess.run(["brew", "cleanup"], check=False)
+        subprocess.run(["brew", "cleanup", "-s", "--prune=all"], check=False)
+
     def homebrew_upgrade(self, args: argparse.Namespace) -> None:
         """Updating homebrew packages."""
         if OS in ["linux", "darwin"] and shutil.which("brew"):
             if random.randint(0, 3) == 1:
-                print(yellow("::: Running random brew doctor"))
-                subprocess.run(["brew", "doctor"], check=False)
+                self.run_brew_doctor()
 
-            print(green("::: Updating Homebrew"))
-            subprocess.run(["brew", "update"], check=False)
-            subprocess.run(["brew", "upgrade"], check=False)
-            subprocess.run(["brew", "upgrade", "--cask", "--greedy"], check=False)
+            self.update_homebrew()
 
             if (
                 args.no_input
                 or input(blue("Cleanup Homebrew? [y/N] --> ", ["italic"])).lower()
                 == "y"
             ):
-                print(green("::: Running brew cleanup"))
-                subprocess.run(["brew", "cleanup"], check=False)
-                subprocess.run(["brew", "cleanup", "-s", "--prune=all"], check=False)
+                self.cleanup_homebrew()
+
+    def pip_upgrade_new(self) -> None:
+        subprocess.run(
+            ["python3", "-m", "pip_review", "--auto", "--continue-on-fail"],
+            check=False,
+        )
+
+    def pip_upgrade_old(self) -> None:
+        pip_packages = []
+        for line in (
+            subprocess.run(
+                ["python3", "-m", "pip", "list", "--outdated"],
+                capture_output=True,
+                check=False,
+                text=True,
+            )
+            .stdout.strip()
+            .split("\n")
+        ):
+            # output only the pip package names and not the versions
+            if re.search(r"\s\d+\.", line):
+                pip_packages.append(line.split(" ")[0])
+                subprocess.run(
+                    ["python3", "-m", "pip", "install", "--upgrade"],
+                    check=False + pip_packages,
+                )
 
     def python_upgrade(self, args: argparse.Namespace) -> None:
         """Providing a couple of ways to update python/pip packages.
         The new method uses the pip-review tool, which is an abstraction around pip.
         The old method uses pip directly."""
-
-        def pip_upgrade_new() -> None:
-            subprocess.run(
-                ["python3", "-m", "pip_review", "--auto", "--continue-on-fail"],
-                check=False,
-            )
-
-        def pip_upgrade_old() -> None:
-            pip_packages = []
-            for line in (
-                subprocess.run(
-                    ["python3", "-m", "pip", "list", "--outdated"],
-                    capture_output=True,
-                    check=False,
-                    text=True,
-                )
-                .stdout.strip()
-                .split("\n")
-            ):
-                # output only the pip package names and not the versions
-                if re.search(r"\s\d+\.", line):
-                    pip_packages.append(line.split(" ")[0])
-                    subprocess.run(
-                        ["python3", "-m", "pip", "install", "--upgrade"],
-                        check=False + pip_packages,
-                    )
-
         try:
-            pip_upgrade_new()
+            self.pip_upgrade_new()
         except Exception as pip_failure:
             logging.warning(pip_failure)
             print("::: trying the old method...")
-            pip_upgrade_old()
+            self.pip_upgrade_old()
 
     def apt_upgrade(self, password: str) -> None:
         """Updating apt packages for ubuntu/debian distros."""
@@ -221,57 +209,58 @@ class Updater:
             subprocess.run(["mas", "outdated"], check=False)
             subprocess.run(["mas", "upgrade"], check=False)
 
+    def update_git_repo(self, repo: Path) -> None:
+        print(blue(f"::: Updating {repo.name}"))
+        result = subprocess.run(
+            ["git", "remote", "update"],
+            cwd=repo,
+            check=False,
+            text=True,
+            capture_output=True,
+        )
+        if result.returncode == 0:
+            print(green(f"  [Remote Update] Success"))
+        else:
+            print(red(f"  [Remote Update] Error: {result.stderr.strip()}"))
+        # Pull and rebase
+        result = subprocess.run(
+            ["git", "pull", "--rebase"],
+            cwd=repo,
+            check=False,
+            text=True,
+            capture_output=True,
+        )
+        if result.returncode == 0:
+            print(green(f"  [Pull & Rebase] Success"))
+        else:
+            print(red(f"  [Pull & Rebase] Error: {result.stderr.strip()}"))
+        # Git garbage collection
+        result = subprocess.run(
+            ["git", "gc", "--auto"],
+            cwd=repo,
+            check=False,
+            text=True,
+            capture_output=True,
+        )
+        if result.returncode == 0:
+            print(green(f"  [Garbage Collection] Success"))
+        else:
+            print(red(f"  [Garbage Collection] Error: {result.stderr.strip()}"))
+
+    def is_git_repo(self, repo: Path) -> bool:
+        return repo.is_dir() and (repo / ".git").exists()
+
     def bulk_git_update(self) -> None:
         """Updating all git repos in a directory."""
-        if GITHUB_DIR.exists():
-            print(green("::: Updating git repos in", GITHUB_DIR))
-            for repo in GITHUB_DIR.iterdir():
-                if repo.is_dir() and (repo / ".git").exists():
-                    print(blue(f"::: Updating {repo.name}"))
-                    result = subprocess.run(
-                        ["git", "remote", "update"],
-                        cwd=repo,
-                        check=False,
-                        text=True,
-                        capture_output=True,
-                    )
-                    if result.returncode == 0:
-                        print(green(f"  [Remote Update] Success"))
-                    else:
-                        print(red(f"  [Remote Update] Error: {result.stderr.strip()}"))
-                    # Pull and rebase
-                    result = subprocess.run(
-                        ["git", "pull", "--rebase"],
-                        cwd=repo,
-                        check=False,
-                        text=True,
-                        capture_output=True,
-                    )
-                    if result.returncode == 0:
-                        print(green(f"  [Pull & Rebase] Success"))
-                    else:
-                        print(red(f"  [Pull & Rebase] Error: {result.stderr.strip()}"))
-                    # Git garbage collection
-                    result = subprocess.run(
-                        ["git", "gc", "--auto"],
-                        cwd=repo,
-                        check=False,
-                        text=True,
-                        capture_output=True,
-                    )
-                    if result.returncode == 0:
-                        print(green(f"  [Garbage Collection] Success"))
-                    else:
-                        print(
-                            red(
-                                f"  [Garbage Collection] Error: {result.stderr.strip()}"
-                            )
-                        )
-
+        if self.github_dir.exists():
+            print(green("::: Updating git repos in", self.github_dir))
+            for repo in self.github_dir.iterdir():
+                if self.is_git_repo(repo):
+                    self.update_git_repo(repo)
                 else:
                     print(yellow(f"::: {repo.name} is not a git repo"))
         else:
-            print(red(f"::: {GITHUB_DIR} does not exist, skipping git updates"))
+            print(red(f"::: {self.github_dir} does not exist, skipping git updates"))
 
     def handle_cmd_update(self, cmd: str, args: argparse.Namespace) -> None:
         """Handling the update for each respective command."""
@@ -297,33 +286,21 @@ class Updater:
                     print(f"::: Not updating {cmd}")
 
     def is_sudo_correct(self, password: str) -> bool:
-        sudo_command = ["sudo", "-S", "echo", "correct"]
-        process = subprocess.Popen(
-            sudo_command,
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            env=os.environ.copy(),
-        )
-        stdout, stderr = process.communicate(password + "\n")
-        return "correct" in stdout
+        try:
+            subprocess.run(["sudo", "-v"], input=password.encode(), check=True)
+            return True
+        except subprocess.CalledProcessError:
+            return False
 
-    def run_with_sudo(self, command: list[str], password: str) -> None:
-        sudo_command = ["sudo", "-S"] + command
-        process = subprocess.Popen(
-            sudo_command,
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            env=os.environ.copy(),
-        )
-        stdout, stderr = process.communicate(password + "\n")
-        if stderr:
-            print(stderr)
+    def run_with_sudo(self, command: List[str], password: str) -> None:
+        try:
+            subprocess.run(
+                ["sudo", "-S"] + command, input=password.encode(), check=True
+            )
+        except subprocess.CalledProcessError as e:
+            print(red(f"Error running command: {e}"))
 
-    async def run_with_sudo_async(self, command: list[str], password: str) -> None:
+    async def run_with_sudo_async(self, command: List[str], password: str) -> None:
         loop = asyncio.get_event_loop()
         await loop.run_in_executor(None, partial(self.run_with_sudo, command, password))
 
@@ -383,7 +360,7 @@ class Updater:
         status_dict["Apple Updates"] = ["Done"]
         render_table(status_dict)
 
-    async def run_async(self, command, check=False):
+    async def run_async(self, command: List[str], check: bool = False) -> str:
         process = await asyncio.create_subprocess_exec(
             *command, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
         )
@@ -409,6 +386,15 @@ class Updater:
         return parser.parse_args()
 
 
+async def check_apple_updates(updater: Updater, args: argparse.Namespace) -> None:
+    if OS == "darwin" and not args.no_input:
+        print(green("::: Checking for Apple updates"))
+        await updater.run_async(["softwareupdate", "--list"], check=False)
+        print(green("::: Checking for App Store updates"))
+        await updater.run_async(["mas", "outdated"], check=False)
+        await updater.run_async(["mas", "upgrade"], check=False)
+
+
 async def main() -> None:
     github_dir = GITHUB_DIR
     updater = Updater(github_dir)
@@ -417,9 +403,9 @@ async def main() -> None:
     with PasswordManager() as password_manager:
         if args.no_input:
             password = password_manager.get_password("Enter sudo password: ")
-            if not updater.is_sudo_correct(password):
-                print(red("::: Incorrect sudo password. Exiting..."))
-                sys.exit(1)
+            while not updater.is_sudo_correct(password):
+                print(red("::: Incorrect sudo password. Please try again."))
+                password = password_manager.get_password("Enter sudo password: ")
 
     try:
         cmds = ["brew", "flatpak", "gem", "git"]
@@ -431,11 +417,12 @@ async def main() -> None:
                 updater.flatpak_upgrade_async(),
                 updater.ruby_update_async(password),
                 updater.bulk_git_update_async(),
-                updater.apple_upgrade_async(),
             ]
 
             if OS == "linux":
                 tasks.append(updater.apt_upgrade_async(password))
+            elif OS == "darwin":
+                tasks.append(updater.apple_upgrade_async())
 
             tasks.append(updater.python_upgrade_async(args))
 
@@ -454,18 +441,18 @@ async def main() -> None:
                         password = password_manager.get_password(
                             "Enter sudo password: "
                         )
-
-                        if not updater.is_sudo_correct(password):
-                            print(red("Incorrect sudo password. Exiting..."))
-                            sys.exit(1)
-                    # asyncio.run(updater.apt_upgrade_async(password))
+                        while not updater.is_sudo_correct(password):
+                            print(red("Incorrect sudo password. Please try again."))
+                            password = password_manager.get_password(
+                                "Enter sudo password: "
+                            )
                     await updater.apt_upgrade_async(password)
 
             if input(blue("Upgrade python? [y/N] --> ", ["italic"])).lower() == "y":
                 print(green("::: Updating python packages"))
                 await updater.python_upgrade_async(args)
 
-            if OS == "darwin" and not args.no_input:
+            if OS == "darwin":
                 if (
                     input(
                         blue("Check for Apple updates? [y/N] --> ", ["italic"])
