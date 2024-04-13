@@ -213,6 +213,7 @@ brew_array = [
     "mas",
     "jo",
     "monolith",
+    "localsend",
 ]
 
 tap_array = [
@@ -224,6 +225,7 @@ tap_array = [
     "homebrew/core",
     "clangen/musikcube",
     "apparition47/tap",
+    "localsend/localsend",
 ]
 
 cask_array = [
