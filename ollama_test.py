@@ -17,7 +17,7 @@ from time import sleep
 import ollama
 from tqdm import tqdm
 
-SUPPORTED_MODELS = ["mistral", "llama2:13b", "llava:v1.6"]
+SUPPORTED_MODELS = ["mistral", "llama2:13b", "llama3:8b", "llava:v1.6"]
 DEFAULT_TEMP = 0.0
 
 
