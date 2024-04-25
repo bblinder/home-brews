@@ -137,5 +137,5 @@ if __name__ == "__main__":
         if platform.system() == "Darwin":
             print(f"::: Opening {app_name}...")
             subprocess.run(["open", "-a", app_name], check=True)
-            sleep(4)  # Giving it a little time to start
+            sleep(5)  # Giving it a little time to start
     main()
