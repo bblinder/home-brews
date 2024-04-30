@@ -2,3 +2,4 @@ simple-colors
 pip-review
 pexpect
 rich
+filelock

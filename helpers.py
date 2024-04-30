@@ -129,59 +129,39 @@ def restore_punctuation(text):
     return model.restore_punctuation(text)
 
 
-def bootstrap_venv(venv_dir="venv", requirements_file="requirements.txt"):
+def bootstrap_venv():
     """Bootstraps a Python virtual environment.
 
     Args:
         venv_dir (str): The directory of the virtual environment. Defaults to 'venv'.
         requirements_file (str): Path to a requirements.txt file. Defaults to 'requirements.txt'.
+
+    Requires:
+        - Pathlib
     """
-    import subprocess
-    
-    SCRIPT_DIR = os.path.abspath(os.path.dirname(__file__))
-    VENV_DIR = os.path.join(SCRIPT_DIR, venv_dir)
-    IS_WINDOWS = sys.platform.startswith("win")
-    VENV_BIN_DIR = os.path.join(VENV_DIR, "Scripts" if IS_WINDOWS else "bin")
-    VENV_ACTIVATE_BASH = os.path.join(VENV_BIN_DIR, "activate")
-    REQUIREMENTS_PATH = os.path.join(SCRIPT_DIR, requirements_file)
-    PYTHON_EXECUTABLE = os.path.join(
-        VENV_BIN_DIR, "python3.exe" if IS_WINDOWS else "python3"
-    )
+    script_dir = Path(__file__).resolve().parent
+    venv_dir = script_dir / "venv"
+    venv_python = venv_dir / "bin" / "python"
 
-    if not os.path.exists(VENV_DIR):
+    if not venv_dir.exists():
         print("No virtual environment found. Setting one up...")
-        subprocess.check_call([sys.executable, "-m", "venv", VENV_DIR])
-        print("Virtual environment created at {}".format(VENV_DIR))
-
-    if "VIRTUAL_ENV" not in os.environ:
-        if IS_WINDOWS:
-            command = '"{}" && "{}" "{}" {}'.format(
-                VENV_ACTIVATE_BASH, PYTHON_EXECUTABLE, __file__, " ".join(sys.argv[1:])
-            )
-            subprocess.check_call(command, shell=True)
-        else:
-            command = 'source "{}" && "{}" "{}" {}'.format(
-                VENV_ACTIVATE_BASH,
-                PYTHON_EXECUTABLE,
-                __file__,
-                " ".join(map(lambda x: '"{}"'.format(x), sys.argv[1:])),
-            )
-            os.execle("/bin/bash", "bash", "-c", command, os.environ)
-        sys.exit()
+        subprocess.run([sys.executable, "-m", "venv", str(venv_dir)], check=True)
+        print(f"Virtual environment created at {venv_dir}")
     else:
-        if os.path.exists(REQUIREMENTS_PATH):
-            print("Installing dependencies from requirements.txt...")
-            subprocess.check_call(
-                [
-                    PYTHON_EXECUTABLE,
-                    "-m",
-                    "pip",
-                    "install",
-                    "-r",
-                    REQUIREMENTS_PATH,
-                    "--upgrade",
-                ],
-                cwd=SCRIPT_DIR,
-            )
-        else:
-            print("requirements.txt not found, skipping dependency installation.")
+        print(f"Virtual environment already exists at {venv_dir}")
+
+    if sys.executable != str(venv_python):
+        print(f"Activating virtual environment at {venv_dir}")
+        os.execv(str(venv_python), [str(venv_python), *sys.argv])
+
+    print(f"Using virtual environment at {venv_dir}")
+
+    requirements_path = script_dir / "requirements.txt"
+    if requirements_path.exists():
+        print("Installing dependencies from requirements.txt...")
+        subprocess.run(
+            [str(venv_python), "-m", "pip", "install", "-r", str(requirements_path)],
+            check=True,
+        )
+    else:
+        print("requirements.txt not found, skipping dependency installation.")
