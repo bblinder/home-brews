@@ -10,35 +10,26 @@ import subprocess
 import sys
 from pathlib import Path
 
-
 def bootstrap_venv():
     script_dir = Path(__file__).resolve().parent
     venv_dir = script_dir / "venv"
-    requirements_path = script_dir / "requirements.txt"
+    venv_python = venv_dir / "bin" / "python"
 
     if not venv_dir.exists():
         print("No virtual environment found. Setting one up...")
         subprocess.run([sys.executable, "-m", "venv", str(venv_dir)], check=True)
         print(f"Virtual environment created at {venv_dir}")
 
-    if not Path(sys.prefix).samefile(venv_dir):
-        if sys.platform == "win32":
-            activate_script = venv_dir / "Scripts" / "activate.bat"
-        else:
-            activate_script = venv_dir / "bin" / "activate"
-
+    if sys.executable != str(venv_python):
         print(f"Activating virtual environment at {venv_dir}")
-        subprocess.run(f"source {activate_script}", shell=True, check=True)
+        os.execl(str(venv_python), 'python', *sys.argv)
 
+    requirements_path = script_dir / "requirements.txt"
     if requirements_path.exists():
         print("Installing dependencies from requirements.txt...")
-        subprocess.run(
-            [sys.executable, "-m", "pip", "install", "-r", str(requirements_path)],
-            check=True,
-        )
+        subprocess.run([str(venv_python), "-m", "pip", "install", "-r", str(requirements_path)], check=True)
     else:
         print("requirements.txt not found, skipping dependency installation.")
-
 
 bootstrap_venv()
 
@@ -63,7 +54,6 @@ OS = sys.platform
 
 console = Console()
 
-
 def render_table(status_dict: dict) -> None:
     """Render a table with the status of each task."""
     table = Table("Asynchronous Package Manager")
@@ -76,7 +66,6 @@ def render_table(status_dict: dict) -> None:
     console.clear()
     console.print(table)
 
-
 status_dict = {
     "Homebrew": ("Not Started", ""),
     "Python": ("Not Started", ""),
@@ -86,7 +75,6 @@ status_dict = {
     "Git": ("Not Started", ""),
     "Apple Updates": ("Not Started", ""),
 }
-
 
 class PasswordManager:
     """A class for managing sudo passwords."""
@@ -104,7 +92,6 @@ class PasswordManager:
         if not self.password:
             self.password = getpass.getpass(prompt)
         return self.password
-
 
 class Updater:
     def __init__(self, github_dir: Path):
