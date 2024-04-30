@@ -10,6 +10,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+
 def bootstrap_venv():
     script_dir = Path(__file__).resolve().parent
     venv_dir = script_dir / "venv"
@@ -22,14 +23,18 @@ def bootstrap_venv():
 
     if sys.executable != str(venv_python):
         print(f"Activating virtual environment at {venv_dir}")
-        os.execl(str(venv_python), 'python', *sys.argv)
+        os.execl(str(venv_python), "python", *sys.argv)
 
     requirements_path = script_dir / "requirements.txt"
     if requirements_path.exists():
         print("Installing dependencies from requirements.txt...")
-        subprocess.run([str(venv_python), "-m", "pip", "install", "-r", str(requirements_path)], check=True)
+        subprocess.run(
+            [str(venv_python), "-m", "pip", "install", "-r", str(requirements_path)],
+            check=True,
+        )
     else:
         print("requirements.txt not found, skipping dependency installation.")
+
 
 bootstrap_venv()
 
@@ -54,6 +59,7 @@ OS = sys.platform
 
 console = Console()
 
+
 def render_table(status_dict: dict) -> None:
     """Render a table with the status of each task."""
     table = Table("Asynchronous Package Manager")
@@ -66,15 +72,16 @@ def render_table(status_dict: dict) -> None:
     console.clear()
     console.print(table)
 
+
 status_dict = {
     "Homebrew": ("Not Started", ""),
     "Python": ("Not Started", ""),
     "APT": ("Not Started", ""),
-    "Flatpak": ("Not Started", ""),
     "Ruby": ("Not Started", ""),
     "Git": ("Not Started", ""),
     "Apple Updates": ("Not Started", ""),
 }
+
 
 class PasswordManager:
     """A class for managing sudo passwords."""
@@ -92,6 +99,7 @@ class PasswordManager:
         if not self.password:
             self.password = getpass.getpass(prompt)
         return self.password
+
 
 class Updater:
     def __init__(self, github_dir: Path):
@@ -169,12 +177,6 @@ class Updater:
         apt_cmds = ["update", "upgrade", "dist-upgrade", "autoremove", "autoclean"]
         for cmd in apt_cmds:
             self.run_with_sudo(["apt-get", "-y", cmd], password)
-
-    def flatpak_upgrade(self) -> None:
-        """Updating flatpak packages, if they exist"""
-        if OS == "linux" and shutil.which("flatpak"):
-            print(green("::: Updating flatpak packages"))
-            subprocess.run(["flatpak", "update", "--appstream"], check=False)
 
     def ruby_update(self, password: str) -> None:
         """Updating ruby gems. For some reason, MacOS doesn't like it if you don't use sudo."""
@@ -256,7 +258,6 @@ class Updater:
             if user_choice.lower() == "y":
                 update_function = {
                     "brew": self.homebrew_upgrade,
-                    "flatpak": self.flatpak_upgrade,
                     "gem": self.ruby_update,
                     "git": self.bulk_git_update,
                     "apple": self.apple_upgrade,
@@ -313,14 +314,6 @@ class Updater:
         loop = asyncio.get_event_loop()
         await loop.run_in_executor(None, partial(self.apt_upgrade, password))
         status_dict["APT"] = ["Done"]
-        render_table(status_dict)
-
-    async def flatpak_upgrade_async(self) -> None:
-        status_dict["Flatpak"] = ["In Progress"]
-        render_table(status_dict)
-        loop = asyncio.get_event_loop()
-        await loop.run_in_executor(None, self.flatpak_upgrade)
-        status_dict["Flatpak"] = ["Done"]
         render_table(status_dict)
 
     async def bulk_git_update_async(self) -> None:
@@ -395,13 +388,12 @@ async def main() -> None:
                 password = password_manager.get_password("Enter sudo password: ")
 
     try:
-        cmds = ["brew", "flatpak", "gem", "git"]
+        cmds = ["brew", "gem", "git"]
 
         if args.no_input:
             tasks = [
                 updater.homebrew_upgrade_async(args),
                 updater.python_upgrade_async(args),
-                updater.flatpak_upgrade_async(),
                 updater.ruby_update_async(password),
                 updater.bulk_git_update_async(),
             ]
