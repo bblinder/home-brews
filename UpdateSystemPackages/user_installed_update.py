@@ -12,6 +12,12 @@ from pathlib import Path
 
 
 def bootstrap_venv():
+    """
+    Bootstraps a virtual environment for the script.
+    This function checks if a virtual environment exists in the script directory.
+    If not, it creates a new one ('venv')
+    It then activates the venv and installs dependencies from requirements.txt, if present.
+    """
     script_dir = Path(__file__).resolve().parent
     venv_dir = script_dir / "venv"
     venv_python = venv_dir / "bin" / "python"
@@ -242,6 +248,7 @@ class Updater:
             print(red(f"  [Garbage Collection] Error: {result.stderr.strip()}"))
 
     def is_git_repo(self, repo: Path) -> bool:
+        """Checking if a directory is a git repo."""
         return repo.is_dir() and (repo / ".git").exists()
 
     def bulk_git_update(self) -> None:
@@ -279,6 +286,7 @@ class Updater:
                     print(f"::: Not updating {cmd}")
 
     def is_sudo_correct(self, password: str) -> bool:
+        """Checking if the sudo password is correct."""
         try:
             subprocess.run(["sudo", "-v"], input=password.encode(), check=True)
             return True
