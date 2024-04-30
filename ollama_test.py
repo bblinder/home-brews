@@ -8,42 +8,35 @@ TODO:
 - [] Replace print statements with logging
 """
 
-import os
 import sys
 import platform
+import pathlib
 import argparse
 import subprocess
 from time import sleep
 import ollama
 from tqdm import tqdm
 
-SUPPORTED_MODELS = ["mistral", "llama2:13b", "llama3:8b", "llava:v1.6"]
+SUPPORTED_MODELS = ["mistral", "llama3:8b"]
 DEFAULT_TEMP = 0.0
 
 
 def read_input(input_path):
-    """Read the content of the input file, with support for PDFs."""
-    try:
-        file_extension = os.path.splitext(input_path)[1].lower()
-        if file_extension == ".pdf":
-            try:
-                import fitz  # PyMuPDF
-
-                doc = fitz.open(input_path)
-                text = "".join([page.get_text() for page in doc])
-                return text
-            except ImportError as e:
-                raise SystemExit(
-                    "Error: PyMuPDF (fitz) is required to read PDF files. Install it via pip."
-                ) from e
-        elif os.path.exists(input_path):
-            with open(input_path, "r", encoding="utf-8") as f:
-                return f.read()
-        else:
-            raise FileNotFoundError(f"Error: File {input_path} does not exist.")
-    except Exception as e:
-        print(f"Failed to read input from {input_path}: {e}")
-        sys.exit(1)
+    """Read the input file and return the content. Support for PDFs"""
+    file_extension = pathlib.Path(input_path).suffix.lower()
+    if file_extension == ".pdf":
+        try:
+            import fitz
+            doc = fitz.open(input_path)
+            text = "".join([page.get_text() for page in doc])
+            return text
+        except ImportError as e:
+            raise SystemExit("Error: PyMuPDF (fitz) is required to read PDF files. Install it via pip.") from e
+    elif pathlib.Path(input_path).exists():
+        with open(input_path, "r", encoding="utf-8") as f:
+            return f.read()
+    else:
+        raise FileNotFoundError(f"Error: File {input_path} does not exist.")
 
 
 def generate_response(prompt, model):
