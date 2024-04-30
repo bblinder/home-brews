@@ -20,10 +20,14 @@ def bootstrap_venv():
         print("No virtual environment found. Setting one up...")
         subprocess.run([sys.executable, "-m", "venv", str(venv_dir)], check=True)
         print(f"Virtual environment created at {venv_dir}")
+    else:
+        print(f"Virtual environment already exists at {venv_dir}")
 
     if sys.executable != str(venv_python):
         print(f"Activating virtual environment at {venv_dir}")
-        os.execl(str(venv_python), "python", *sys.argv)
+        os.execv(str(venv_python), [str(venv_python), *sys.argv])
+
+    print(f"Using virtual environment at {venv_dir}")
 
     requirements_path = script_dir / "requirements.txt"
     if requirements_path.exists():
@@ -47,6 +51,7 @@ import re
 import shutil
 from functools import partial
 from typing import List
+from filelock import FileLock
 
 from rich.console import Console
 from rich.table import Table
@@ -376,81 +381,107 @@ async def check_apple_updates(updater: Updater, args: argparse.Namespace) -> Non
 
 
 async def main() -> None:
-    github_dir = GITHUB_DIR
-    updater = Updater(github_dir)
-    args = updater.parse_args()
-
-    with PasswordManager() as password_manager:
-        if args.no_input:
-            password = password_manager.get_password("Enter sudo password: ")
-            while not updater.is_sudo_correct(password):
-                print(red("::: Incorrect sudo password. Please try again."))
-                password = password_manager.get_password("Enter sudo password: ")
+    lock_file = SCRIPT_DIR / "updater.lock"
+    lock = FileLock(lock_file)
 
     try:
-        cmds = ["brew", "gem", "git"]
+        with lock.acquire(timeout=1):
+            github_dir = GITHUB_DIR
+            updater = Updater(github_dir)
+            args = updater.parse_args()
 
-        if args.no_input:
-            tasks = [
-                updater.homebrew_upgrade_async(args),
-                updater.python_upgrade_async(args),
-                updater.ruby_update_async(password),
-                updater.bulk_git_update_async(),
-            ]
-
-            if OS == "linux":
-                tasks.append(updater.apt_upgrade_async(password))
-            elif OS == "darwin":
-                tasks.append(updater.apple_upgrade_async())
-
-            tasks.append(updater.python_upgrade_async(args))
-
-            await asyncio.wait(
-                [asyncio.shield(task) for task in tasks],
-                return_when=asyncio.ALL_COMPLETED,
-            )
-
-        else:
-            for cmd in cmds:
-                updater.handle_cmd_update(cmd, args)
-
-            if OS == "linux":
-                if input(blue("Update apt? [y/N] --> ", ["italic"])).lower() == "y":
-                    if not args.no_input:
+            with PasswordManager() as password_manager:
+                if args.no_input:
+                    password = password_manager.get_password("Enter sudo password: ")
+                    while not updater.is_sudo_correct(password):
+                        print(red("::: Incorrect sudo password. Please try again."))
                         password = password_manager.get_password(
                             "Enter sudo password: "
                         )
-                        while not updater.is_sudo_correct(password):
-                            print(red("Incorrect sudo password. Please try again."))
-                            password = password_manager.get_password(
-                                "Enter sudo password: "
+
+            try:
+                cmds = ["brew", "gem", "git"]
+
+                if args.no_input:
+                    tasks = [
+                        updater.homebrew_upgrade_async(args),
+                        updater.python_upgrade_async(args),
+                        updater.ruby_update_async(password),
+                        updater.bulk_git_update_async(),
+                    ]
+
+                    if OS == "linux":
+                        tasks.append(updater.apt_upgrade_async(password))
+                    elif OS == "darwin":
+                        tasks.append(updater.apple_upgrade_async())
+
+                    tasks.append(updater.python_upgrade_async(args))
+
+                    await asyncio.wait(
+                        [asyncio.shield(task) for task in tasks],
+                        return_when=asyncio.ALL_COMPLETED,
+                    )
+
+                else:
+                    for cmd in cmds:
+                        updater.handle_cmd_update(cmd, args)
+
+                    if OS == "linux":
+                        if (
+                            input(blue("Update apt? [y/N] --> ", ["italic"])).lower()
+                            == "y"
+                        ):
+                            if not args.no_input:
+                                password = password_manager.get_password(
+                                    "Enter sudo password: "
+                                )
+                                while not updater.is_sudo_correct(password):
+                                    print(
+                                        red(
+                                            "Incorrect sudo password. Please try again."
+                                        )
+                                    )
+                                    password = password_manager.get_password(
+                                        "Enter sudo password: "
+                                    )
+                            await updater.apt_upgrade_async(password)
+
+                    if (
+                        input(blue("Upgrade python? [y/N] --> ", ["italic"])).lower()
+                        == "y"
+                    ):
+                        print(green("::: Updating python packages"))
+                        await updater.python_upgrade_async(args)
+
+                    if OS == "darwin":
+                        if (
+                            input(
+                                blue("Check for Apple updates? [y/N] --> ", ["italic"])
+                            ).lower()
+                            == "y"
+                        ):
+                            await updater.run_async(
+                                ["softwareupdate", "--list"], check=False
                             )
-                    await updater.apt_upgrade_async(password)
 
-            if input(blue("Upgrade python? [y/N] --> ", ["italic"])).lower() == "y":
-                print(green("::: Updating python packages"))
-                await updater.python_upgrade_async(args)
+                        if (
+                            input(
+                                blue(
+                                    "Check for App Store updates? [y/N] --> ",
+                                    ["italic"],
+                                )
+                            ).lower()
+                            == "y"
+                        ):
+                            await updater.run_async(["mas", "outdated"], check=False)
+                            await updater.run_async(["mas", "upgrade"], check=False)
 
-            if OS == "darwin":
-                if (
-                    input(
-                        blue("Check for Apple updates? [y/N] --> ", ["italic"])
-                    ).lower()
-                    == "y"
-                ):
-                    await updater.run_async(["softwareupdate", "--list"], check=False)
+            except KeyboardInterrupt:
+                print("\n::: Program interrupted by user. Exiting gracefully...")
+                sys.exit(1)
 
-                if (
-                    input(
-                        blue("Check for App Store updates? [y/N] --> ", ["italic"])
-                    ).lower()
-                    == "y"
-                ):
-                    await updater.run_async(["mas", "outdated"], check=False)
-                    await updater.run_async(["mas", "upgrade"], check=False)
-
-    except KeyboardInterrupt:
-        print("\n::: Program interrupted by user. Exiting gracefully...")
+    except TimeoutError:
+        print(red("::: Another instance of the script is already running. Exiting..."))
         sys.exit(1)
 
 
