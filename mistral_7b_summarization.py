@@ -153,7 +153,7 @@ def summarize_text(
 ):
     """Summarize the text using llamafile and trim output to content after [/INST]."""
     escaped_text = shlex.quote(f"{summarization_prompt} {text} [/INST]")
-    cmd = f"echo {escaped_text} | {llamafile_path} -c {CHAR_COUNT} -f /dev/stdin --temp {TEMPERATURE} -n {NUM_TOKENS} --silent-prompt"
+    cmd = f"echo {escaped_text} | {llamafile_path} -c {CHAR_COUNT} -ngl 9999 -f /dev/stdin --temp {TEMPERATURE} -n {NUM_TOKENS} --silent-prompt"
     try:
         result = subprocess.run(
             cmd,
@@ -181,7 +181,7 @@ def fallback_summarize_text(
         f"echo '{summarization_prompt}' | "
         f"links -codepage utf-8 -force-html -width 500 -dump '{url}' | "
         f"sed 's/   */ /' | "
-        f"{llamafile_path} -c {CHAR_COUNT} -f /dev/stdin --temp {TEMPERATURE} -n {NUM_TOKENS} --silent-prompt"
+        f"{llamafile_path} -c {CHAR_COUNT} -ngl 9999 -f /dev/stdin --temp {TEMPERATURE} -n {NUM_TOKENS} --silent-prompt"
     )
     try:
         result = subprocess.run(
