@@ -128,7 +128,7 @@ def purge_homebrew():
 # Arrays converted from the Bash script
 brew_array = [
     "ccat",
-    "neofetch",
+    "fastfetch",
     "ack",
     "axel",
     "curl",
