@@ -6,7 +6,8 @@ This script is used to summarize the text from a given URL or file
 using the mistral-7b llamafile: https://github.com/Mozilla-Ocho/llamafile
 
 TODO:
-- [ ] Add support for multiple URLs
+- [x] Add support for multiple URLs
+- [x] Add support for reading multiple URLs from a text file
 - [x] Add support for text files
 - [ ] Add support for chunking based on token count
 """
