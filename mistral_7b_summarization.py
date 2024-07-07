@@ -277,7 +277,7 @@ def main():
 
             if summary.strip():
                 bar.text("-> Done!")
-                summaries.append(f"Input: {input_str}\nSummary:\n{summary}\n")
+                summaries.append(f"Input: {input_str}\n--------\n{summary}\n")
             else:
                 bar.text("-> Failed to retrieve summary.")
 
