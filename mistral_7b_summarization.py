@@ -287,6 +287,7 @@ def main():
     if args.output:
         with open(args.output, "w", encoding="utf-8") as file:
             file.write(combined_summaries)
+        print(combined_summaries)
         print(f"Summaries saved to {args.output}")
     else:
         print(combined_summaries)
