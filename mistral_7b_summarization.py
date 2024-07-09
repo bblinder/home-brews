@@ -168,7 +168,7 @@ def summarize_text(
         # Extract content after [/INST]
         #output_after_inst = output.split("[/INST]", 1)[1] if "[/INST]" in output else ""
         #return output_after_inst.strip()
-        output = re.sub(r'</s>$', '', output)
+        output = re.sub(r'</s>$', '', output) # Remove </s> tag at the end of the output
         return output.strip()
     except subprocess.CalledProcessError as e:
         print(f"Error in llamafile execution: {e}")
