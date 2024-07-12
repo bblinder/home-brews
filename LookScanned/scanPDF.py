@@ -20,7 +20,7 @@ from typing import Optional
 
 from halo import Halo
 
-cmds = {"convert": "ImageMagick", "gs": "GhostScript"}
+cmds = {"magick": "ImageMagick", "gs": "GhostScript"}
 
 for cmd, package in cmds.items():
     if which(cmd) is None:
@@ -45,7 +45,7 @@ def imagemagick_convert(pdf: Path) -> Path:
     """
     temp_file = script_dir / "TEMP.pdf"
     imagemagick_commands = [
-        "convert",
+        "magick",
         "-density",
         "150",
         str(pdf),
