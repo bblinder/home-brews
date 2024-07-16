@@ -249,7 +249,6 @@ cask_array = [
     "espanso",
     "latest",
     "spotify",
-    "beardedspice",
     "the-unarchiver",
     "gpgtools",
     "iina",
