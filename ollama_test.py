@@ -81,7 +81,7 @@ from bs4 import BeautifulSoup
 import ollama
 from tqdm import tqdm
 
-SUPPORTED_MODELS = ["mistral", "llama3.1"]
+SUPPORTED_MODELS = ["mistral-nemo", "llama3.1"]
 DEFAULT_TEMP = 0.0
 TIMEOUT_SECONDS = 5
 DEFAULT_PROMPT = "As a helpful assistant, your task is to provide a concise and precise summary of the given document. Focus on extracting the main points and relevant details from the text while maintaining brevity in your response. Ensure that your summary captures the essence of the conversation or discussion without sacrificing accuracy. Please note that you should be able to handle various types of documents, such as interviews, meetings, transcripts, or presentations. Your response should be flexible enough to allow for different topics and contexts while still providing a clear and focused summary."
@@ -117,7 +117,7 @@ def is_valid_url(url):
 
 
 def get_text_from_url(url):
-    """Scrape and process text from URL. Use proxy if access is forbidden."""
+    """Scrape and process text from URL."""
     headers = {
         "User-Agent": get_user_agent(),
     }
@@ -250,7 +250,7 @@ if __name__ == "__main__":
         "--model",
         choices=SUPPORTED_MODELS,
         help="Model to use",
-        default="mistral",
+        default="mistral-nemo",
     )
     args.add_argument("-o", "--output", help="Output file", default=None)
     args.add_argument("-t", "--temperature", help="Temperature", default=DEFAULT_TEMP)
