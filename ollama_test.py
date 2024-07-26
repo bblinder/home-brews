@@ -87,8 +87,11 @@ TIMEOUT_SECONDS = 5
 DEFAULT_PROMPT = "As a helpful assistant, your task is to provide a concise and precise summary of the given document. Focus on extracting the main points and relevant details from the text while maintaining brevity in your response. Ensure that your summary captures the essence of the conversation or discussion without sacrificing accuracy. Please note that you should be able to handle various types of documents, such as interviews, meetings, transcripts, or presentations. Your response should be flexible enough to allow for different topics and contexts while still providing a clear and focused summary."
 
 USER_AGENTS = [
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36 Edg/127.0.0.0",
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:128.0) Gecko/20100101 Firefox/128.0",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
 ]
 
 logging.basicConfig(
