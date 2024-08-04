@@ -143,6 +143,7 @@ brew_array = [
     "httpie",
     "lynx",
     "mplayer",
+    "icloudpd",
     "mtr",
     "osxfuse",
     "p7zip",
