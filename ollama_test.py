@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 
 """
@@ -253,7 +254,7 @@ if __name__ == "__main__":
         "--model",
         choices=SUPPORTED_MODELS,
         help="Model to use",
-        default="llama3.1",
+        default="mistral-nemo",
     )
     args.add_argument("-o", "--output", help="Output file", default=None)
     args.add_argument("-t", "--temperature", help="Temperature", default=DEFAULT_TEMP)
