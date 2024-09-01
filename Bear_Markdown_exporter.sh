@@ -4,8 +4,8 @@
 # to my OneDrive folder. This script is run by a cron job every day.
 
 # Define paths
-#export_dir=~/OneDrive/Bear/Bear
-#backup_dir=~/OneDrive/Bear/Backup
+export_dir=~/OneDrive/Bear/Bear
+backup_dir=~/OneDrive/Bear/Backup
 # Default save/export path is ~/Dropbox/BearNotes
 script_path=~/Github/Bear-Markdown-Export/bear_export_sync.py
 
