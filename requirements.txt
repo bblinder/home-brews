@@ -17,3 +17,5 @@ ollama
 tqdm
 pymupdf
 filelock
+pip
+
