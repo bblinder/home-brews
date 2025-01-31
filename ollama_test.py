@@ -81,7 +81,7 @@ from bs4 import BeautifulSoup
 import ollama
 from tqdm import tqdm
 
-SUPPORTED_MODELS = ["mistral-nemo", "llama3.1:8b", "llama3.2"]
+SUPPORTED_MODELS = ["mistral-nemo", "deepseek-r1:7b", "llama3.2"]
 DEFAULT_TEMP = 0.0
 TIMEOUT_SECONDS = 5
 DEFAULT_PROMPT = "As a helpful assistant, your task is to provide a concise and precise summary of the given document. Focus on extracting the main points and relevant details from the text while maintaining brevity in your response. Ensure that your summary captures the essence of the conversation or discussion without sacrificing accuracy. Please note that you should be able to handle various types of documents, such as interviews, meetings, transcripts, or presentations. Your response should be flexible enough to allow for different topics and contexts while still providing a clear and focused summary."
@@ -253,7 +253,7 @@ if __name__ == "__main__":
         "--model",
         choices=SUPPORTED_MODELS,
         help="Model to use",
-        default="llama3.1:8b",
+        default="mistral-nemo:latest",
     )
     args.add_argument("-o", "--output", help="Output file", default=None)
     args.add_argument("-t", "--temperature", help="Temperature", default=DEFAULT_TEMP)
