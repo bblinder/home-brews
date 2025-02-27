@@ -3,6 +3,11 @@
 """
 A general purpose script for updating various things on a system.
 Mainly a pythonic wrapper around various shell commands.
+
+
+TODO:
+    - Refactor into separate modules
+    - Not require sudo for specific updaters
 """
 
 import os
