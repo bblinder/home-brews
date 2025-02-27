@@ -9,9 +9,6 @@ import os
 import subprocess
 import sys
 from pathlib import Path
-from typing import List, Optional
-
-import argparse
 import asyncio
 import getpass
 import logging
@@ -19,12 +16,11 @@ import random
 import re
 import shutil
 from functools import partial
-from filelock import FileLock
+from typing import List, Optional
 
 from rich.console import Console
 from rich.table import Table
 from simple_colors import blue, green, red, yellow
-
 
 # Constants
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -63,128 +59,131 @@ class PasswordManager:
     def __init__(self):
         self.password = None
 
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        self.password = None
-
     def get_password(self, prompt: str) -> str:
         if not self.password:
             self.password = getpass.getpass(prompt)
         return self.password
 
 
+async def run_command(command: List[str], password: Optional[str] = None) -> subprocess.CompletedProcess:
+    """Run a command with optional sudo."""
+    try:
+        if password:
+            result = await asyncio.create_subprocess_exec(
+                *command, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, input=password.encode()
+            )
+        else:
+            result = await asyncio.create_subprocess_exec(
+                *command, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+            )
+
+        stdout, stderr = await result.communicate()
+
+        if result.returncode != 0:
+            raise RuntimeError(f"Command {command} failed with {result.returncode} and error: {stderr.decode().strip()}")
+
+        return result
+
+    except Exception as e:
+        print(red(f"Error running command: {e}"))
+        sys.exit(1)
+
+
+async def update_homebrew() -> None:
+    """Updating Homebrew packages."""
+    await run_command(["brew", "doctor"])
+    await run_command(["brew", "update"])
+    await run_command(["brew", "upgrade"])
+    await run_command(["brew", "upgrade", "--cask", "--greedy"])
+
+
+async def cleanup_homebrew() -> None:
+    """Running brew cleanup."""
+    await run_command(["brew", "cleanup"])
+    await run_command(["brew", "cleanup", "-s", "--prune=all"])
+
+
+async def update_python(password: str) -> None:
+    """Updating python packages using pip-review."""
+    await run_command(["python3", "-m", "pip_review", "--auto", "--continue-on-fail"], password=password)
+
+
+async def update_git_repo(repo: Path) -> None:
+    """Updating a git repo."""
+    await run_command(["git", "remote", "update"], cwd=repo)
+    await run_command(["git", "pull", "--rebase"], cwd=repo)
+    await run_command(["git", "gc", "--auto"], cwd=repo)
+
+
+async def update_apple_updates() -> None:
+    """Updating MacOS software."""
+    await run_command(["softwareupdate", "--list"])
+    await run_command(["mas", "outdated"])
+    await run_command(["mas", "upgrade"])
+
+
 class Updater:
     def __init__(self, github_dir: Path):
         self.github_dir = github_dir
 
-    async def run_with_sudo_async(self, command: List[str], password: str) -> None:
-        loop = asyncio.get_event_loop()
-        await loop.run_in_executor(None, partial(subprocess.run, ["sudo", "-S"] + command, input=password.encode(), check=True))
-
     async def homebrew_upgrade_async(self, args: argparse.Namespace) -> None:
         status_dict["Homebrew"] = ["In Progress"]
         render_table(status_dict)
-        await self.run_with_sudo_async(["brew", "update"], "")
-        await self.run_with_sudo_async(["brew", "upgrade"], "")
-        await self.run_with_sudo_async(["brew", "upgrade", "--cask", "--greedy"], "")
+        await update_homebrew()
+        if not args.no_input and input(blue("Cleanup Homebrew? [y/N] --> ", ["italic"])) == "y":
+            await cleanup_homebrew()
         status_dict["Homebrew"] = ["Done"]
         render_table(status_dict)
 
     async def python_upgrade_async(self, args: argparse.Namespace) -> None:
         status_dict["Python"] = ["In Progress"]
         render_table(status_dict)
-        await self.run_with_sudo_async(["python3", "-m", "pip_review", "--auto", "--continue-on-fail"], "")
+        password_manager = PasswordManager()
+        password = password_manager.get_password("Enter sudo password for Python: ")
+        await update_python(password)
         status_dict["Python"] = ["Done"]
         render_table(status_dict)
 
-    async def apt_upgrade_async(self, password: str) -> None:
+    async def apt_upgrade_async(self, args: argparse.Namespace) -> None:
         status_dict["APT"] = ["In Progress"]
         render_table(status_dict)
-        await self.run_with_sudo_async(["apt-get", "-y", "update"], password)
-        await self.run_with_sudo_async(["apt-get", "-y", "upgrade"], password)
-        await self.run_with_sudo_async(["apt-get", "-y", "dist-upgrade"], password)
-        await self.run_with_sudo_async(["apt-get", "-y", "autoremove"], password)
-        await self.run_with_sudo_async(["apt-get", "-y", "autoclean"], password)
+        password_manager = PasswordManager()
+        password = password_manager.get_password("Enter sudo password for APT: ")
+        await run_command(["sudo", "-S"] + ["apt-get", "-y", "update"], input=password.encode())
+        await run_command(["sudo", "-S"] + ["apt-get", "-y", "upgrade"], input=password.encode())
         status_dict["APT"] = ["Done"]
         render_table(status_dict)
 
-    async def ruby_update_async(self, password: str) -> None:
-        status_dict["Ruby"] = ["In Progress"]
-        render_table(status_dict)
-        await self.run_with_sudo_async(["gem", "update", "-n", "/usr/local/bin/"], password)
-        await self.run_with_sudo_async(["gem", "update", "-n", "/usr/local/bin/", "--system"], password)
-        await self.run_with_sudo_async(["gem", "update"], password)
-        await self.run_with_sudo_async(["gem", "update", "--system"], password)
-        status_dict["Ruby"] = ["Done"]
-        render_table(status_dict)
-
-    async def apple_upgrade_async(self) -> None:
-        status_dict["Apple Updates"] = ["In Progress"]
-        render_table(status_dict)
-        await self.run_with_sudo_async(["softwareupdate", "--list"], "")
-        await self.run_with_sudo_async(["mas", "outdated"], "")
-        await self.run_with_sudo_async(["mas", "upgrade"], "")
-        status_dict["Apple Updates"] = ["Done"]
-        render_table(status_dict)
-
-    async def update_git_repo(self, repo: Path) -> None:
-        print(blue(f"::: Updating {repo.name}"))
-        result = await self.run_with_sudo_async(["git", "remote", "update"], "")
-        if result.returncode == 0:
-            print(green(f"  [Remote Update] Success"))
-        else:
-            print(red(f"  [Remote Update] Error: {result.stderr.strip()}"))
-        # Pull and rebase
-        result = await self.run_with_sudo_async(["git", "pull", "--rebase"], "")
-        if result.returncode == 0:
-            print(green(f"  [Pull & Rebase] Success"))
-        else:
-            print(red(f"  [Pull & Rebase] Error: {result.stderr.strip()}"))
-        # Git garbage collection
-        await self.run_with_sudo_async(["git", "gc", "--auto"], "")
-
-    async def bulk_git_update_async(self) -> None:
+    async def bulk_git_update_async(self, args: argparse.Namespace) -> None:
         status_dict["Git"] = ["In Progress"]
         render_table(status_dict)
         if self.github_dir.exists():
-            print(green("::: Updating git repos in", self.github_dir))
             for repo in self.github_dir.iterdir():
                 if repo.is_dir() and (repo / ".git").exists():
-                    await self.update_git_repo(repo)
+                    await update_git_repo(repo)
                 else:
-                    print(yellow(f"::: {repo.name} is not a git repo"))
-        else:
-            print(red(f"::: {self.github_dir} does not exist, skipping git updates"))
+                    print(yellow(f"{repo.name} is not a git repo"))
         status_dict["Git"] = ["Done"]
         render_table(status_dict)
 
-    async def handle_cmd_update(self, cmd: str, args: argparse.Namespace) -> None:
-        if shutil.which(cmd):
-            user_choice = input(blue(f"Update {cmd}? [y/N] --> ", ["italic"]))
-            if user_choice.lower() == "y":
-                update_function = {
-                    "brew": self.homebrew_upgrade_async,
-                    "gem": self.ruby_update_async,
-                    "git": self.bulk_git_update_async,
-                    "apple": self.apple_upgrade_async,
-                }.get(cmd)
-                if update_function:
-                    await update_function(args)
+    async def ruby_update_async(self, args: argparse.Namespace) -> None:
+        status_dict["Ruby"] = ["In Progress"]
+        render_table(status_dict)
+        password_manager = PasswordManager()
+        password = password_manager.get_password("Enter sudo password for Ruby: ")
+        await run_command(["sudo", "-S"] + ["gem", "update", "-n", "/usr/local/bin/"], input=password.encode())
+        await run_command(["sudo", "-S"] + ["gem", "update", "-n", "/usr/local/bin/", "--system"], input=password.encode())
+        await run_command(["sudo", "-S"] + ["gem", "update"], input=password.encode())
+        await run_command(["sudo", -S] + ["gem", "update", "--system"], input=password.encode())
+        status_dict["Ruby"] = ["Done"]
+        render_table(status_dict)
 
-    async def run_async(self, command: List[str], check: bool = False) -> str:
-        process = await asyncio.create_subprocess_exec(
-            *command, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
-        )
-        stdout, stderr = await process.communicate()
-
-        if check and process.returncode != 0:
-            raise RuntimeError(
-                f"Command {command} failed with {process.returncode} and error: {stderr.decode().strip()}"
-            )
-
-        return stdout.decode().strip()
+    async def apple_upgrade_async(self, args: argparse.Namespace) -> None:
+        status_dict["Apple Updates"] = ["In Progress"]
+        render_table(status_dict)
+        await update_apple_updates()
+        status_dict["Apple Updates"] = ["Done"]
+        render_table(status_dict)
 
 
 async def main() -> None:
@@ -197,96 +196,28 @@ async def main() -> None:
             updater = Updater(github_dir)
             args = updater.parse_args()
 
-            with PasswordManager() as password_manager:
-                if not args.no_input:
+            password_manager = PasswordManager()
+            if not args.no_input:
+                password = password_manager.get_password("Enter sudo password: ")
+                while not updater.is_sudo_correct(password):
+                    print(red("Incorrect sudo password. Please try again."))
                     password = password_manager.get_password("Enter sudo password: ")
-                    while not updater.is_sudo_correct(password):
-                        print(red("::: Incorrect sudo password. Please try again."))
-                        password = password_manager.get_password(
-                            "Enter sudo password: "
-                        )
 
-            try:
-                cmds = ["brew", "gem", "git"]
+            tasks = [
+                updater.homebrew_upgrade_async(args),
+                updater.python_upgrade_async(args),
+                updater.bulk_git_update_async(args),
+            ]
 
-                if args.no_input:
-                    tasks = [
-                        updater.homebrew_upgrade_async(args),
-                        updater.python_upgrade_async(args),
-                        updater.ruby_update_async(password),
-                        updater.bulk_git_update_async(),
-                    ]
+            if OS == "linux":
+                tasks.append(updater.apt_upgrade_async(args))
+            elif OS == "darwin":
+                tasks.append(updater.apple_upgrade_async())
 
-                    if OS == "linux":
-                        tasks.append(updater.apt_upgrade_async(password))
-                    elif OS == "darwin":
-                        tasks.append(updater.apple_upgrade_async())
-
-                    await asyncio.wait(
-                        [asyncio.shield(task) for task in tasks],
-                        return_when=asyncio.ALL_COMPLETED,
-                    )
-
-                else:
-                    for cmd in cmds:
-                        updater.handle_cmd_update(cmd, args)
-
-                    if OS == "linux":
-                        if (
-                            input(blue("Update apt? [y/N] --> ", ["italic"])).lower()
-                            == "y"
-                        ):
-                            if not args.no_input:
-                                password = password_manager.get_password(
-                                    "Enter sudo password: "
-                                )
-                                while not updater.is_sudo_correct(password):
-                                    print(
-                                        red(
-                                            "Incorrect sudo password. Please try again."
-                                        )
-                                    )
-                                    password = password_manager.get_password(
-                                        "Enter sudo password: "
-                                    )
-                            await updater.apt_upgrade_async(password)
-
-                    if (
-                        input(blue("Upgrade python? [y/N] --> ", ["italic"])).lower()
-                        == "y"
-                    ):
-                        print(green("::: Updating python packages"))
-                        await updater.python_upgrade_async(args)
-
-                    if OS == "darwin":
-                        if (
-                            input(
-                                blue("Check for Apple updates? [y/N] --> ", ["italic"])
-                            ).lower()
-                            == "y"
-                        ):
-                            await updater.run_async(
-                                ["softwareupdate", "--list"], check=False
-                            )
-
-                        if (
-                            input(
-                                blue(
-                                    "Check for App Store updates? [y/N] --> ",
-                                    ["italic"],
-                                )
-                            ).lower()
-                            == "y"
-                        ):
-                            await updater.run_async(["mas", "outdated"], check=False)
-                            await updater.run_async(["mas", "upgrade"], check=False)
-
-            except KeyboardInterrupt:
-                print("\n::: Program interrupted by user. Exiting gracefully...")
-                sys.exit(1)
+            await asyncio.wait([asyncio.shield(task) for task in tasks], return_when=asyncio.ALL_COMPLETED)
 
     except TimeoutError:
-        print(red("::: Another instance of the script is already running. Exiting..."))
+        print(red("Another instance of the script is already running. Exiting..."))
         sys.exit(1)
 
 
