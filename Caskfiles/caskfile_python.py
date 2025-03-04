@@ -18,9 +18,25 @@ logger = logging.getLogger(__name__)
 class BrewManager:
     """Manages Homebrew packages, casks, and related operations."""
 
+    def _validate_json_files(self) -> None:
+        """Validate all JSON files to ensure they're properly formatted."""
+        for key in self.config.keys():
+            file_path = os.path.join(self.config_dir, f"{key}.json")
+            if os.path.exists(file_path):
+                try:
+                    with open(file_path, 'r') as f:
+                        # Just try to load and validate
+                        json.load(f)
+                    logger.debug(f"JSON file {file_path} is valid")
+                except json.JSONDecodeError as e:
+                    logger.error(f"Invalid JSON in {file_path}: {e}")
+                    logger.error("Please fix the JSON format")
+                    # Could repair here if needed
+
     def __init__(self, config_dir: Optional[str] = None):
         """Initialize with optional configuration directory."""
         self.config_dir = config_dir or os.path.join(os.path.dirname(__file__), "config")
+        self._validate_json_files()
         self.config = self._load_configs()
 
     def _load_configs(self) -> Dict[str, List[str]]:
