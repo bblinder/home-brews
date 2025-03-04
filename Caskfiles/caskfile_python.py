@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import subprocess
 import os
 import platform
@@ -7,16 +9,54 @@ import json
 from pathlib import Path
 from typing import List, Callable, Optional, Dict, Any
 
-# Initialize logging
+# Initialize logging with DEBUG level to see more details
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(message)s",
+    level=logging.DEBUG,  # Changed to DEBUG for more verbose output
+    format="%(levelname)s: %(message)s",
     handlers=[logging.StreamHandler()]
 )
 logger = logging.getLogger(__name__)
 
 class BrewManager:
     """Manages Homebrew packages, casks, and related operations."""
+
+    def __init__(self, config_dir: Optional[str] = None):
+        """Initialize with optional configuration directory."""
+        self.config_dir = config_dir or os.path.join(os.path.dirname(__file__), "config")
+        logger.debug(f"Using config directory: {os.path.abspath(self.config_dir)}")
+
+        # Create config directory if it doesn't exist
+        os.makedirs(self.config_dir, exist_ok=True)
+
+        self.config = self._load_configs()
+        self._validate_json_files()  # Now this can safely access self.config
+
+    def _load_configs(self) -> Dict[str, List[str]]:
+        """Load configurations from JSON files."""
+        config = {
+            "taps": [],
+            "brews": [],
+            "casks": [],
+            "app_store": []
+        }
+
+        # Load from files if they exist, otherwise use empty lists
+        for key in config.keys():
+            file_path = os.path.join(self.config_dir, f"{key}.json")
+            logger.debug(f"Checking for config file: {file_path}")
+
+            if os.path.exists(file_path):
+                try:
+                    with open(file_path, 'r') as f:
+                        file_content = json.load(f)
+                        config[key] = file_content
+                    logger.info(f"Loaded {len(config[key])} items from {file_path}")
+                except Exception as e:
+                    logger.error(f"Error loading {file_path}: {e}")
+            else:
+                logger.warning(f"Config file {file_path} not found. Using empty list.")
+
+        return config
 
     def _validate_json_files(self) -> None:
         """Validate all JSON files to ensure they're properly formatted."""
@@ -32,39 +72,6 @@ class BrewManager:
                     logger.error(f"Invalid JSON in {file_path}: {e}")
                     logger.error("Please fix the JSON format")
                     # Could repair here if needed
-
-    def __init__(self, config_dir: Optional[str] = None):
-        """Initialize with optional configuration directory."""
-        self.config_dir = config_dir or os.path.join(os.path.dirname(__file__), "config")
-        self._validate_json_files()
-        self.config = self._load_configs()
-
-    def _load_configs(self) -> Dict[str, List[str]]:
-        """Load configurations from JSON files."""
-        config = {
-            "taps": [],
-            "brews": [],
-            "casks": [],
-            "app_store": []
-        }
-
-        # Create config directory if it doesn't exist
-        os.makedirs(self.config_dir, exist_ok=True)
-
-        # Load from files if they exist, otherwise use empty lists
-        for key in config.keys():
-            file_path = os.path.join(self.config_dir, f"{key}.json")
-            if os.path.exists(file_path):
-                try:
-                    with open(file_path, 'r') as f:
-                        config[key] = json.load(f)
-                    logger.debug(f"Loaded {len(config[key])} items from {file_path}")
-                except Exception as e:
-                    logger.error(f"Error loading {file_path}: {e}")
-            else:
-                logger.debug(f"Config file {file_path} not found. Using empty list.")
-
-        return config
 
     def save_configs(self) -> None:
         """Save current configurations to JSON files."""
@@ -262,6 +269,30 @@ class BrewManager:
         else:
             logger.info(f"{item} is not in {category}")
 
+    def check_config_files(self):
+        """Debug function to check status of config files."""
+        print(f"\nConfig directory: {os.path.abspath(self.config_dir)}")
+        for key in ["taps", "brews", "casks", "app_store"]:
+            file_path = os.path.join(self.config_dir, f"{key}.json")
+            exists = os.path.exists(file_path)
+            print(f"File {key}.json exists: {exists}")
+
+            if exists:
+                try:
+                    with open(file_path, 'r') as f:
+                        content = f.read()
+                    print(f"- Content length: {len(content)} bytes")
+                    print(f"- First 50 chars: {content[:50]}")
+
+                    # Check if it's valid JSON
+                    try:
+                        json_content = json.loads(content)
+                        print(f"- Valid JSON: Yes, contains {len(json_content)} items")
+                    except json.JSONDecodeError:
+                        print(f"- Valid JSON: No")
+                except Exception as e:
+                    print(f"- Error reading file: {e}")
+
 
 def check_system_compatibility() -> None:
     """Verify system compatibility requirements."""
@@ -296,6 +327,20 @@ def main() -> None:
     # Create brew manager with config directory in the same folder as the script
     brew_manager = BrewManager()
 
+    # Add a diagnostic option to check config files
+    print("\n=== Homebrew Package Manager ===")
+    print("d. Diagnose configuration")
+    print("c. Continue to main menu")
+    print("q. Quit")
+
+    diag_choice = input("\nSelect an option: ").strip().lower()
+    if diag_choice == "d":
+        brew_manager.check_config_files()
+        input("\nPress Enter to continue to main menu...")
+    elif diag_choice == "q":
+        print("Exiting...")
+        return
+
     while True:
         print("\n=== Homebrew Package Manager ===")
         print("1. Install all packages")
@@ -303,6 +348,7 @@ def main() -> None:
         print("3. Manage individual components")
         print("4. Edit package lists")
         print("5. Save configuration")
+        print("d. Diagnose configuration")  # Added diagnostic option in main menu too
         print("q. Quit")
 
         choice = input("\nSelect an option: ").strip().lower()
@@ -402,6 +448,9 @@ def main() -> None:
 
         elif choice == "5":
             brew_manager.save_configs()
+
+        elif choice == "d":
+            brew_manager.check_config_files()
 
         elif choice == "q":
             print("Exiting...")
