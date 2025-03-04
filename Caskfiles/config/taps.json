@@ -1,0 +1,11 @@
+[
+  "federico-terzi/espanso",
+  "hashicorp/tap",
+  "homebrew/cask",
+  "homebrew/cask-fonts",
+  "homebrew/cask-versions",
+  "homebrew/core",
+  "clangen/musikcube",
+  "apparition47/tap",
+  "localsend/localsend"
+]
