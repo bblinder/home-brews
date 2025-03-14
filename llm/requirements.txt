@@ -1,0 +1,9 @@
+requests
+beautifulsoup4
+urllib3
+alive-progress
+tqdm
+pymupdf
+ollama
+pytz
+python-dotenv
