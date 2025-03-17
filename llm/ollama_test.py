@@ -6,12 +6,14 @@ Using the Ollama python lib to chat with supported models.
 TODO:
 - [x] Add URL summarization
 - [x] Replace print statements with logging
+- [x] Dynamically show available Ollama models
 - [ ] Handle multiple inputs in the command line
 """
 
 import sys
 import os
 import subprocess
+import json
 
 
 def bootstrap_venv():
@@ -30,10 +32,13 @@ def bootstrap_venv():
         print("No virtual environment found. Setting one up...")
         subprocess.check_call([sys.executable, "-m", "venv", VENV_DIR])
         print(f"Virtual environment created at {VENV_DIR}")
+        # New venv was created, requirements must be installed
+        install_requirements = True
+    else:
+        # Only install requirements if Python version has changed
+        install_requirements = False
 
-    if (
-        "VIRTUAL_ENV" not in os.environ
-    ):  # Venv is not active, activate and re-run the script
+    if ("VIRTUAL_ENV" not in os.environ):  # Venv is not active, activate and re-run the script
         if IS_WINDOWS:
             command = (
                 f'"{VENV_ACTIVATE_BASH}" && "{PYTHON_EXECUTABLE}" "{__file__}" '
@@ -44,8 +49,8 @@ def bootstrap_venv():
             command = f"source \"{VENV_ACTIVATE_BASH}\" && \"{PYTHON_EXECUTABLE}\" \"{__file__}\" {' '.join(map(lambda x: '\"' + x + '\"', sys.argv[1:]))}"
             os.execle("/bin/bash", "bash", "-c", command, os.environ)
         sys.exit()
-    else:  # Venv is active, ensure dependencies are installed
-        if os.path.exists(REQUIREMENTS_PATH):
+    else:  # Venv is active, ensure dependencies are installed if needed
+        if os.path.exists(REQUIREMENTS_PATH) and install_requirements:
             print("Installing dependencies from requirements.txt...")
             subprocess.check_call(
                 [
@@ -59,7 +64,7 @@ def bootstrap_venv():
                 ],
                 cwd=SCRIPT_DIR,
             )
-        else:
+        elif install_requirements:
             print("requirements.txt not found, skipping dependency installation.")
 
 
@@ -73,6 +78,7 @@ import argparse
 import logging
 import random
 import re
+import time
 from time import sleep
 from urllib.parse import quote
 
@@ -81,7 +87,7 @@ from bs4 import BeautifulSoup
 import ollama
 from tqdm import tqdm
 
-SUPPORTED_MODELS = ["mistral-nemo", "deepseek-r1:7b", "llama3.2"]
+DEFAULT_MODEL = "mistral-nemo:latest"
 DEFAULT_TEMP = 0.0
 TIMEOUT_SECONDS = 5
 DEFAULT_PROMPT = "As a helpful assistant, your task is to provide a concise and precise summary of the given document. Focus on extracting the main points and relevant details from the text while maintaining brevity in your response. Ensure that your summary captures the essence of the conversation or discussion without sacrificing accuracy. Please note that you should be able to handle various types of documents, such as interviews, meetings, transcripts, or presentations. Your response should be flexible enough to allow for different topics and contexts while still providing a clear and focused summary."
@@ -97,6 +103,43 @@ USER_AGENTS = [
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
+
+
+def get_available_models():
+    """Get list of available models from Ollama."""
+    try:
+        # First try using the ollama Python client
+        models_response = ollama.list()
+        if isinstance(models_response, dict) and 'models' in models_response:
+            models = [model['name'] for model in models_response['models']]
+            return models
+
+        # If the Python client doesn't work as expected, fallback to CLI
+        else:
+            result = subprocess.run(
+                ["ollama", "list"],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+
+            # Parse the output manually since it's not in JSON format
+            models = []
+            for line in result.stdout.strip().split('\n'):
+                # Skip the header line
+                if line.startswith('NAME') or not line.strip():
+                    continue
+
+                # Extract the model name (first column before any whitespace)
+                model_name = line.split()[0].strip()
+                if model_name:
+                    models.append(model_name)
+
+            return models if models else ["mistral-nemo", "llama3"]
+    except (subprocess.SubprocessError, KeyError, FileNotFoundError) as e:
+        logging.warning(f"Could not retrieve model list: {str(e)}")
+        # Return some default models if we can't get the actual list
+        return ["mistral-nemo"]
 
 
 def get_user_agent():
@@ -172,12 +215,34 @@ def read_input(input_path):
 def generate_response(prompt, model):
     """Generate a response using the selected model."""
     try:
-        response = ollama.chat(
-            model=model,
-            options={"temperature": DEFAULT_TEMP},
-            messages=[{"role": "user", "content": prompt}],
-        )
-        return response["message"]["content"]
+        # First measure token count estimate for progress display
+        token_estimate = len(prompt.split()) // 4  # Rough estimate
+
+        print(f"Sending prompt to {model}...")
+
+        # Create a progress spinner for model thinking
+        with tqdm(total=None, desc="Model thinking", bar_format='{desc}: {elapsed}', leave=False) as pbar:
+            # Setup progress tracking
+            start_time = time.time()
+
+            # Get response from model
+            response = ollama.chat(
+                model=model,
+                options={"temperature": DEFAULT_TEMP},
+                messages=[{"role": "user", "content": prompt}],
+            )
+
+            # Update progress bar until complete
+            while time.time() - start_time < 0.5:  # Ensure bar displays for at least 0.5s
+                pbar.update(1)
+                time.sleep(0.1)
+
+        # Show completion message
+        response_text = response["message"]["content"]
+        token_count = len(response_text.split())
+        print(f"✓ Response generated: ~{token_count} tokens")
+
+        return response_text
     except Exception as e:
         logging.error("Failed to generate response: %s", str(e))
         sys.exit(1)
@@ -186,18 +251,53 @@ def generate_response(prompt, model):
 def process_inputs(base_prompt, inputs, model):
     """Combine base prompt with content from inputs to generate responses."""
     responses = []
-    if inputs:
-        for input_source in tqdm(inputs, desc="Processing inputs"):
-            if is_valid_url(input_source):
-                content = get_text_from_url(input_source)
-            else:
-                content = read_input(input_source)
-            combined_prompt = f"{base_prompt} {content}".strip()
-            response = generate_response(combined_prompt, model)
+
+    if not inputs:
+        # If no inputs, just process the base prompt
+        with tqdm(total=1, desc="Generating response", unit="step") as pbar:
+            response = generate_response(base_prompt, model)
+            pbar.update(1)
             responses.append(response)
-    else:
-        response = generate_response(base_prompt, model)
-        responses.append(response)
+        return responses
+
+    # For multiple inputs, show overall progress
+    with tqdm(total=len(inputs), desc="Overall progress", unit="input", position=0) as overall_pbar:
+        for i, input_source in enumerate(inputs):
+            # Determine input type for better description
+            input_type = "URL" if is_valid_url(input_source) else "File"
+            input_name = os.path.basename(input_source) if not is_valid_url(input_source) else input_source
+
+            # Handle different input types
+            with tqdm(total=3, desc=f"Processing {input_type} ({i+1}/{len(inputs)}): {input_name}",
+                     unit="step", position=1, leave=False) as pbar:
+
+                # Step 1: Load content
+                pbar.set_description(f"Loading content from {input_type}")
+                if is_valid_url(input_source):
+                    content = get_text_from_url(input_source)
+                else:
+                    content = read_input(input_source)
+                pbar.update(1)
+
+                # Step 2: Prepare prompt
+                pbar.set_description("Preparing prompt")
+                combined_prompt = f"{base_prompt} {content}".strip()
+                pbar.update(1)
+
+                # Step 3: Generate response with model
+                pbar.set_description(f"Generating response with {model}")
+                response = generate_response(combined_prompt, model)
+                pbar.update(1)
+
+                responses.append(response)
+
+            # Update overall progress
+            overall_pbar.update(1)
+
+            # Add a small separator between input processing
+            if i < len(inputs) - 1:
+                print(f"✓ Completed {input_source}")
+
     return responses
 
 
@@ -243,21 +343,25 @@ def main():
 
 
 if __name__ == "__main__":
-    args = argparse.ArgumentParser()
-    args.add_argument("-p", "--prompt", help="Base prompt", default=None)
-    args.add_argument(
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-p", "--prompt", help="Base prompt", default=None)
+    parser.add_argument(
         "-i", "--inputs", nargs="*", help="Paths to input files or URLs", default=[]
     )
-    args.add_argument(
+
+    # Get available models dynamically
+    available_models = get_available_models()
+
+    parser.add_argument(
         "-m",
         "--model",
-        choices=SUPPORTED_MODELS,
+        choices=available_models,
         help="Model to use",
-        default="mistral-nemo:latest",
+        default=DEFAULT_MODEL if DEFAULT_MODEL in available_models else available_models[0] if available_models else None,
     )
-    args.add_argument("-o", "--output", help="Output file", default=None)
-    args.add_argument("-t", "--temperature", help="Temperature", default=DEFAULT_TEMP)
-    args = args.parse_args()
+    parser.add_argument("-o", "--output", help="Output file", default=None)
+    parser.add_argument("-t", "--temperature", help="Temperature", default=DEFAULT_TEMP)
+    args = parser.parse_args()
 
     app_name = "Ollama"
     if not is_application_open(app_name):
