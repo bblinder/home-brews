@@ -1,0 +1,35 @@
+#!/usr/bin/env osascript
+
+# -- This script will import rows of text into Things from a plaintext file (.txt .md etc.).
+# -- Expected format: To-do title [⇥ Tab] To-do note
+# -- Imported items will arrive in Things’ Inbox.
+# -- To run the script, click the ▷ button in the toolbar.
+
+set text_file to (choose file)
+set database_text to read text_file as «class utf8»
+
+--process the file in reverse order to put first item at top of Inbox
+repeat with i from (count paragraphs of database_text) to 1 by -1
+	set the_database_record to paragraph i of database_text
+	if the_database_record ≠ "" then
+		set text item delimiters to tab
+		set field_list to every text item of the_database_record
+		set todoName to item 1 of field_list
+		if (count of field_list) > 1 then
+			set todoNotes to item 2 of field_list
+		else
+			set todoNotes to ""
+			--ignores text beyond a second tab character
+		end if
+		
+		tell application id "com.culturedcode.ThingsMac"
+			set newToDo to make new to do ¬
+				with properties {name:todoName} ¬
+				at beginning of list id "TMInboxListSource"
+			if todoNotes ≠ "" then
+				--only create a note if there was text after a tab
+				set notes of newToDo to todoNotes
+			end if
+		end tell
+	end if
+end repeat
