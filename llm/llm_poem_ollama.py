@@ -49,7 +49,7 @@ def generate_poem():
     time_str = get_time()
     try:
         response: ChatResponse = chat(
-            model="openthinker:latest",  # Replace with the appropriate Ollama model
+            model="mistral-nemo:latest",  # Replace with the appropriate Ollama model
             messages=[
                 {
                     "role": "system",
