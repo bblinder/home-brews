@@ -1,107 +1,108 @@
 #!/usr/bin/env python3
 
 """
-Description: A macOS-specific Python utility to save all 
+Description: A macOS-specific Python utility to save all
 open browser tabs from Safari, Firefox, Edge or Brave
 to a text file on the desktop.
 
-Usage: 
+Usage:
     savebrowsertabs.py [options]
 """
 
 import argparse
-import os
 import platform
 import sys
+from pathlib import Path
 from subprocess import run
+import re
+
+# Constants
+DESKTOP_PATH = Path.home() / "Desktop"
+URL_REGEX = re.compile(r"^https?://")
+BROWSER_MAPPING = {
+    "safari": "Safari",
+    "firefox": "Firefox",
+    "brave": "Brave Browser",
+    "edge": "Microsoft Edge",
+}
 
 
-def save_browser_tabs(browser):
+def save_browser_tabs(browser: str) -> Path:
     """
     Save open browser tabs to a text file on the desktop.
 
-    :param browser: str, name of the browser
-    :return: str, path to the saved file
+    :param browser: name of the browser
+    :return: path to the saved file
     """
-    file_name = f"{browser} tabs.txt"
+    file_path = DESKTOP_PATH / f"{browser} tabs.txt"
     script = f"""
     tell application "{browser}"
         set tabURLs to ""
-        set windowCount to count windows
-        repeat with i from 1 to windowCount
-            set tabCount to count tabs of window i
-            repeat with j from 1 to tabCount
-                set theURL to URL of tab j of window i
-                set tabURLs to tabURLs & theURL & linefeed
+        repeat with w in windows
+            repeat with t in tabs of w
+                set tabURLs to tabURLs & URL of t & linefeed
             end repeat
         end repeat
     end tell
-
-    set fileName to "{file_name}"
-    set desktopPath to (path to desktop as text)
-    set filePath to desktopPath & fileName
-    set fileReference to open for access filePath with write permission
-    write tabURLs to fileReference
-    close access fileReference
+    do shell script "echo " & quoted form of tabURLs & " > " & quoted form of "{file_path}"
     """
-    run(["osascript", "-e", script])
-
-    # return the path to the file
-    return os.path.join(os.path.expanduser("~/Desktop"), file_name)
+    run(["osascript", "-e", script], check=True)
+    return file_path
 
 
-def validate_tabs_file(file_path):
+def validate_tabs_file(file_path: Path) -> bool:
     """
     Validates if the tabs file was correctly created.
 
-    :param file_path: str, path to the saved file
-    :return: bool, True if the file is valid, False otherwise
+    :param file_path: path to the saved file
+    :return: True if the file is valid, False otherwise
     """
-    if not os.path.exists(file_path):
+    if not file_path.exists():
         print(f"File {file_path} does not exist")
         return False
 
-    with open(file_path, "r", encoding="utf-8") as file:
-        content = file.read()
+    with file_path.open("r", encoding="utf-8") as file:
+        content = file.read().strip()
 
-    if not content.strip():
+    if not content:
         print(f"File {file_path} is empty")
         return False
 
-    for line in content.splitlines():
-        if not line.startswith("http://") and not line.startswith("https://"):
-            print(f"Invalid URL in {file_path}: {line}")
-            return False
+    invalid_urls = [line for line in content.splitlines() if not URL_REGEX.match(line)]
+    if invalid_urls:
+        print(f"Invalid URLs in {file_path}:")
+        for url in invalid_urls:
+            print(f"  {url}")
+        return False
 
     return True
 
 
-def select_browser(browsers):
+def select_browser(browsers: list) -> str:
     """
     Prompt the user to select a browser from the list of supported browsers.
     """
     while True:
         print("Select a browser to open tabs in:")
-        for i, browser in enumerate(browsers):
-            print(f"{i+1}. {browser}")
-        answer = input("> ")
-
+        for i, browser in enumerate(browsers, 1):
+            print(f"{i}. {browser}")
         try:
-            selected_browser = browsers[int(answer) - 1]
-            return selected_browser
+            choice = int(input("> "))
+            return browsers[choice - 1]
         except (ValueError, IndexError):
             print("Invalid input. Please try again.")
 
 
-def open_browser_tabs(tabs_file, browser):
+def open_browser_tabs(tabs_file: Path, browser: str):
     """
     Open browser tabs from a text file in the specified browser.
     """
-    with open(tabs_file, "r", encoding="utf-8") as file:
-        tabs = file.read().splitlines()
+    with tabs_file.open("r", encoding="utf-8") as file:
+        tabs = [line.strip() for line in file if URL_REGEX.match(line.strip())]
 
+    print(f"Opening {len(tabs)} tabs in {browser}...")
     for tab in tabs:
-        run(["open", "-a", browser, tab])
+        run(["open", "-a", browser, tab], check=True)
 
 
 def main():
@@ -109,61 +110,53 @@ def main():
     Handling command line arguments, checking OS, saving browser tabs,
     and opening saved tabs in the selected browser.
     """
-    # check if macOS
     if platform.system() != "Darwin":
         print("This script only works on macOS")
         sys.exit(1)
 
-    try:
-        parser = argparse.ArgumentParser()
-        parser.add_argument("--safari", action="store_true")
-        parser.add_argument("--firefox", action="store_true")
-        parser.add_argument("--brave", action="store_true")
-        parser.add_argument("--edge", action="store_true")
-        parser.add_argument(
-            "--tabs-file",
-            type=str,
-            help="Path to an existing text file with URLs to open",
+    parser = argparse.ArgumentParser(description="Save and open browser tabs.")
+    browser_group = parser.add_mutually_exclusive_group()
+    for key in BROWSER_MAPPING:
+        browser_group.add_argument(
+            f"--{key}", action="store_true", help=f"Use {BROWSER_MAPPING[key]}"
         )
-        parser.add_help = True
-        args = parser.parse_args()
+    parser.add_argument(
+        "--tabs-file", type=Path, help="Path to an existing text file with URLs to open"
+    )
+    args = parser.parse_args()
 
-        browser_mapping = {
-            "safari": "Safari",
-            "firefox": "Firefox",
-            "brave": "Brave Browser",
-            "edge": "Microsoft Edge",
-        }
-        browser = None
-
-        for key, value in browser_mapping.items():
-            if getattr(args, key):
-                browser = value
-                break
-
-        if not browser and not args.tabs_file:
-            print("No browser selected or tabs file provided")
-            parser.print_help()
-            sys.exit(1)
-
+    try:
         if args.tabs_file:
-            selected_browser = select_browser(list(browser_mapping.values()))
+            if not validate_tabs_file(args.tabs_file):
+                print("Provided tabs file is not valid. Exiting...")
+                sys.exit(1)
+            selected_browser = select_browser(list(BROWSER_MAPPING.values()))
             open_browser_tabs(args.tabs_file, selected_browser)
         else:
-            tabs_file = save_browser_tabs(browser)
-            is_valid = validate_tabs_file(tabs_file)
-            if not is_valid:
-                print("Tabs file is not valid. Exiting...")
+            selected_browser = next(
+                (BROWSER_MAPPING[key] for key in BROWSER_MAPPING if getattr(args, key)),
+                None,
+            )
+            if not selected_browser:
+                print("No browser selected. Use --help for usage information.")
                 sys.exit(1)
-            # prompt user to open tabs
-            print(f"{browser} tabs saved to {tabs_file}")
-            answer = input("Open tabs? (y/n) > ")
-            if answer.lower() == "y":
-                selected_browser = select_browser(list(browser_mapping.values()))
-                open_browser_tabs(tabs_file, selected_browser)
+
+            tabs_file = save_browser_tabs(selected_browser)
+            if not validate_tabs_file(tabs_file):
+                print("Generated tabs file is not valid. Exiting...")
+                sys.exit(1)
+
+            print(f"{selected_browser} tabs saved to {tabs_file}")
+            if input("Open tabs? (y/n) > ").lower() == "y":
+                target_browser = select_browser(list(BROWSER_MAPPING.values()))
+                open_browser_tabs(tabs_file, target_browser)
+
     except KeyboardInterrupt:
         print("\nExiting...")
         sys.exit(0)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
