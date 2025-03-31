@@ -1,4 +1,9 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# dependencies = [
+#     "requests",
+# ]
+# ///
 """
 Base64 encode an image and output the element based on the specified format.
 

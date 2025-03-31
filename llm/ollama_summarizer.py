@@ -1,4 +1,12 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# dependencies = [
+#     "beautifulsoup4",
+#     "ollama",
+#     "requests",
+#     "tqdm",
+# ]
+# ///
 
 """
 Using the Ollama python lib to chat with supported models.

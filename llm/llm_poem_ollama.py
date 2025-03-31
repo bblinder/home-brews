@@ -1,4 +1,10 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# dependencies = [
+#     "ollama",
+#     "pytz",
+# ]
+# ///
 
 """
 Generate a haiku based on the current time using an Ollama model.

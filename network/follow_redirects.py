@@ -1,4 +1,11 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# dependencies = [
+#     "pyperclip",
+#     "requests",
+#     "validators",
+# ]
+# ///
 """
 A Python script to follow URL redirects and return the final address.
 Optionally interacts with the system clipboard to read/write URLs.
