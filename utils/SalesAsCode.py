@@ -1,4 +1,12 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# dependencies = [
+#     "cachetools",
+#     "gspread",
+#     "oauth2client",
+#     "python-dotenv",
+# ]
+# ///
 
 """
 Sales As Code: randomly selects a sales-y buzzword from a google sheet.
