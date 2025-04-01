@@ -22,64 +22,6 @@ import sys
 import os
 import subprocess
 import json
-
-
-def bootstrap_venv():
-    """Bootstraps a python virtual environment (venv) for the script to run in."""
-    SCRIPT_DIR = os.path.abspath(os.path.dirname(__file__))
-    VENV_DIR = os.path.join(SCRIPT_DIR, "venv")
-    IS_WINDOWS = sys.platform.startswith("win")
-    VENV_BIN_DIR = os.path.join(VENV_DIR, "Scripts" if IS_WINDOWS else "bin")
-    VENV_ACTIVATE_BASH = os.path.join(VENV_BIN_DIR, "activate")
-    REQUIREMENTS_PATH = os.path.join(SCRIPT_DIR, "requirements.txt")
-    PYTHON_EXECUTABLE = os.path.join(
-        VENV_BIN_DIR, "python3.exe" if IS_WINDOWS else "python3"
-    )
-
-    if not os.path.exists(VENV_DIR):  # No venv found, creating one
-        print("No virtual environment found. Setting one up...")
-        subprocess.check_call([sys.executable, "-m", "venv", VENV_DIR])
-        print(f"Virtual environment created at {VENV_DIR}")
-        # New venv was created, requirements must be installed
-        install_requirements = True
-    else:
-        # Only install requirements if Python version has changed
-        install_requirements = False
-
-    if ("VIRTUAL_ENV" not in os.environ):  # Venv is not active, activate and re-run the script
-        if IS_WINDOWS:
-            command = (
-                f'"{VENV_ACTIVATE_BASH}" && "{PYTHON_EXECUTABLE}" "{__file__}" '
-                + " ".join(sys.argv[1:])
-            )
-            subprocess.check_call(command, shell=True)
-        else:
-            command = f"source \"{VENV_ACTIVATE_BASH}\" && \"{PYTHON_EXECUTABLE}\" \"{__file__}\" {' '.join(map(lambda x: '\"' + x + '\"', sys.argv[1:]))}"
-            os.execle("/bin/bash", "bash", "-c", command, os.environ)
-        sys.exit()
-    else:  # Venv is active, ensure dependencies are installed if needed
-        if os.path.exists(REQUIREMENTS_PATH) and install_requirements:
-            print("Installing dependencies from requirements.txt...")
-            subprocess.check_call(
-                [
-                    PYTHON_EXECUTABLE,
-                    "-m",
-                    "pip",
-                    "install",
-                    "-r",
-                    REQUIREMENTS_PATH,
-                    "--upgrade",
-                ],
-                cwd=SCRIPT_DIR,
-            )
-        elif install_requirements:
-            print("requirements.txt not found, skipping dependency installation.")
-
-
-if sys.version_info >= (3, 12):
-    bootstrap_venv()
-    os.system("cls" if os.name == "nt" else "clear")  # Clear the terminal screen
-
 import platform
 import pathlib
 import argparse
@@ -94,6 +36,9 @@ import requests
 from bs4 import BeautifulSoup
 import ollama
 from tqdm import tqdm
+
+if sys.version_info >= (3, 12):
+    os.system("cls" if os.name == "nt" else "clear")  # Clear the terminal screen
 
 DEFAULT_MODEL = "mistral-nemo:latest"
 DEFAULT_TEMP = 0.0
@@ -118,24 +63,21 @@ def get_available_models():
     try:
         # First try using the ollama Python client
         models_response = ollama.list()
-        if isinstance(models_response, dict) and 'models' in models_response:
-            models = [model['name'] for model in models_response['models']]
+        if isinstance(models_response, dict) and "models" in models_response:
+            models = [model["name"] for model in models_response["models"]]
             return models
 
         # If the Python client doesn't work as expected, fallback to CLI
         else:
             result = subprocess.run(
-                ["ollama", "list"],
-                capture_output=True,
-                text=True,
-                check=True
+                ["ollama", "list"], capture_output=True, text=True, check=True
             )
 
             # Parse the output manually since it's not in JSON format
             models = []
-            for line in result.stdout.strip().split('\n'):
+            for line in result.stdout.strip().split("\n"):
                 # Skip the header line
-                if line.startswith('NAME') or not line.strip():
+                if line.startswith("NAME") or not line.strip():
                     continue
 
                 # Extract the model name (first column before any whitespace)
@@ -228,8 +170,13 @@ def generate_response(prompt, model):
 
         print(f"Sending prompt to {model}...")
 
-        # Create a progress spinner for model thinking
-        with tqdm(total=None, desc="Model thinking", bar_format='{desc}: {elapsed}', leave=False) as pbar:
+        # Create a progress spinner while the model works
+        with tqdm(
+            total=None,
+            desc="Model working",
+            bar_format="{desc}: {elapsed}",
+            leave=False,
+        ) as pbar:
             # Setup progress tracking
             start_time = time.time()
 
@@ -241,7 +188,9 @@ def generate_response(prompt, model):
             )
 
             # Update progress bar until complete
-            while time.time() - start_time < 0.5:  # Ensure bar displays for at least 0.5s
+            while (
+                time.time() - start_time < 0.5
+            ):  # Ensure bar displays for at least 0.5s
                 pbar.update(1)
                 time.sleep(0.1)
 
@@ -269,16 +218,26 @@ def process_inputs(base_prompt, inputs, model):
         return responses
 
     # For multiple inputs, show overall progress
-    with tqdm(total=len(inputs), desc="Overall progress", unit="input", position=0) as overall_pbar:
+    with tqdm(
+        total=len(inputs), desc="Overall progress", unit="input", position=0
+    ) as overall_pbar:
         for i, input_source in enumerate(inputs):
             # Determine input type for better description
             input_type = "URL" if is_valid_url(input_source) else "File"
-            input_name = os.path.basename(input_source) if not is_valid_url(input_source) else input_source
+            input_name = (
+                os.path.basename(input_source)
+                if not is_valid_url(input_source)
+                else input_source
+            )
 
             # Handle different input types
-            with tqdm(total=3, desc=f"Processing {input_type} ({i+1}/{len(inputs)}): {input_name}",
-                     unit="step", position=1, leave=False) as pbar:
-
+            with tqdm(
+                total=3,
+                desc=f"Processing {input_type} ({i + 1}/{len(inputs)}): {input_name}",
+                unit="step",
+                position=1,
+                leave=False,
+            ) as pbar:
                 # Step 1: Load content
                 pbar.set_description(f"Loading content from {input_type}")
                 if is_valid_url(input_source):
@@ -365,7 +324,11 @@ if __name__ == "__main__":
         "--model",
         choices=available_models,
         help="Model to use",
-        default=DEFAULT_MODEL if DEFAULT_MODEL in available_models else available_models[0] if available_models else None,
+        default=DEFAULT_MODEL
+        if DEFAULT_MODEL in available_models
+        else available_models[0]
+        if available_models
+        else None,
     )
     parser.add_argument("-o", "--output", help="Output file", default=None)
     parser.add_argument("-t", "--temperature", help="Temperature", default=DEFAULT_TEMP)
