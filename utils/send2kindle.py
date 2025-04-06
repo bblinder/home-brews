@@ -1,4 +1,11 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# dependencies = [
+#     "halo",
+#     "python-dotenv",
+#     "redmail",
+# ]
+# ///
 
 """
 A script to send PDFs to a Kindle.
