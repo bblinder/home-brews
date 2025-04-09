@@ -1,15 +1,38 @@
 #!/usr/bin/env bash
 
-# Not my work, just keeping it here as a handy reference. Needs lynx and html2text to work.
+set -Eeuo pipefail
 
-BROWSER="/usr/local/bin/lynx -source"
-WEBSITE="http://thesaurus.com/browse/$1"
-HTML2TEXT="/usr/local/bin/html2text"
-
-if test "$1"; then
-	${BROWSER} ${WEBSITE} | ${HTML2TEXT} | ${PAGER}
-else
-	echo "Usage: $0 your-word"
-	exit 1
+if [ $# -eq 0 ]; then
+  echo "Usage: $0 <word>"
+  exit 1
 fi
 
+WORD="$1"
+URL="https://www.thesaurus.com/browse/$WORD"
+
+# Check for required tools
+for cmd in curl grep sed; do
+  if ! command -v "$cmd" &> /dev/null; then
+    echo "Error: $cmd is not installed. Please install it."
+    exit 1
+  fi
+done
+
+# Fetch the page
+HTML=$(curl -s "$URL")
+
+echo "Synonyms for: $WORD"
+echo "================="
+
+# Extract synonyms using the class names we found in the HTML
+echo "$HTML" |
+  grep -o '<a href="http://www.thesaurus.com:80/browse/[^"]*" class="Bf5RRqL5MiAp4gB8wAZa">[^<]*</a>' |
+  sed 's/<a href="http:\/\/www.thesaurus.com:80\/browse\/\([^"]*\)" class="Bf5RRqL5MiAp4gB8wAZa">\([^<]*\)<\/a>/\2/' |
+  sort | uniq
+
+echo ""
+echo "Weak Synonyms:"
+echo "$HTML" |
+  grep -o '<a href="http://www.thesaurus.com:80/browse/[^"]*" class="u7owlPWJz16NbHjXogfX">[^<]*</a>' |
+  sed 's/<a href="http:\/\/www.thesaurus.com:80\/browse\/\([^"]*\)" class="u7owlPWJz16NbHjXogfX">\([^<]*\)<\/a>/\2/' |
+  sort | uniq
