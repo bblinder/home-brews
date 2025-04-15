@@ -5,6 +5,7 @@
 #     "ollama",
 #     "requests",
 #     "tqdm",
+#     "PyMuPDF",
 # ]
 # ///
 
