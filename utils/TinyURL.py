@@ -1,4 +1,7 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# dependencies = ["pyperclip"]
+# ///
 
 """Use the tinyURL API to shorten URLs."""
 
