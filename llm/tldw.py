@@ -42,8 +42,14 @@ Requirements:
   - Ollama (https://ollama.com) running locally
   - At least one language model pulled in Ollama (e.g., mistral-nemo)
   - Python dependencies: requests, youtube_transcript_api
-"""
 
+
+TODO:
+    - implement chunking for long videos
+    - better output parsing
+    - temperature override flag
+    - fetch video metadata for better grounding
+"""
 
 import argparse
 import os
@@ -58,6 +64,7 @@ from youtube_transcript_api.formatters import TextFormatter
 DEFAULT_OLLAMA_HOST = "http://localhost:11434"
 # Choose a model you have pulled with Ollama. More capable models might handle multi-step instructions better.
 DEFAULT_OLLAMA_MODEL = "mistral-nemo:latest"
+DEFAULT_TEMPERATURE = 0.0 # Default temperature for deterministic output
 
 # Determine script directory and set cache directory within it
 try:
@@ -74,14 +81,14 @@ CACHE_DIR = os.path.join(SCRIPT_DIR, CACHE_SUBDIR)
 
 # --- Helper Functions ---
 
-def ensure_cache_dir(): # New
+def ensure_cache_dir():
     """Creates the cache directory if it doesn't exist."""
     try:
         os.makedirs(CACHE_DIR, exist_ok=True)
     except OSError as e:
         print(f"Warning: Could not create cache directory {CACHE_DIR}: {e}", file=sys.stderr)
 
-def get_video_id(url): # Keep (simplified version)
+def get_video_id(url):
     """Extracts the YouTube video ID from various URL formats."""
     if "youtu.be/" in url:
         return url.split("youtu.be/")[1].split("?")[0].split("&")[0]
@@ -94,7 +101,7 @@ def get_video_id(url): # Keep (simplified version)
     # Add more patterns if needed
     raise ValueError(f"Cannot parse YouTube Video ID from URL: {url}")
 
-def get_transcript(video_id): # Keep (with improved error handling)
+def get_transcript(video_id):
     """Fetches and formats the transcript."""
     print(f"Fetching transcript for video ID: {video_id} ...")
     try:
@@ -121,19 +128,23 @@ def get_transcript(video_id): # Keep (with improved error handling)
     full_transcript = formatter.format_transcript(transcript.fetch())
     return full_transcript
 
-def _ollama_chat_completion(messages, model_name, host_url, timeout=180):
-    """Sends a full message history to the Ollama chat endpoint."""
+def _ollama_chat_completion(messages, model_name, host_url, timeout=180, temperature=DEFAULT_TEMPERATURE):
+    """Sends a full message history to the Ollama chat endpoint with temperature control."""
     api_url = f"{host_url.rstrip('/')}/api/chat"
     payload = {
         "model": model_name,
         "messages": messages,
         "stream": False,
-        # Optional: Add generation parameters if needed
+        "temperature": temperature, # Add temperature to the payload
+        # The 'options' dictionary can also be used for parameters if preferred/needed for other settings
         # "options": {
-        #     "temperature": 0.7
+        #     "temperature": temperature
         # }
     }
+    response = None # Initialize response to None
     try:
+        # Debug print for payload
+        # print(f"DEBUG: Sending payload to {api_url}: {json.dumps(payload, indent=2)}")
         response = requests.post(api_url, json=payload, timeout=timeout)
         response.raise_for_status() # Check for HTTP errors
         response_data = response.json()
@@ -157,23 +168,23 @@ def _ollama_chat_completion(messages, model_name, host_url, timeout=180):
     except requests.exceptions.RequestException as e:
         # Handles HTTP errors (4xx, 5xx) after raise_for_status and other request issues
         print(f"\nError communicating with Ollama API at {api_url}: {e}", file=sys.stderr)
-        if response: # If response object exists, print body for more context
+        if response is not None: # Check if response exists before accessing .text
              print(f"Response body: {response.text}", file=sys.stderr)
         return None
     except KeyError:
         # This might happen if the JSON response is valid but missing expected keys
-        print(f"\nError parsing Ollama response structure. Raw response: {response.text}", file=sys.stderr)
+        print(f"\nError parsing Ollama response structure. Raw response: {response.text if response is not None else 'No response object'}", file=sys.stderr)
         return None
     except Exception as e:
         # Catch any other unexpected errors
         print(f"\nAn unexpected error occurred during Ollama chat completion: {e}", file=sys.stderr)
         return None
 
-# New function incorporating the multi-step logic
 def get_structured_summary(video_id, transcript_text, model_name, host_url, ignore_cache=False):
     """
     Generates multiple summaries using Ollama, managing conversation history and caching.
     Returns a dictionary with summary parts or None if the first step fails.
+    Uses the default temperature set in _ollama_chat_completion unless overridden.
     """
     cache_file = os.path.join(CACHE_DIR, video_id + '.summaries.json')
 
@@ -184,7 +195,6 @@ def get_structured_summary(video_id, transcript_text, model_name, host_url, igno
                 return json.load(f)
         except (json.JSONDecodeError, IOError, UnicodeDecodeError) as e:
             print(f"Warning: Could not read cache file {cache_file}: {e}. Regenerating.", file=sys.stderr)
-            # Attempt to remove corrupted cache file
             try:
                  os.remove(cache_file)
             except OSError:
@@ -193,65 +203,55 @@ def get_structured_summary(video_id, transcript_text, model_name, host_url, igno
     print("\n--- Generating Summaries ---")
     summaries = {}
     messages = [
-        # System prompt (optional, can help guide the model)
         {"role": "system", "content": "You are an AI assistant specialized in analyzing video transcripts. Follow instructions precisely and provide only the requested output for each step."},
-        # Step 1: Paragraph Summary (Adapted - no title/desc)
-        {"role": "user", "content": f"Summarize the key points from the following video transcript into a single, concise paragraph. Focus on the main arguments, findings, or the core message presented in the text. PROVIDE NO OTHER OUTPUT OTHER THAN THE PARAGRAPH.\n\nTranscript:\n```\n{transcript_text}\n```"},
+        {"role": "user", "content": f"Summarize the key points from the following video transcript into a single, concise paragraph. Focus on the main arguments, findings, or the core message presented in the text. PROVIDE NO OTHER OUTPUT OTHER THAN THE PARAGRAPH.\n\nTranscript:\n``````{transcript_text}``````"},
     ]
 
     print("1. Generating paragraph summary...")
+    # Calls will now use the default temperature=0.0 unless explicitly overridden here
     paragraph_summary = _ollama_chat_completion(messages, model_name, host_url)
     if not paragraph_summary:
         print("Failed to generate initial paragraph summary. Aborting.", file=sys.stderr)
-        return None # Abort if first crucial step fails
+        return None
     summaries['paragraph'] = paragraph_summary
-    messages.append({"role": "assistant", "content": paragraph_summary}) # Add assistant response to history
-    print(f"   Paragraph: {paragraph_summary}")
+    messages.append({"role": "assistant", "content": paragraph_summary})
 
-    # Step 2: Sentence Summary
     print("2. Generating sentence summary...")
     messages.append({"role": "user", "content": "Now, based *only* on the transcript content provided earlier, condense the absolute core message or main takeaway into a single sentence. PROVIDE NO OTHER OUTPUT OTHER THAN THE SENTENCE."})
     sentence_summary = _ollama_chat_completion(messages, model_name, host_url)
-    if not sentence_summary: sentence_summary = "[Error generating sentence summary]" # Note error, but continue
+    if not sentence_summary:
+        sentence_summary = "[Error generating sentence summary]"
     summaries['sentence'] = sentence_summary
     messages.append({"role": "assistant", "content": sentence_summary})
-    print(f"   Sentence: {sentence_summary}")
 
-    # Step 3: Formulate Question (Adapted - harder without title)
     print("3. Generating question...")
     messages.append({"role": "user", "content": "Based *only* on the transcript content discussed so far, formulate a single question that effectively captures the main TOPIC or SUBJECT addressed. PROVIDE NO OTHER OUTPUT OTHER THAN THE QUESTION."})
     question = _ollama_chat_completion(messages, model_name, host_url)
-    if not question: question = "[Error generating question]"
+    if not question:
+        question = "[Error generating question]"
     summaries['question'] = question
     messages.append({"role": "assistant", "content": question})
-    print(f"   Question: {question}")
 
-    # Step 4: Concise Answer (Adapted)
     print("4. Generating concise answer...")
-    # Use f-string carefully in case question contains problematic characters for the prompt
-    question_prompt = question.replace('"', "'") # Basic sanitization for prompt injection
+    question_prompt = question.replace('"', "'")
     messages.append({"role": "user", "content": f'Provide a very concise answer (ideally one or two words, max a short phrase) to the question "{question_prompt}", based *only* on the transcript content. Examples: "Is X true?" -> "Yes."/"No."/"Maybe."; "Why did Y happen?" -> "Reason Z."/"It\'s complex.". PROVIDE NO OTHER OUTPUT OTHER THAN THE CONCISE ANSWER.'})
     word_answer = _ollama_chat_completion(messages, model_name, host_url)
-    if not word_answer: word_answer = "[Error generating answer]"
-    summaries['word_raw'] = word_answer # Store base word answer
+    if not word_answer:
+        word_answer = "[Error generating answer]"
+    summaries['word_raw'] = word_answer
     messages.append({"role": "assistant", "content": word_answer})
-    print(f"   Answer: {word_answer}")
 
-    # Step 5: Wikipedia Search Term (Adapted)
     print("5. Generating Wikipedia search term...")
     messages.append({"role": "user", "content": 'Suggest a specific and concise search term for Wikipedia that best represents the main TOPIC discussed in the transcript. Examples: "Discussion about AI replacing jobs" -> "Technological unemployment"; "History of the Eiffel Tower construction" -> "Eiffel Tower". PROVIDE NO OTHER OUTPUT OTHER THAN THE SEARCH TERM ITSELF.'})
     wiki_term = _ollama_chat_completion(messages, model_name, host_url)
-    if not wiki_term: wiki_term = "[Error generating term]"
-    messages.append({"role": "assistant", "content": wiki_term}) # Add even error response to maintain message flow if needed later
-    print(f"   Wikipedia Term: {wiki_term}")
+    if not wiki_term:
+        wiki_term = "[Error generating term]"
+    messages.append({"role": "assistant", "content": wiki_term})
 
-    # Combine word answer and wiki term for the 'word' field as in original logic
     summaries['word'] = f"{word_answer} ({wiki_term})" if not ('[Error' in word_answer or '[Error' in wiki_term) else word_answer
-    # Create Wikipedia search URL
-    summaries['wikipedia_url'] = 'https://en.wikipedia.org/w/index.php?search=' + quote_plus(wiki_term if not '[Error' in wiki_term else "")
-    summaries['wikipedia_term'] = wiki_term # Store the term itself separately
+    summaries['wikipedia_url'] = 'https://en.wikipedia.org/w/index.php?search=' + quote_plus(wiki_term if '[Error' not in wiki_term else "")
+    summaries['wikipedia_term'] = wiki_term
 
-    # --- Caching ---
     try:
         with open(cache_file, 'w', encoding='utf-8') as f:
             json.dump(summaries, f, indent=4, ensure_ascii=False)
@@ -260,7 +260,6 @@ def get_structured_summary(video_id, transcript_text, model_name, host_url, igno
         print(f"\nWarning: Could not write cache file {cache_file}: {e}", file=sys.stderr)
     except Exception as e:
         print(f"\nWarning: An unexpected error occurred writing cache file {cache_file}: {e}", file=sys.stderr)
-
 
     return summaries
 
@@ -276,15 +275,18 @@ def main():
     parser.add_argument("-t", "--transcript-only", action="store_true",
                         help="Only fetch and print the transcript, then exit.")
     parser.add_argument("--model", default=os.environ.get('OLLAMA_MODEL', DEFAULT_OLLAMA_MODEL),
-                        help=f"Ollama model to use (or set OLLAMA_MODEL env var)")
+                        help="Ollama model to use (or set OLLAMA_MODEL env var)")
     parser.add_argument("--host", default=os.environ.get('OLLAMA_HOST', DEFAULT_OLLAMA_HOST),
-                        help=f"Ollama host URL (or set OLLAMA_HOST env var)")
+                        help="Ollama host URL (or set OLLAMA_HOST env var)")
     parser.add_argument("--no-cache", action="store_true",
                         help="Force regeneration, ignore and overwrite existing cache file for this video.")
+    # Could add an argument to override temperature if desired:
+    # parser.add_argument("--temperature", type=float, default=DEFAULT_TEMPERATURE,
+    #                     help="Set the generation temperature (0.0 for deterministic).")
 
     args = parser.parse_args()
 
-    ensure_cache_dir() # Make sure cache dir exists before potentially using it
+    ensure_cache_dir()
 
     try:
         video_id = get_video_id(args.url)
@@ -297,67 +299,55 @@ def main():
 
     print(f"Processing Video ID: {video_id}")
 
-    # --- Get Transcript ---
-    transcript_text = get_transcript(video_id) # Exits inside if transcript fails
+    transcript_text = get_transcript(video_id)
 
     if args.transcript_only:
         print("\n--- Transcript ---")
         print(transcript_text)
-        # Optionally save transcript if -o is given
         if args.output:
-             # Ensure output is a file path for transcript saving
              transcript_outfile = args.output if not os.path.isdir(args.output) else os.path.join(args.output, f"{video_id}.transcript.txt")
              try:
-                 os.makedirs(os.path.dirname(transcript_outfile), exist_ok=True) # Ensure dir exists
+                 os.makedirs(os.path.dirname(transcript_outfile), exist_ok=True)
                  with open(transcript_outfile, "w", encoding="utf-8") as f:
                      f.write(transcript_text)
                  print(f"\nTranscript saved to {transcript_outfile}")
              except IOError as e:
                  print(f"Error writing transcript to file {transcript_outfile}: {e}", file=sys.stderr)
-        sys.exit(0) # Exit after handling transcript-only case
+        sys.exit(0)
 
-
-    # --- Generate Structured Summary ---
     structured_summaries = get_structured_summary(
         video_id,
         transcript_text,
         args.model,
         args.host,
         ignore_cache=args.no_cache
+        # If --temperature arg was added: pass args.temperature to _ollama_chat_completion calls if needed
     )
 
-    # --- Output ---
     if structured_summaries:
         print("\n--- Final Structured Summary ---")
-        # Use a consistent order for printing if desired
         keys_to_print = ['paragraph', 'sentence', 'question', 'word', 'wikipedia_term', 'wikipedia_url']
         for key in keys_to_print:
             if key in structured_summaries:
-                 # Clean up potential leading/trailing quotes sometimes added by models
                  value = structured_summaries[key]
                  if isinstance(value, str):
                       value = value.strip('\'" ')
-                 print(f"{key.replace('_', ' ').capitalize():<18}: {value}") # Align output
+                 print(f"{key.replace('_', ' ').capitalize():<18}: {value}")
 
-        # Handle JSON output file saving
         if args.output:
             json_outfile = args.output
-            # If user provided directory, save with standard name inside
             if os.path.isdir(json_outfile):
-                 json_outfile = os.path.join(json_outfile, f"{video_id}.summaries.json")
-
+                 json_outfile = os.path.join(CACHE_DIR, f"{video_id}.summaries.json")
             try:
-                os.makedirs(os.path.dirname(json_outfile), exist_ok=True) # Ensure dir exists
+                os.makedirs(os.path.dirname(json_outfile), exist_ok=True)
                 with open(json_outfile, 'w', encoding='utf-8') as f:
                      json.dump(structured_summaries, f, indent=4, ensure_ascii=False)
                 print(f"\nStructured summary also saved to: {json_outfile}")
             except Exception as e:
                 print(f"\nError saving structured summary to {json_outfile}: {e}", file=sys.stderr)
-
     else:
         print("\nFailed to generate structured summary.", file=sys.stderr)
-        sys.exit(1) # Exit with error status
-
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
