@@ -1,3 +1,4 @@
 .DS_Store
 venv
 .env
+.tldw_cache
