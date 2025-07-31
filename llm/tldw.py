@@ -102,28 +102,46 @@ def get_video_id(url):
     raise ValueError(f"Cannot parse YouTube Video ID from URL: {url}")
 
 def get_transcript(video_id):
-    """Fetches and formats the transcript."""
+    """Fetches and formats the transcript using the instance-based API."""
     print(f"Fetching transcript for video ID: {video_id} ...")
+
+    # Instantiate the API class
+    api = YouTubeTranscriptApi()
+
     try:
-        transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
+        # Use the list() method on the instance, not the class
+        transcript_list = api.list(video_id=video_id)
+    except Exception as e:
+        # If we can't get the list, don't proceed.
+        print(f"\nError: Could not retrieve transcript list for video ID {video_id}.", file=sys.stderr)
+        print("This could be due to the video being private, having disabled transcripts, or other API issues.", file=sys.stderr)
+        print(f"Details from API: {e}", file=sys.stderr)
+        sys.exit(1)
+
+    # Now that we have the list, we can safely search it.
+    try:
+        # Try for a manually created English transcript first.
         transcript = transcript_list.find_manually_created_transcript(['en'])
         print("Using manual English transcript.")
     except Exception:
+        # If manual fails, try for an auto-generated English transcript.
         try:
             print("Manual English transcript not found or failed, trying generated English...")
             transcript = transcript_list.find_generated_transcript(['en'])
             print("Using generated English transcript.")
         except Exception as e:
-            print(f"\nError: Could not fetch transcript for video ID {video_id}.", file=sys.stderr)
+            # If both manual and generated English fail, report the issue and list available languages.
+            print(f"\nError: Could not find a suitable English transcript for video ID {video_id}.", file=sys.stderr)
             print(f"Details: {e}", file=sys.stderr)
-            # Attempt to list available languages
             try:
-                langs = [t.language for t in YouTubeTranscriptApi.list_transcripts(video_id)]
-                print(f"Available transcript languages might be: {langs}", file=sys.stderr)
+                # List available languages from the already fetched transcript_list.
+                langs = [t.language_code for t in transcript_list]
+                print(f"Available transcript language codes are: {langs}", file=sys.stderr)
             except Exception:
-                 print("Could not list available languages.", file=sys.stderr)
+                print("Could not list available languages from the retrieved list.", file=sys.stderr)
             sys.exit(1)
 
+    # If we successfully found a transcript, format and return it.
     formatter = TextFormatter()
     full_transcript = formatter.format_transcript(transcript.fetch())
     return full_transcript
