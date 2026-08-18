@@ -1,0 +1,460 @@
+# Taps
+tap "anomalyco/tap", trusted: true
+tap "arthur-ficial/tap", "https://github.com/Arthur-Ficial/homebrew-tap", trusted: true
+tap "darrylmorley/whatcable", trusted: true
+tap "federico-terzi/espanso", trusted: true
+tap "hashicorp/tap", trusted: true
+tap "homebrew-zathura/zathura", trusted: true
+tap "matthart1983/tap", trusted: true
+tap "simonw/llm", trusted: true
+tap "stupside/tap"
+
+# CLI Tools (Formulae)
+# Search tool like grep, but optimized for programmers
+brew "ack"
+# Slice and dice log files on the command-line
+brew "angle-grinder"
+# The AI coding agent built for the terminal.
+brew "anomalyco/tap/opencode"
+# Automate deployment, configuration, and upgrading
+brew "ansible"
+# Plugin manager for zsh, inspired by antigen and antibody
+brew "antidote"
+# Download with resuming and segmented downloading
+brew "aria2"
+# Light UNIX download accelerator
+brew "axel"
+# Clone of cat(1) with syntax highlighting and Git integration
+brew "bat"
+# Python code formatter
+brew "black"
+# Get/set bluetooth power and discoverable state
+brew "blueutil"
+# Like cat but displays content with syntax highlighting
+brew "ccat"
+# Create and view interactive cheat sheets for *nix commands
+brew "cheat"
+# Core component of the AcoustID project (Audio fingerprinting)
+brew "chromaprint"
+# Cloudflare Tunnel client (formerly Argo Tunnel)
+brew "cloudflared"
+# Cross-platform make
+brew "cmake"
+# Music player with an ncurses based interface
+brew "cmus"
+# GNU File, Shell, and Text utilities
+brew "coreutils"
+# Apjanke's fork of the classic cowsay project
+brew "cowsay"
+# Cluster ssh tool for Terminal.app
+brew "csshx"
+# Reimplementation of ctags(1)
+brew "ctags"
+# Get a file from an HTTP, HTTPS or FTP server
+brew "curl"
+# Command-line USB-C cable diagnostics
+brew "darrylmorley/whatcable/whatcable-cli"
+# Extract article content and metadata from web pages
+brew "defuddle"
+# Secure runtime for JavaScript and TypeScript
+brew "deno"
+# Utility to replace problematic characters in filenames
+brew "detox"
+# Diff that understands syntax
+brew "difftastic"
+# Tool for exploring each layer in a docker image
+brew "dive"
+# Pack, ship and run any application as a lightweight container
+brew "docker"
+# Isolated development environments using Docker
+brew "docker-compose"
+# Intelligent archive extraction
+brew "dtrx"
+# Perl lib for reading and writing EXIF metadata
+brew "exiftool"
+# Modern, maintained replacement for ls
+brew "eza"
+# Like neofetch, but much faster because written mostly in C
+brew "fastfetch"
+# Simple, fast and user-friendly alternative to find
+brew "fd"
+# Play, record, convert, and stream select audio and video codecs
+brew "ffmpeg"
+# Banner-like program prints strings as ASCII art
+brew "figlet"
+# Command-line tools for fly.io services
+brew "flyctl"
+# Infamous electronic fortune-cookie generator
+brew "fortune"
+# Command-line fuzzy finder written in Go
+brew "fzf"
+# GitHub command-line tool
+brew "gh"
+# Interpreter for PostScript and PDF
+brew "ghostscript"
+# Distributed revision control system
+brew "git"
+# Render markdown on the CLI
+brew "glow"
+# GNU implementation of the famous stream editor
+brew "gnu-sed"
+# GNU unit conversion tool
+brew "gnu-units"
+# Log analyzer and interactive viewer for the Apache Webserver
+brew "goaccess"
+# Multimedia framework for research and academic purposes
+brew "gpac"
+# Terraform
+brew "hashicorp/tap/terraform"
+# Advanced HTML-to-text converter
+brew "html2text"
+# Improved top (interactive process viewer)
+brew "htop"
+# User-friendly cURL replacement (command-line HTTP client)
+brew "httpie"
+# Website copier/offline browser
+brew "httrack"
+# Improved colored diff
+brew "icdiff"
+# Tool to download photos from iCloud
+brew "icloudpd"
+# Display an interface's bandwidth usage
+brew "iftop"
+# Tools and libraries to manipulate images in select formats
+brew "imagemagick"
+# CLI for ImageOptim, ImageAlpha and JPEGmini
+brew "imageoptim-cli"
+# Modular IRC client
+brew "irssi"
+# JSON output from a shell
+brew "jo"
+# Lightweight and flexible command-line JSON processor
+brew "jq"
+# Command-line music player
+brew "kew"
+# Library to render SVG files using Cairo
+brew "librsvg"
+# Lynx-like WWW browser that supports tables, menus, etc.
+brew "links"
+# Curses-based tool for viewing and analyzing log files
+brew "lnav"
+# Text-based web browser
+brew "lynx"
+# Swiss Army Knife for macOS
+brew "m-cli"
+# Keep your Mac's application settings in sync
+brew "mackup"
+# Securely transfers data between computers
+brew "magic-wormhole"
+# Easily convert Marp Markdown files into static HTML/CSS, PDF, PPT and images
+brew "marp-cli"
+# Mac App Store command-line interface
+brew "mas"
+# Real-time network diagnostics in your terminal — zero config, instant visibility
+brew "matthart1983/tap/netwatch"
+# Fly through your shell history
+brew "mcfly"
+# Unified display of technical and tag data for audio/video
+brew "media-info"
+# TUI for tracking home projects, maintenance schedules, appliances and quotes
+brew "micasa"
+# Run a Kubernetes cluster locally
+brew "minikube"
+# Deep clean and optimize your Mac
+brew "mole"
+# CLI tool for saving complete web pages as a single HTML file
+brew "monolith"
+# UNIX movie player
+brew "mplayer"
+# 'traceroute' and 'ping' in a single tool
+brew "mtr"
+# Terminal-based audio engine, library, player and server
+brew "musikcube"
+# NCurses Disk Usage
+brew "ncdu"
+# Open-source, cross-platform JavaScript runtime environment
+brew "node"
+# Development kit for the Java programming language
+brew "openjdk"
+# Development kit for the Java programming language
+brew "openjdk@21"
+# Cryptography and SSL/TLS Toolkit
+brew "openssl@3"
+# 7-Zip (high compression file archiver) implementation
+brew "p7zip"
+# Swiss-army knife of markup format conversion
+brew "pandoc"
+# Shell command parallelization utility
+brew "parallel"
+# Search PDFs for strings matching a regular expression
+brew "pdfgrep"
+# Execute binaries from Python packages in isolated environments
+brew "pipx"
+# Package compiler and linker metadata toolkit
+brew "pkgconf"
+# Draw UML diagrams
+brew "plantuml"
+# Tool for managing OCI containers and pods
+brew "podman"
+# PDF rendering library (based on the xpdf-3.0 code base)
+brew "poppler"
+# Cross-platform library for audio I/O
+brew "portaudio"
+# Theme for zsh
+brew "powerlevel10k"
+# Wrapper to colorize and simplify ping's output
+brew "prettyping"
+# Show ps output as a tree
+brew "pstree"
+# Monitor data's progress through a pipe
+brew "pv"
+# Password generator
+brew "pwgen"
+# Python version management
+brew "pyenv"
+# Easily download, build, install, upgrade, and uninstall Python packages
+brew "python-setuptools"
+# Python interface to Tcl/Tk
+brew "python-tk@3.13"
+# Interpreted, interactive, object-oriented programming language
+brew "python@3.13"
+# File browser
+brew "ranger"
+# Reattach process (e.g., tmux) to background
+brew "reattach-to-user-namespace"
+# Pack repository contents into a single AI-friendly file
+brew "repomix"
+# Fast, efficient and secure backup program
+brew "restic"
+# Provides fake name and address data
+brew "rig"
+# Wrapper around ripgrep that adds multiple rich file types
+brew "ripgrep-all"
+# Rootkit hunter
+brew "rkhunter"
+# Command-line deletion tool focused on safety, ergonomics, and performance
+brew "rm-improved"
+# Utility that provides fast incremental file transfer
+brew "rsync"
+# Tool for downloading RTMP streaming media
+brew "rtmpdump"
+# Extremely fast Python linter, written in Rust
+brew "ruff"
+# Count and truncate text based on tokens
+brew "simonw/llm/ttok"
+# Spoof your MAC address in macOS
+brew "spoof-mac"
+# Add a public key to a remote machine's authorized_keys file
+brew "ssh-copy-id"
+# Forward connections based on first data packet sent by client
+brew "sslh"
+# CLI for extracting streams from various websites to a video player
+brew "streamlink"
+# Subdomain discovery tool
+brew "subfinder"
+# Change macOS audio source from the command-line
+brew "switchaudio-osx"
+# Command-line packet analyzer
+brew "tcpdump"
+# OCR (Optical Character Recognition) engine
+brew "tesseract"
+# Code-search similar to ack
+brew "the_silver_searcher"
+# Programmatically correct mistyped console commands
+brew "thefuck"
+# Terminal multiplexer
+brew "tmux"
+# Extremely fast Python package installer and resolver, written in Rust
+brew "uv"
+# Executes a program periodically, showing output fullscreen
+brew "watch"
+# Internet file retriever
+brew "wget"
+# Show the current WiFi network password
+brew "wifi-password"
+# Ad-hoc single-file webserver
+brew "woof"
+# JavaScript package manager
+brew "yarn"
+# Feature-rich command-line audio/video downloader
+brew "yt-dlp"
+# UNIX shell (command interpreter)
+brew "zsh"
+# Additional completion definitions for zsh
+brew "zsh-completions"
+# Fish shell like syntax highlighting for zsh
+brew "zsh-syntax-highlighting"
+
+# Desktop Applications & GUI Tools (Casks)
+# Password manager that keeps all passwords secure behind one password
+cask "1password"
+# Command-line interface for 1Password
+cask "1password-cli"
+# Application launcher and productivity software
+cask "alfred"
+# Android SDK component
+cask "android-platform-tools"
+# Tools for building Android applications
+cask "android-studio"
+# Memory training application
+cask "anki"
+# Application uninstaller
+cask "appcleaner"
+# Compact TeX distribution as alternative to the full TeX Live / MacTeX
+cask "basictex"
+# Send any size file between devices
+cask "blip"
+# Automation tool
+cask "bunch"
+# E-books management software
+cask "calibre"
+# Screen capturing tool
+cask "cleanshot"
+# Plain-text editor for web pages, program source codes and more
+cask "coteditor"
+# Multi-platform client-side cloud file encryption tool
+cask "cryptomator"
+# Convert potentially dangerous PDFs or Office documents into safe PDFs
+cask "dangerzone"
+# Browser for SQLite databases
+cask "db-browser-for-sqlite"
+# Presentations from Markdown
+cask "deckset"
+# Utilities designed to make common development tasks easier
+cask "devtoys"
+# Client for the Dropbox cloud storage service
+cask "dropbox"
+# Cross-platform Text Expander written in Rust
+cask "espanso"
+# Utility to finds and fix problems on computer systems
+cask "etrecheckpro"
+cask "font-input"
+cask "font-jetbrains-mono"
+cask "font-juliamono"
+cask "font-monaspace"
+cask "font-terminus"
+# Kext-less implementation of FUSE
+cask "fuse-t"
+# Terminal emulator that uses platform-native UI and GPU acceleration
+cask "ghostty"
+# Open-source video transcoder
+cask "handbrake-app"
+# Utility to hide menu bar items
+cask "hiddenbar"
+# Free and open-source media player
+cask "iina"
+# Tool to optimise images to a smaller size
+cask "imageoptim"
+# System monitoring app
+cask "istat-menus"
+# Terminal emulator as alternative to Apple's Terminal app
+cask "iterm2"
+# File archiver
+cask "keka"
+# Noise cancelling application
+cask "krisp"
+# Utility that shows the latest app updates
+cask "latest"
+# Open-source cross-platform alternative to AirDrop
+cask "localsend"
+# Open-source firewall to block unknown outgoing connections
+cask "lulu"
+# Clipboard manager
+cask "maccy"
+# Text editor
+cask "macvim-app"
+# Speech recognition tool
+cask "macwhisper"
+# Provides updates to various Microsoft products
+cask "microsoft-auto-update"
+# Multi-platform web browser
+cask "microsoft-edge"
+# Tool to control external monitor brightness & volume
+cask "monitorcontrol"
+# App to write, plan, collaborate, and get organised
+cask "notion"
+# Calculator and converter application
+cask "numi"
+# Knowledge base that works on top of a local folder of plain text Markdown files
+cask "obsidian"
+# Get up and running with large language models locally
+cask "ollama-app"
+# Cloud storage client
+cask "onedrive"
+# Professional webcam software for the Opal C1
+cask "opal-composer"
+# Replacement for Docker Desktop
+cask "orbstack"
+# Monitors computer mic and webcam
+cask "oversight"
+# Browse, manage, inspect containers and images
+cask "podman-desktop"
+# Desktop client for Proton Pass
+cask "proton-pass"
+# Instant messaging application focusing on security
+cask "signal"
+# PDF reader and note-taking application
+cask "skim"
+# Team communication and collaboration software
+cask "slack"
+# Music streaming service
+cask "spotify"
+# Cast video streams to networked devices
+cask "stupside/tap/castor", trusted: true
+# SSH client
+cask "termius"
+# Unpacks archive files
+cask "the-unarchiver"
+# Virtual machines UI using QEMU
+cask "utm"
+# Rust-based terminal
+cask "warp"
+# Open-source version of the X.Org X Window System
+cask "xquartz"
+# Multiplayer code editor
+cask "zed"
+# Video communication and virtual meeting platform
+cask "zoom"
+
+# Mac App Store Applications (mas)
+mas "Bear", id: 1091189122
+mas "BetterSnapTool", id: 417375580
+mas "Cardhop", id: 1290358394
+mas "Convert & Compress", id: 6752861983
+mas "Craft", id: 1487937127
+mas "Cursor Highlighter", id: 1576720712
+mas "DaisyDisk", id: 411643860
+mas "Dark Reader for Safari", id: 1438243180
+mas "Flighty", id: 1358823008
+mas "HazeOver", id: 430798174
+mas "Hush", id: 1544743900
+mas "iA Writer", id: 775737590
+mas "Keynote", id: 409183694
+mas "Moonshine Note Taker", id: 6758634869
+mas "NextDNS", id: 1464122853
+mas "Notion Web Clipper", id: 1559269364
+mas "Numbers", id: 361304891
+mas "Pages", id: 409201541
+mas "Parcel 2", id: 375589283
+mas "PDFScanner", id: 410968114
+mas "Reader", id: 1179373118
+mas "Reeder", id: 1529448980
+mas "Save to Pocket", id: 1477385213
+mas "Sink It", id: 6449873635
+mas "TestFlight", id: 899247664
+mas "TextSniper", id: 1528890965
+mas "Things", id: 904280696
+mas "UpNote", id: 1398373917
+mas "Wipr 2", id: 1662217862
+mas "Yoink", id: 457622435
+
+go "cd.splunkdev.com/ai-productivity/ghost"
+cargo "rust-stakeholder", source: "https://github.com/giacomo-b/rust-stakeholder.git"
+uv "beets[chroma,info]"
+uv "mutagen"
+uv "pipx"
+uv "spotdl"
+uv "spotiflac"
+uv "youtube-transcript-api"
+uv "yt-dlp"
+uv "ytmusicapi"
