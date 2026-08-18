@@ -1,19 +1,31 @@
 #!/usr/bin/env python3
 """
-Manage Homebrew manifests and system environments.
-A CLI utility to add/sync packages, format manifests, and snapshot system states.
+Consolidated Homebrew Manifest and Environment Orchestrator.
+Provides a unified CLI for adding packages, reconciling/formatting manifests,
+snapshotting live environments, checking system status, and executing sync actions.
+Handles SIGINT / KeyboardInterrupt gracefully without traceback noise.
 """
-
 
 import argparse
 import dataclasses
 import json
 import os
 import re
+import signal
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
+
+
+def handle_sigint(sig, frame):
+    """Graceful handler for Ctrl-C termination."""
+    sys.stderr.write("\n\n==> Operation cancelled by user. Exiting.\n")
+    sys.exit(130)
+
+
+# Register signal handler for immediate termination
+signal.signal(signal.SIGINT, handle_sigint)
 
 
 @dataclasses.dataclass
@@ -58,7 +70,7 @@ class BrewfileManager:
                 '$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)'
             ]
             subprocess.run(install_cmd, check=True)
-            # Add brew to PATH for the current process
+            # Add brew to PATH for current process
             brew_paths = ["/opt/homebrew/bin", "/usr/local/bin"]
             for bp in brew_paths:
                 if os.path.exists(bp) and bp not in os.environ["PATH"]:
@@ -89,7 +101,6 @@ class BrewfileManager:
                 continue
 
             if stripped.startswith("#"):
-                # Ignore generic section headers
                 if not any(
                     stripped.lower().startswith(h)
                     for h in [
@@ -399,69 +410,73 @@ class BrewfileManager:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="Unified Homebrew Manifest & Environment CLI Tool",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-    )
-    parser.add_argument(
-        "--file",
-        "-f",
-        default="Brewfile",
-        help="Path to target Brewfile (default: ./Brewfile)",
-    )
-
-    subparsers = parser.add_subparsers(dest="command", help="Available subcommands")
-
-    # Subcommand: add
-    add_parser = subparsers.add_parser("add", help="Add a formula or cask without installing")
-    add_parser.add_argument("package", help="Name or token of the formula or cask")
-    type_group = add_parser.add_mutually_exclusive_group()
-    type_group.add_argument("--formula", action="store_true", help="Treat as formula")
-    type_group.add_argument("--cask", action="store_true", help="Treat as cask")
-
-    # Subcommand: reconcile
-    subparsers.add_parser("reconcile", help="Reconcile, deduplicate, annotate, and sort Brewfile")
-
-    # Subcommand: snapshot
-    snap_parser = subparsers.add_parser("snapshot", help="Dry-run live system dump with visual diff")
-    snap_parser.add_argument("--apply", "-y", action="store_true", help="Apply snapshot without prompt")
-
-    # Subcommand: status
-    subparsers.add_parser("status", help="Inspect missing and unmanaged packages")
-
-    # Subcommand: sync
-    sync_parser = subparsers.add_parser("sync", help="Synchronize system with Brewfile")
-    sync_parser.add_argument("--install", action="store_true", help="Install missing packages")
-    sync_parser.add_argument("--cleanup", action="store_true", help="Prune unmanaged packages")
-    sync_parser.add_argument("--import-unmanaged", action="store_true", help="Import live packages into Brewfile")
-    sync_parser.add_argument("--full", action="store_true", help="Install missing AND cleanup unmanaged")
-
-    args = parser.parse_args()
-
-    if not args.command:
-        # Default behavior with no subcommands: launch sync dashboard
-        manager = BrewfileManager(Path(args.file))
-        manager.sync()
-        return
-
-    manager = BrewfileManager(Path(args.file))
-
-    if args.command == "add":
-        pkg_type = "formula" if args.formula else ("cask" if args.cask else None)
-        manager.add_package(args.package, pkg_type)
-    elif args.command == "reconcile":
-        manager.reconcile()
-    elif args.command == "snapshot":
-        manager.snapshot(non_interactive=args.apply)
-    elif args.command == "status":
-        manager.status()
-    elif args.command == "sync":
-        manager.sync(
-            install=args.install,
-            cleanup=args.cleanup,
-            import_unmanaged=args.import_unmanaged,
-            full=args.full,
+    try:
+        parser = argparse.ArgumentParser(
+            description="Unified Homebrew Manifest & Environment CLI Tool",
+            formatter_class=argparse.RawDescriptionHelpFormatter,
         )
+        parser.add_argument(
+            "--file",
+            "-f",
+            default="Brewfile",
+            help="Path to target Brewfile (default: ./Brewfile)",
+        )
+
+        subparsers = parser.add_subparsers(dest="command", help="Available subcommands")
+
+        # Subcommand: add
+        add_parser = subparsers.add_parser("add", help="Add a formula or cask without installing")
+        add_parser.add_argument("package", help="Name or token of the formula or cask")
+        type_group = add_parser.add_mutually_exclusive_group()
+        type_group.add_argument("--formula", action="store_true", help="Treat as formula")
+        type_group.add_argument("--cask", action="store_true", help="Treat as cask")
+
+        # Subcommand: reconcile
+        subparsers.add_parser("reconcile", help="Reconcile, deduplicate, annotate, and sort Brewfile")
+
+        # Subcommand: snapshot
+        snap_parser = subparsers.add_parser("snapshot", help="Dry-run live system dump with visual diff")
+        snap_parser.add_argument("--apply", "-y", action="store_true", help="Apply snapshot without prompt")
+
+        # Subcommand: status
+        subparsers.add_parser("status", help="Inspect missing and unmanaged packages")
+
+        # Subcommand: sync
+        sync_parser = subparsers.add_parser("sync", help="Synchronize system with Brewfile")
+        sync_parser.add_argument("--install", action="store_true", help="Install missing packages")
+        sync_parser.add_argument("--cleanup", action="store_true", help="Prune unmanaged packages")
+        sync_parser.add_argument("--import-unmanaged", action="store_true", help="Import live packages into Brewfile")
+        sync_parser.add_argument("--full", action="store_true", help="Install missing AND cleanup unmanaged")
+
+        args = parser.parse_args()
+
+        if not args.command:
+            # Default behavior with no subcommands: launch sync dashboard
+            manager = BrewfileManager(Path(args.file))
+            manager.sync()
+            return
+
+        manager = BrewfileManager(Path(args.file))
+
+        if args.command == "add":
+            pkg_type = "formula" if args.formula else ("cask" if args.cask else None)
+            manager.add_package(args.package, pkg_type)
+        elif args.command == "reconcile":
+            manager.reconcile()
+        elif args.command == "snapshot":
+            manager.snapshot(non_interactive=args.apply)
+        elif args.command == "status":
+            manager.status()
+        elif args.command == "sync":
+            manager.sync(
+                install=args.install,
+                cleanup=args.cleanup,
+                import_unmanaged=args.import_unmanaged,
+                full=args.full,
+            )
+    except KeyboardInterrupt:
+        sys.stderr.write("\n\n==> Operation cancelled by user. Exiting.\n")
+        sys.exit(130)
 
 
 if __name__ == "__main__":
